@@ -3,7 +3,16 @@ package gov.usgs.cida.connector.http;
 import gov.usgs.cida.connector.IConnector;
 import gov.usgs.cida.provider.http.HttpProvider;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.sql.ResultSet;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.protocol.HttpContext;
 
 public abstract class AbstractHttpConnector implements IConnector {
 	protected final HttpProvider httpProvider;
@@ -26,18 +35,18 @@ public abstract class AbstractHttpConnector implements IConnector {
 		req.addHeader("Cache-Control", "no-cache");
 	}
 	
-//	protected static List<String> makeCall(HttpClient httpClient, HttpUriRequest req, HttpContext localContext) throws ClientProtocolException, IOException {
-//		List<String> result = new ArrayList<String>();
-//		
-//		HttpResponse methodResponse = null;
-//		if (null == localContext) {
-//			methodResponse = httpClient.execute(req);
-//		} else {
-//			methodResponse = httpClient.execute(req, localContext);
-//		}
-//		
-//		HttpEntity methodEntity = methodResponse.getEntity();
-//		
+	protected static HttpEntity makeCall(HttpClient httpClient, HttpUriRequest req, HttpContext localContext) throws ClientProtocolException, IOException {
+		HttpEntity result = null;
+		
+		HttpResponse methodResponse = null;
+		if (null == localContext) {
+			methodResponse = httpClient.execute(req);
+		} else {
+			methodResponse = httpClient.execute(req, localContext);
+		}
+		
+		HttpEntity methodEntity = methodResponse.getEntity();
+		result = methodEntity;
 //		if (methodEntity != null) {
 //			
 //			InputStream is = null;
@@ -59,7 +68,7 @@ public abstract class AbstractHttpConnector implements IConnector {
 //			}
 //			
 //		}
-//		
-//		return result;
-//	}
+		
+		return result;
+	}
 }

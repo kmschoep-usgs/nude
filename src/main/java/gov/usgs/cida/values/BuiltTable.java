@@ -1,6 +1,7 @@
 package gov.usgs.cida.values;
 
 import gov.usgs.cida.resultset.ITableView;
+import gov.usgs.cida.spec.out.Closers;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -8,6 +9,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
+
+import javax.naming.OperationNotSupportedException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,13 +47,7 @@ public class BuiltTable implements ITableView, Iterable<TableRow> {
 		try {
 			read(result, in);
 		} finally {
-			if (null != in) {
-				try {
-					in.close();
-				} catch (SQLException e) {
-					log.debug("Exception thrown while closing result set", e);
-				}
-			}
+			Closers.closeQuietly(in);
 		}
 		
 		return result;
@@ -58,6 +55,14 @@ public class BuiltTable implements ITableView, Iterable<TableRow> {
 	
 	public void addRow(TableRow row) {
 		//TODO
+	}
+	
+	public int getRowCount() {
+		return 0;
+	}
+	
+	public int getColumnCount() {
+		return 0;
 	}
 	
 	public ResultSet getResultSet() {
@@ -83,7 +88,31 @@ public class BuiltTable implements ITableView, Iterable<TableRow> {
 
 	@Override
 	public Iterator<TableRow> iterator() {
-		// TODO Auto-generated method stub
-		return null;
+		return new TableIterator(this);
+	}
+	
+	private static class TableIterator implements Iterator<TableRow> {
+		protected BuiltTable table;
+		
+		public TableIterator(BuiltTable bt) {
+			this.table = bt;
+		}
+		
+		@Override
+		public boolean hasNext() {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public TableRow next() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public void remove() {
+			
+		}
 	}
 }

@@ -1,7 +1,7 @@
 <configuration>
 	<appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
 		<encoder>
-			<pattern>%d{HH:mm:ss.SSS} DAS-BOOT %5p [%t] - %m%n</pattern>
+			<pattern>%d{HH:mm:ss.SSS} DAS-BOOT %5p [%t] %logger{20}:%line - %m%n</pattern>
 		</encoder>
 	</appender>
 	<root level="trace">
