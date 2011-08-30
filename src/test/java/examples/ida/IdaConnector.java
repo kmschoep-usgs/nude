@@ -54,7 +54,7 @@ public class IdaConnector extends AbstractHttpConnector {
 		
 		try {
 			HttpEntity methodEntity = makeCall();
-			result = new HttpResultSet(methodEntity, new IdaParser());
+			result = new HttpResultSet(methodEntity, this.getParser());
 		} catch (Exception e) {
 			log.error("Could not make call", e);
 		}
@@ -98,8 +98,7 @@ public class IdaConnector extends AbstractHttpConnector {
 	}
 
 	@Override
-	public IParser getParser() {
-		// TODO Auto-generated method stub
-		return null;
+	public IParser<IdaTable> getParser() {
+		return new IdaParser();
 	}
 }
