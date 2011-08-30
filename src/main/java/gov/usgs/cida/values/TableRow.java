@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+@Deprecated
 public class TableRow {
 	protected Map<String, String> row;
 	

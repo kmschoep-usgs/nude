@@ -15,6 +15,7 @@ import javax.naming.OperationNotSupportedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Deprecated
 public class BuiltTable implements ITableView, Iterable<TableRow> {
 	private static Logger log = LoggerFactory.getLogger(BuiltTable.class);
 	protected Map<Integer, Column> rows;
