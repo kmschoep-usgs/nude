@@ -2,13 +2,16 @@ package gov.usgs.cida.connector.http;
 
 import gov.usgs.cida.connector.IConnector;
 import gov.usgs.cida.provider.http.HttpProvider;
+import gov.usgs.cida.spec.table.Column;
+import gov.usgs.cida.values.TableRow;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpUriRequest;
@@ -35,6 +38,22 @@ public abstract class AbstractHttpConnector implements IConnector {
 		req.addHeader("Cache-Control", "no-cache");
 	}
 	
+	protected static String generateGetParams(Iterable<TableRow<?>> params) {
+		StringBuffer result = new StringBuffer();
+		
+		//TODO
+		
+		return result.toString();
+	}
+	
+	protected static List<NameValuePair> generatePostParams(Iterable<TableRow<?>> params) {
+		List<NameValuePair> result = new ArrayList<NameValuePair>();
+		
+		//TODO
+		
+		return result;
+	}
+	
 	protected static HttpEntity makeCall(HttpClient httpClient, HttpUriRequest req, HttpContext localContext) throws ClientProtocolException, IOException {
 		HttpEntity result = null;
 		
@@ -47,27 +66,6 @@ public abstract class AbstractHttpConnector implements IConnector {
 		
 		HttpEntity methodEntity = methodResponse.getEntity();
 		result = methodEntity;
-//		if (methodEntity != null) {
-//			
-//			InputStream is = null;
-//			try {
-//				is = methodEntity.getContent();
-//				
-//				List<String> response = IOUtils.readLines(is);
-//				
-//				if (null != response) {
-//					result = response;
-//				}
-//				
-//			} finally {
-//				// This is important to guarantee connection release back into
-//                // connection pool for future reuse!
-//                EntityUtils.consume(methodEntity);
-//				
-//				IOUtils.closeQuietly(is);
-//			}
-//			
-//		}
 		
 		return result;
 	}

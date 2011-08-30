@@ -1,7 +1,8 @@
 package gov.usgs.cida.resultset;
 
-import gov.usgs.cida.connector.parser.IParser;
+import gov.usgs.cida.resultset.CursorLocation.Location;
 import gov.usgs.cida.spec.table.Column;
+import gov.usgs.cida.values.TableRow;
 
 import java.io.InputStream;
 import java.io.Reader;
@@ -21,39 +22,63 @@ import java.sql.SQLXML;
 import java.sql.Statement;
 import java.sql.Time;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.Map;
 
-public abstract class ParsingResultSet extends IndexImplResultSet {
+public class StringTableResultSet<K extends Enum<K> & Column> extends IndexImplResultSet implements Iterable<TableRow<K>> {
+	
 	protected boolean isClosed = false;
 	
-	protected IParser<? extends Column> parser;
+	protected CursorLocation currLoc;
 	
-	//TODO actually make this mean something
-	protected int fetchSize = 0;
+	protected int fetchsize = 0;
 	
-	@Override
-	public int findColumn(String columnLabel) throws SQLException {
-		throwIfClosed(this);
-		int result = -1;
-		
-		try {
-			result = Enum.valueOf(this.parser.getAvailableColumns(), columnLabel).ordinal();
-		} catch (Exception e) {
-			throw new SQLException(e);
-		}
-		
-		return result;
+	protected Collection<TableRow<K>> rows;
+	protected TableRow<K> currRow;
+	protected Iterator<TableRow<K>> it;
+	
+	protected Class<K> tableType;
+	protected K[] columns;
+	
+	/**
+	 * Default construction.
+	 * 
+	 * Rows will be output in the same order they are put in.
+	 */
+	public StringTableResultSet(Class<K> table) {
+		this(table, new ArrayList<TableRow<K>>());
 	}
-
+	
+	/**
+	 * Use this constructor when you need to specify a different
+	 * ordering of your rows.
+	 * @param rows
+	 */
+	public StringTableResultSet(Class<K> table, Collection<TableRow<K>> rows) {
+		this.currLoc = new CursorLocation();
+		this.tableType = table;
+		this.columns = table.getEnumConstants();
+		
+		this.rows = rows;
+		this.currRow = null;
+		this.it = null;
+	}
+	
+	public void addRow(TableRow<K> row) {
+		this.rows.add(row);
+	}
+	
 	@Override
 	public ResultSetMetaData getMetaData() throws SQLException {
 		throwIfClosed(this);
-		return new ParsingResultSetMetaData();
+		return new StringTableResultSetMetaData();
 	}
 	
-	protected class ParsingResultSetMetaData implements ResultSetMetaData {
-
+	protected class StringTableResultSetMetaData implements ResultSetMetaData {
+		
 		@Override
 		public <T> T unwrap(Class<T> iface) throws SQLException {
 			throw new SQLException("Instance is not unwrappable to interface: " + iface.getName());
@@ -66,7 +91,7 @@ public abstract class ParsingResultSet extends IndexImplResultSet {
 
 		@Override
 		public int getColumnCount() throws SQLException {
-			return parser.getAvailableColumns().getEnumConstants().length;
+			return columns.length;
 		}
 
 		@Override
@@ -130,7 +155,7 @@ public abstract class ParsingResultSet extends IndexImplResultSet {
 			if (column >= this.getColumnCount()) {
 				throw new SQLException("Invalid column index");
 			}
-			return parser.getAvailableColumns().getEnumConstants()[column].getName();
+			return columns[column].getName();
 		}
 
 		@Override
@@ -138,7 +163,7 @@ public abstract class ParsingResultSet extends IndexImplResultSet {
 			if (column >= this.getColumnCount()) {
 				throw new SQLException("Invalid column index");
 			}
-			return parser.getAvailableColumns().getEnumConstants()[column].getName();
+			return columns[column].getName();
 		}
 
 		@Override
@@ -146,7 +171,7 @@ public abstract class ParsingResultSet extends IndexImplResultSet {
 			if (column >= this.getColumnCount()) {
 				throw new SQLException("Invalid column index");
 			}
-			return parser.getAvailableColumns().getEnumConstants()[column].getSchemaName();
+			return columns[column].getSchemaName();
 		}
 
 		@Override
@@ -170,7 +195,7 @@ public abstract class ParsingResultSet extends IndexImplResultSet {
 			if (column >= this.getColumnCount()) {
 				throw new SQLException("Invalid column index");
 			}
-			return parser.getAvailableColumns().getEnumConstants()[column].getTableName();
+			return columns[column].getTableName();
 		}
 
 		@Override
@@ -186,7 +211,7 @@ public abstract class ParsingResultSet extends IndexImplResultSet {
 			if (column >= this.getColumnCount()) {
 				throw new SQLException("Invalid column index");
 			}
-			return java.sql.Types.VARCHAR; //TODO
+			return java.sql.Types.VARCHAR;
 		}
 
 		@Override
@@ -194,7 +219,7 @@ public abstract class ParsingResultSet extends IndexImplResultSet {
 			if (column >= this.getColumnCount()) {
 				throw new SQLException("Invalid column index");
 			}
-			return "VARCHAR"; //TODO
+			return "VARCHAR";
 		}
 
 		@Override
@@ -232,15 +257,39 @@ public abstract class ParsingResultSet extends IndexImplResultSet {
 	}
 	
 	@Override
+	public boolean next() throws SQLException {
+		throwIfClosed(this);
+		boolean result = false;
+		if (this.rows != null && this.isAfterLast()) {
+			
+			if (this.isFirst()) {
+				this.currLoc.setLocation(Location.MIDDLE);
+			} else if (this.isBeforeFirst()) {
+				this.it = this.rows.iterator();
+				if (null != this.it) {
+					this.currLoc.setLocation(Location.FIRST);
+				}
+			}
+			
+			if (this.it.hasNext()) {
+				this.currRow = this.it.next();
+				if (this.it.hasNext()) {
+					this.currLoc.setLocation(Location.LAST);
+				}
+				result = true;
+			} else {
+				this.currLoc.setLocation(Location.AFTERLAST);
+			}
+			
+		}
+		return result;
+	}
+
+	@Override
 	public void close() throws SQLException {
 		this.isClosed = true;
 	}
-	
-	@Override
-	public boolean isClosed() throws SQLException {
-		return this.isClosed;
-	}
-	
+
 	@Override
 	public boolean wasNull() throws SQLException {
 		throwIfClosed(this);
@@ -249,33 +298,101 @@ public abstract class ParsingResultSet extends IndexImplResultSet {
 	}
 
 	@Override
-	public void setFetchSize(int rows) throws SQLException {
+	public String getString(int columnIndex) throws SQLException {
 		throwIfClosed(this);
-		this.fetchSize = rows;
+		String result = null;
+		if (null != currRow) {
+			result = currRow.getValue(columns[columnIndex]);
+		} else {
+			throw new SQLException("Cursor after last row");
+		}
+		return result;
 	}
 
 	@Override
-	public int getFetchSize() throws SQLException {
+	public boolean getBoolean(int columnIndex) throws SQLException {
 		throwIfClosed(this);
-		return this.fetchSize;
+		throwNotSupported();
+		return false;
 	}
 
 	@Override
-	public void clearWarnings() throws SQLException {
+	public byte getByte(int columnIndex) throws SQLException {
 		throwIfClosed(this);
-
+		throwNotSupported();
+		return 0;
 	}
-	
+
 	@Override
-	public SQLWarning getWarnings() throws SQLException {
+	public short getShort(int columnIndex) throws SQLException {
 		throwIfClosed(this);
+		throwNotSupported();
+		return 0;
+	}
+
+	@Override
+	public int getInt(int columnIndex) throws SQLException {
+		throwIfClosed(this);
+		throwNotSupported();
+		return 0;
+	}
+
+	@Override
+	public long getLong(int columnIndex) throws SQLException {
+		throwIfClosed(this);
+		throwNotSupported();
+		return 0;
+	}
+
+	@Override
+	public float getFloat(int columnIndex) throws SQLException {
+		throwIfClosed(this);
+		throwNotSupported();
+		return 0;
+	}
+
+	@Override
+	public double getDouble(int columnIndex) throws SQLException {
+		throwIfClosed(this);
+		throwNotSupported();
+		return 0;
+	}
+
+	@Deprecated
+	@Override
+	public BigDecimal getBigDecimal(int columnIndex, int scale)
+			throws SQLException {
+		throwIfClosed(this);
+		throwNotSupported();
 		return null;
 	}
-	
+
 	@Override
-	public Array getArray(int columnIndex) throws SQLException {
+	public byte[] getBytes(int columnIndex) throws SQLException {
 		throwIfClosed(this);
-		return this.parser.getValue(Array.class, columnIndex).getValue();
+		throwNotSupported();
+		return null;
+	}
+
+	@Override
+	public Date getDate(int columnIndex) throws SQLException {
+		throwIfClosed(this);
+		throwNotSupported();
+		return null;
+	}
+
+	@Override
+	public Time getTime(int columnIndex) throws SQLException {
+		throwIfClosed(this);
+		throwNotSupported();
+		return null;
+	}
+
+	@Override
+	public Timestamp getTimestamp(int columnIndex) throws SQLException {
+		throwIfClosed(this);
+		throwNotSupported();
+		return null;
 	}
 
 	@Override
@@ -286,15 +403,7 @@ public abstract class ParsingResultSet extends IndexImplResultSet {
 	}
 
 	@Override
-	public BigDecimal getBigDecimal(int columnIndex) throws SQLException {
-		throwIfClosed(this);
-		return this.parser.getValue(BigDecimal.class, columnIndex).getValue();
-	}
-
-	@Deprecated
-	@Override
-	public BigDecimal getBigDecimal(int columnIndex, int scale)
-			throws SQLException {
+	public InputStream getUnicodeStream(int columnIndex) throws SQLException {
 		throwIfClosed(this);
 		throwNotSupported();
 		return null;
@@ -308,38 +417,43 @@ public abstract class ParsingResultSet extends IndexImplResultSet {
 	}
 
 	@Override
-	public Blob getBlob(int columnIndex) throws SQLException {
-		throwIfClosed(this);
-		return this.parser.getValue(Blob.class, columnIndex).getValue();
-	}
-
-	@Override
-	public boolean getBoolean(int columnIndex) throws SQLException {
-		throwIfClosed(this);
-		boolean result = false;
-		Boolean in = this.parser.getValue(Boolean.class, columnIndex).getValue();
-		if (null != in) {
-			result = in.booleanValue();
-		}
-		return result;
-	}
-
-	@Override
-	public byte getByte(int columnIndex) throws SQLException {
-		throwIfClosed(this);
-		Byte bt = this.parser.getValue(Byte.class, columnIndex).getValue();
-		byte result = 0;
-		if (null != bt) {
-			result = bt.byteValue();
-		}
-		return result;
-	}
-
-	@Override
-	public byte[] getBytes(int columnIndex) throws SQLException {
+	public SQLWarning getWarnings() throws SQLException {
 		throwIfClosed(this);
 		throwNotSupported();
 		return null;
+	}
+
+	@Override
+	public void clearWarnings() throws SQLException {
+		throwIfClosed(this);
+
+	}
+
+	@Override
+	public String getCursorName() throws SQLException {
+		throwIfClosed(this);
+		return "" + this.hashCode();
+	}
+
+	@Override
+	public Object getObject(int columnIndex) throws SQLException {
+		throwIfClosed(this);
+		throwNotSupported();
+		return null;
+	}
+
+	@Override
+	public int findColumn(String columnLabel) throws SQLException {
+		throwIfClosed(this);
+		int result = -1;
+		
+		try {
+			result = Enum.valueOf(this.tableType, columnLabel).ordinal();
+		} catch (Exception e) {
+			throw new SQLException(e);
+		}
+		
+		return result;
 	}
 
 	@Override
@@ -350,98 +464,53 @@ public abstract class ParsingResultSet extends IndexImplResultSet {
 	}
 
 	@Override
-	public Clob getClob(int columnIndex) throws SQLException {
-		throwIfClosed(this);
-		return this.parser.getValue(Clob.class, columnIndex).getValue();
-	}
-
-	@Override
-	public String getCursorName() throws SQLException {
+	public BigDecimal getBigDecimal(int columnIndex) throws SQLException {
 		throwIfClosed(this);
 		throwNotSupported();
 		return null;
 	}
 
 	@Override
-	public Date getDate(int columnIndex) throws SQLException {
+	public boolean isBeforeFirst() throws SQLException {
 		throwIfClosed(this);
-		return this.parser.getValue(Date.class, columnIndex).getValue();
+		return (Location.BEFOREFIRST == this.currLoc.getLocation());
 	}
 
 	@Override
-	public Date getDate(int columnIndex, Calendar cal) throws SQLException {
+	public boolean isAfterLast() throws SQLException {
+		throwIfClosed(this);
+		return (Location.AFTERLAST == this.currLoc.getLocation());
+	}
+
+	@Override
+	public boolean isFirst() throws SQLException {
+		throwIfClosed(this);
+		return (Location.FIRST == this.currLoc.getLocation());
+	}
+
+	@Override
+	public boolean isLast() throws SQLException {
+		throwIfClosed(this);
+		return (Location.LAST == this.currLoc.getLocation());
+	}
+
+	@Override
+	public void setFetchSize(int rows) throws SQLException {
+		throwIfClosed(this);
+		this.fetchsize = rows;
+	}
+
+	@Override
+	public int getFetchSize() throws SQLException {
+		throwIfClosed(this);
+		return this.fetchsize;
+	}
+
+	@Override
+	public Statement getStatement() throws SQLException {
 		throwIfClosed(this);
 		throwNotSupported();
 		return null;
-	}
-
-	@Override
-	public double getDouble(int columnIndex) throws SQLException {
-		throwIfClosed(this);
-		Double db = this.parser.getValue(Double.class, columnIndex).getValue();
-		double result = 0.0;
-		if (null != db) {
-			result = db.doubleValue();
-		}
-		return result;
-	}
-
-	@Override
-	public float getFloat(int columnIndex) throws SQLException {
-		throwIfClosed(this);
-		Float fl = this.parser.getValue(Float.class, columnIndex).getValue();
-		float result = 0;
-		if (null != fl) {
-			result = fl.floatValue();
-		}
-		return result;
-	}
-
-	@Override
-	public int getInt(int columnIndex) throws SQLException {
-		throwIfClosed(this);
-		Integer in = this.parser.getValue(Integer.class, columnIndex).getValue();
-		int result = 0;
-		if (null != in) {
-			result = in.intValue();
-		}
-		return result;
-	}
-
-	@Override
-	public long getLong(int columnIndex) throws SQLException {
-		throwIfClosed(this);
-		Long ln = this.parser.getValue(Long.class, columnIndex).getValue();
-		long result = 0L;
-		if (null != ln) {
-			result = ln.longValue();
-		}
-		return result;
-	}
-
-	@Override
-	public Reader getNCharacterStream(int columnIndex) throws SQLException {
-		throwIfClosed(this);
-		throwNotSupported();
-		return null;
-	}
-
-	@Override
-	public NClob getNClob(int columnIndex) throws SQLException {
-		throwIfClosed(this);
-		return this.parser.getValue(NClob.class, columnIndex).getValue();
-	}
-
-	@Override
-	public String getNString(int columnIndex) throws SQLException {
-		throwIfClosed(this);
-		return this.parser.getValue(String.class, columnIndex).getValue();
-	}
-
-	@Override
-	public Object getObject(int columnIndex) throws SQLException {
-		throwIfClosed(this);
-		return this.parser.getValue(Object.class, columnIndex).getValue();
 	}
 
 	@Override
@@ -455,43 +524,36 @@ public abstract class ParsingResultSet extends IndexImplResultSet {
 	@Override
 	public Ref getRef(int columnIndex) throws SQLException {
 		throwIfClosed(this);
-		return this.parser.getValue(Ref.class, columnIndex).getValue();
+		throwNotSupported();
+		return null;
 	}
 
 	@Override
-	public RowId getRowId(int columnIndex) throws SQLException {
+	public Blob getBlob(int columnIndex) throws SQLException {
 		throwIfClosed(this);
 		throwNotSupported();
 		return null;
 	}
 
 	@Override
-	public short getShort(int columnIndex) throws SQLException {
+	public Clob getClob(int columnIndex) throws SQLException {
 		throwIfClosed(this);
-		Short sh = this.parser.getValue(Short.class, columnIndex).getValue();
-		short result = 0;
-		if (null != sh) {
-			result = sh.shortValue();
-		}
-		return result;
+		throwNotSupported();
+		return null;
 	}
 
 	@Override
-	public SQLXML getSQLXML(int columnIndex) throws SQLException {
+	public Array getArray(int columnIndex) throws SQLException {
 		throwIfClosed(this);
-		return this.parser.getValue(SQLXML.class, columnIndex).getValue();
+		throwNotSupported();
+		return null;
 	}
 
 	@Override
-	public String getString(int columnIndex) throws SQLException {
+	public Date getDate(int columnIndex, Calendar cal) throws SQLException {
 		throwIfClosed(this);
-		return this.parser.getValue(String.class, columnIndex).getValue();
-	}
-
-	@Override
-	public Time getTime(int columnIndex) throws SQLException {
-		throwIfClosed(this);
-		return this.parser.getValue(Time.class, columnIndex).getValue();
+		throwNotSupported();
+		return null;
 	}
 
 	@Override
@@ -502,22 +564,8 @@ public abstract class ParsingResultSet extends IndexImplResultSet {
 	}
 
 	@Override
-	public Timestamp getTimestamp(int columnIndex) throws SQLException {
-		throwIfClosed(this);
-		return this.parser.getValue(Timestamp.class, columnIndex).getValue();
-	}
-
-	@Override
 	public Timestamp getTimestamp(int columnIndex, Calendar cal)
 			throws SQLException {
-		throwIfClosed(this);
-		throwNotSupported();
-		return null;
-	}
-
-	@Deprecated
-	@Override
-	public InputStream getUnicodeStream(int columnIndex) throws SQLException {
 		throwIfClosed(this);
 		throwNotSupported();
 		return null;
@@ -526,13 +574,77 @@ public abstract class ParsingResultSet extends IndexImplResultSet {
 	@Override
 	public URL getURL(int columnIndex) throws SQLException {
 		throwIfClosed(this);
-		return this.parser.getValue(URL.class, columnIndex).getValue();
+		throwNotSupported();
+		return null;
 	}
 
 	@Override
-	public Statement getStatement() throws SQLException {
+	public RowId getRowId(int columnIndex) throws SQLException {
 		throwIfClosed(this);
+		throwNotSupported();
 		return null;
+	}
+
+	@Override
+	public boolean isClosed() throws SQLException {
+		return this.isClosed;
+	}
+
+	@Override
+	public NClob getNClob(int columnIndex) throws SQLException {
+		throwIfClosed(this);
+		throwNotSupported();
+		return null;
+	}
+
+	@Override
+	public SQLXML getSQLXML(int columnIndex) throws SQLException {
+		throwIfClosed(this);
+		throwNotSupported();
+		return null;
+	}
+
+	@Override
+	public String getNString(int columnIndex) throws SQLException {
+		throwIfClosed(this);
+		throwNotSupported();
+		return null;
+	}
+
+	@Override
+	public Reader getNCharacterStream(int columnIndex) throws SQLException {
+		throwIfClosed(this);
+		throwNotSupported();
+		return null;
+	}
+
+	@Override
+	public <T> T unwrap(Class<T> iface) throws SQLException {
+		throwIfClosed(this);
+		T result = null;
+		if (Iterable.class.equals(iface)) {
+			result = (T) this;
+		} else {
+			throw new SQLException("Instance is not an unwrappable into requested interface " + iface.getName());
+		}
+		return result;
+	}
+
+	@Override
+	public boolean isWrapperFor(Class<?> iface) throws SQLException {
+		throwIfClosed(this);
+		boolean result = false;
+		
+		if (Iterable.class.equals(iface)) {
+			result = true;
+		}
+		
+		return result;
+	}
+
+	@Override
+	public Iterator<TableRow<K>> iterator() {
+		return this.rows.iterator();
 	}
 
 }

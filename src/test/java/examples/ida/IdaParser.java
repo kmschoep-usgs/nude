@@ -1,5 +1,6 @@
 package examples.ida;
 
+import examples.ida.response.IdaMetadata;
 import gov.usgs.cida.connector.http.AbstractHttpParser;
 
 import java.io.BufferedReader;
@@ -9,11 +10,11 @@ import java.util.EnumMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class IdaParser extends AbstractHttpParser<IdaTable> {
+public class IdaParser extends AbstractHttpParser<IdaMetadata> {
 	
-	protected IdaTable[] columns = IdaTable.values();
+	protected IdaMetadata[] columns = IdaMetadata.values();
 	
-	protected EnumMap<IdaTable, String> row = new EnumMap<IdaTable, String>(IdaTable.class);
+	protected EnumMap<IdaMetadata, String> row = new EnumMap<IdaMetadata, String>(IdaMetadata.class);
 	
 	protected static final Pattern pat = Pattern.compile("^\\s*<input.* name=\"mindatetime\".* value=\"([^\"]*)\".*\\/>.*<input.* name=\"maxdatetime\".* value=\"([^\"]*)\".*\\/>.*<input.*");
 	
@@ -31,8 +32,8 @@ public class IdaParser extends AbstractHttpParser<IdaTable> {
 				} else {
 					Matcher mat = pat.matcher(line);
 					if (mat.matches() && 2 == mat.groupCount()) {
-						row.put(IdaTable.MINDATETIME, mat.group(1));
-						row.put(IdaTable.MAXDATETIME, mat.group(2));
+						row.put(IdaMetadata.MINDATETIME, mat.group(1));
+						row.put(IdaMetadata.MAXDATETIME, mat.group(2));
 						result = true;
 					}
 				}
@@ -56,8 +57,8 @@ public class IdaParser extends AbstractHttpParser<IdaTable> {
 	}
 
 	@Override
-	public Class<IdaTable> getAvailableColumns() {
-		return IdaTable.class;
+	public Class<IdaMetadata> getAvailableColumns() {
+		return IdaMetadata.class;
 	}
 
 }

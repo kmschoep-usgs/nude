@@ -1,13 +1,13 @@
-package examples.ida;
+package examples.ida.response;
 
 import gov.usgs.cida.spec.table.Column;
 
-public enum IdaTable implements Column {
+public enum IdaMetadata implements Column {
 	MAXDATETIME,
 	MINDATETIME;
 	
-	public static final String TABLE_NAME = "IDA";
-	public static final String SCHEMA_NAME = "EXAMPLES";
+	public static final String TABLE_NAME = "RESPONSE";
+	public static final String SCHEMA_NAME = "IDA_METADATA";
 	
 	@Override
 	public String getName() {

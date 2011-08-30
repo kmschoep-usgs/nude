@@ -1,32 +1,44 @@
 package gov.usgs.cida.values;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.EnumMap;
 import java.util.Map.Entry;
 import java.util.Set;
 
-@Deprecated
-public class TableRow {
-	protected Map<String, String> row;
+public class TableRow<K extends Enum<K>> implements Comparable<TableRow<K>>{
+	protected final EnumMap<K, String> row;
+	protected final K primaryKey;
 	
-	public TableRow() {
-		this.row = new HashMap<String, String>();
+	public TableRow(K primaryKey, String value) {
+		if (null == primaryKey || null == value) {
+			throw new RuntimeException("Primary key cannot be null");
+		}
+		this.row = new EnumMap<K, String>(primaryKey.getDeclaringClass());
+		this.row.put(primaryKey, value);
+		
+		this.primaryKey = primaryKey;
 	}
 	
-	public TableRow(String key, String value) {
-		this.row = new HashMap<String, String>(3);
+	public void set(K key, String value) {
 		this.row.put(key, value);
 	}
 	
-	public void set(String key, String value) {
-		this.row.put(key, value);
+	public String getValue(K column) {
+		return this.row.get(column);
 	}
 	
-	public String getValue(String key) {
-		return this.row.get(key);
+	public K getPrimaryKey() {
+		return this.primaryKey;
 	}
 	
-	public Set<Entry<String, String>> getEntries() {
+	public Set<Entry<K, String>> getEntries() {
 		return row.entrySet();
+	}
+
+	/**
+	 * Compares the values of the primary keys. (Values are compared as Strings)
+	 */
+	@Override
+	public int compareTo(TableRow<K> o) {
+		return this.getValue(this.getPrimaryKey()).compareTo(o.getValue(o.getPrimaryKey()));
 	}
 }

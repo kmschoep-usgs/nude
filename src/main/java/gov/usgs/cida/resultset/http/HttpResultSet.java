@@ -2,6 +2,7 @@ package gov.usgs.cida.resultset.http;
 
 import gov.usgs.cida.connector.parser.IParser;
 import gov.usgs.cida.resultset.ParsingResultSet;
+import gov.usgs.cida.spec.table.Column;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -37,7 +38,7 @@ public class HttpResultSet extends ParsingResultSet {
 		throw new SQLException("Operation not supported");
 	}
 	
-	public HttpResultSet(HttpEntity httpEntity, IParser<?> responseParser) {
+	public HttpResultSet(HttpEntity httpEntity, IParser<? extends Column> responseParser) {
 		this.httpEntity = httpEntity;
 		
 		InputStream in = null;

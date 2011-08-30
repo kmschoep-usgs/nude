@@ -1,5 +1,6 @@
 package examples.ida;
 
+import examples.ida.response.IdaMetadata;
 import gov.usgs.cida.connector.http.AbstractHttpConnector;
 import gov.usgs.cida.connector.parser.IParser;
 import gov.usgs.cida.provider.http.HttpProvider;
@@ -21,8 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class IdaConnector extends AbstractHttpConnector {
-	private static final Logger log = LoggerFactory
-			.getLogger(IdaConnector.class);
+	private static final Logger log = LoggerFactory.getLogger(IdaConnector.class);
 	protected String url;
 	protected List<ResultSet> inputs;
 	
@@ -33,6 +33,7 @@ public class IdaConnector extends AbstractHttpConnector {
 		this.inputs = new ArrayList<ResultSet>();
 	}
 	
+	@Override
 	public Spec getSpec() {
 		return new Spec() {
 			
@@ -60,10 +61,6 @@ public class IdaConnector extends AbstractHttpConnector {
 		}
 		
 		return result;
-	}
-	
-	public Integer getRowCount() {
-		return new Integer(1);
 	}
 	
 	@Override
@@ -98,7 +95,12 @@ public class IdaConnector extends AbstractHttpConnector {
 	}
 
 	@Override
-	public IParser<IdaTable> getParser() {
+	public IParser<IdaMetadata> getParser() {
 		return new IdaParser();
+	}
+
+	@Override
+	public Integer getRowCount() {
+		return new Integer(1);
 	}
 }
