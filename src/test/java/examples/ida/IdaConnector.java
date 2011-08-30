@@ -1,8 +1,9 @@
-package gov.usgs.cida.connector.ida;
+package examples.ida;
 
 import gov.usgs.cida.connector.http.AbstractHttpConnector;
+import gov.usgs.cida.connector.parser.IParser;
 import gov.usgs.cida.provider.http.HttpProvider;
-import gov.usgs.cida.resultset.IdaView;
+import gov.usgs.cida.resultset.http.HttpResultSet;
 import gov.usgs.cida.spec.jsl.Spec;
 import gov.usgs.cida.spec.jsl.mapping.ColumnMapping;
 
@@ -36,8 +37,8 @@ public class IdaConnector extends AbstractHttpConnector {
 		return new Spec() {
 			
 			protected ColumnMapping[] columns = new ColumnMapping[] {
-					new ColumnMapping("mindatetime", "mindatetime"),
-					new ColumnMapping("maxdatetime", "maxdatetime")
+					new ColumnMapping("MINDATETIME", "mindatetime"),
+					new ColumnMapping("MAXDATETIME", "maxdatetime")
 			};
 			
 			@Override
@@ -53,7 +54,7 @@ public class IdaConnector extends AbstractHttpConnector {
 		
 		try {
 			HttpEntity methodEntity = makeCall();
-			result = new IdaView(methodEntity);
+			result = new HttpResultSet(methodEntity, new IdaParser());
 		} catch (Exception e) {
 			log.error("Could not make call", e);
 		}
@@ -62,7 +63,7 @@ public class IdaConnector extends AbstractHttpConnector {
 	}
 	
 	public Integer getRowCount() {
-		return new Integer(0);
+		return new Integer(1);
 	}
 	
 	@Override
@@ -94,5 +95,11 @@ public class IdaConnector extends AbstractHttpConnector {
 		result = sb.toString();
 		
 		return result;
+	}
+
+	@Override
+	public IParser getParser() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

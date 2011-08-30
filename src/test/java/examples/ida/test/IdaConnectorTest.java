@@ -1,7 +1,8 @@
-package gov.usgs.cida.connector.ida;
+package examples.ida.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import examples.ida.IdaConnector;
 import gov.usgs.cida.provider.http.HttpProvider;
 import gov.usgs.cida.spec.formatting.ReturnType;
 import gov.usgs.cida.spec.jsl.SpecResponse;
