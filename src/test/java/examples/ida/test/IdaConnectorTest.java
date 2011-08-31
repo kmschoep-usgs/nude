@@ -3,14 +3,14 @@ package examples.ida.test;
 import static org.junit.Assert.assertEquals;
 import examples.ida.IdaConnector;
 import examples.ida.request.MetadataRequest;
-import gov.usgs.cida.provider.http.HttpProvider;
-import gov.usgs.cida.resultset.StringTableResultSet;
+import gov.usgs.cida.nude.provider.http.HttpProvider;
+import gov.usgs.cida.nude.resultset.StringTableResultSet;
+import gov.usgs.cida.nude.values.TableRow;
 import gov.usgs.cida.spec.formatting.ReturnType;
 import gov.usgs.cida.spec.jsl.SpecResponse;
 import gov.usgs.cida.spec.out.Closers;
 import gov.usgs.cida.spec.out.Services;
 import gov.usgs.cida.spec.out.StreamResponse;
-import gov.usgs.cida.values.TableRow;
 import gov.usgs.webservices.framework.basic.FormatType;
 
 import java.io.StringWriter;

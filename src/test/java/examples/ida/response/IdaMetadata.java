@@ -1,6 +1,6 @@
 package examples.ida.response;
 
-import gov.usgs.cida.table.Column;
+import gov.usgs.cida.nude.table.Column;
 
 public enum IdaMetadata implements Column {
 	MAXDATETIME,

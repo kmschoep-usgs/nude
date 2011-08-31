@@ -1,4 +1,4 @@
-package gov.usgs.cida.resultset;
+package gov.usgs.cida.nude.resultset;
 
 import java.io.InputStream;
 import java.io.Reader;

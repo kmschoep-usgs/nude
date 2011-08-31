@@ -1,4 +1,4 @@
-package gov.usgs.cida.table;
+package gov.usgs.cida.nude.table;
 
 public interface Column {
 

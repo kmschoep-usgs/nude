@@ -1,6 +1,6 @@
-package gov.usgs.cida.provider.http;
+package gov.usgs.cida.nude.provider.http;
 
-import gov.usgs.cida.provider.IProvider;
+import gov.usgs.cida.nude.provider.IProvider;
 
 import java.util.concurrent.TimeUnit;
 

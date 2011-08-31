@@ -1,4 +1,4 @@
-package gov.usgs.cida.provider;
+package gov.usgs.cida.nude.provider;
 
 public interface IProvider {
 	

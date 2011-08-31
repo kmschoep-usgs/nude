@@ -1,4 +1,4 @@
-package gov.usgs.cida.resultset;
+package gov.usgs.cida.nude.resultset;
 
 public class CursorLocation {
 	public static enum Location {

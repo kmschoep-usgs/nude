@@ -1,4 +1,4 @@
-package gov.usgs.cida.values;
+package gov.usgs.cida.nude.values;
 
 import java.util.EnumMap;
 import java.util.Map.Entry;

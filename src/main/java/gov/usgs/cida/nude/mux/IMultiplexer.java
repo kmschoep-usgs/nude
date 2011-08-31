@@ -1,4 +1,4 @@
-package gov.usgs.cida.mux;
+package gov.usgs.cida.nude.mux;
 
 public interface IMultiplexer {
 

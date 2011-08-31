@@ -1,13 +1,13 @@
 package examples.ida;
 
 import examples.ida.response.IdaMetadata;
-import gov.usgs.cida.connector.http.AbstractHttpConnector;
-import gov.usgs.cida.connector.parser.IParser;
-import gov.usgs.cida.provider.http.HttpProvider;
-import gov.usgs.cida.resultset.http.HttpResultSet;
+import gov.usgs.cida.nude.connector.http.AbstractHttpConnector;
+import gov.usgs.cida.nude.connector.parser.IParser;
+import gov.usgs.cida.nude.provider.http.HttpProvider;
+import gov.usgs.cida.nude.resultset.http.HttpResultSet;
+import gov.usgs.cida.nude.values.TableRow;
 import gov.usgs.cida.spec.jsl.Spec;
 import gov.usgs.cida.spec.jsl.mapping.ColumnMapping;
-import gov.usgs.cida.values.TableRow;
 
 import java.io.IOException;
 import java.sql.ResultSet;

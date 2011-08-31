@@ -1,6 +1,6 @@
 package examples.ida.request;
 
-import gov.usgs.cida.table.Column;
+import gov.usgs.cida.nude.table.Column;
 
 public enum MetadataRequest implements Column {
 	SN;

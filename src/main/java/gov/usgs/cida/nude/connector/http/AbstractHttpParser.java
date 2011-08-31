@@ -1,6 +1,6 @@
-package gov.usgs.cida.connector.http;
+package gov.usgs.cida.nude.connector.http;
 
-import gov.usgs.cida.connector.parser.IParser;
+import gov.usgs.cida.nude.connector.parser.IParser;
 import gov.usgs.cida.spec.jsl.SpecValue;
 
 import java.sql.SQLException;

@@ -1,8 +1,8 @@
-package gov.usgs.cida.resultset.http;
+package gov.usgs.cida.nude.resultset.http;
 
-import gov.usgs.cida.connector.parser.IParser;
-import gov.usgs.cida.resultset.ParsingResultSet;
-import gov.usgs.cida.table.Column;
+import gov.usgs.cida.nude.connector.parser.IParser;
+import gov.usgs.cida.nude.resultset.ParsingResultSet;
+import gov.usgs.cida.nude.table.Column;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;

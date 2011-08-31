@@ -2,11 +2,11 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>gov.usgs.cida</groupId>
-	<artifactId>data-agg-service</artifactId>
+	<artifactId>nude</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
-	<name>Datasource Aggregation Service</name>
-	<description>The Ass Kicker.</description>
+	<name>NUDE</name>
+	<description>Transparent Webservice Aggregator</description>
 
 	<inceptionYear>2011</inceptionYear>
 	<organization>
@@ -50,7 +50,7 @@
 	</issueManagement>
 	<ciManagement>
 		<system>Jenkins</system>
-		<url>http://igsarm-cida-hudson1.er.usgs.gov:8080/hudson/job/data-agg-service/</url>
+		<url>http://igsarm-cida-hudson1.er.usgs.gov:8080/hudson/job/NUDE/</url>
 	</ciManagement>
 
 	<properties>
@@ -193,7 +193,7 @@
 	</dependencies>
 
 	<build>
-		<finalName>data-agg-service</finalName>
+		<finalName>nude</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>

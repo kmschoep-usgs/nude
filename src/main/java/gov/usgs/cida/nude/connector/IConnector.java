@@ -1,6 +1,6 @@
-package gov.usgs.cida.connector;
+package gov.usgs.cida.nude.connector;
 
-import gov.usgs.cida.connector.parser.IParser;
+import gov.usgs.cida.nude.connector.parser.IParser;
 import gov.usgs.cida.spec.jsl.Spec;
 
 import java.sql.ResultSet;

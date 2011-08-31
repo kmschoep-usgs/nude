@@ -1,4 +1,4 @@
-package gov.usgs.cida.connector.parser;
+package gov.usgs.cida.nude.connector.parser;
 
 import gov.usgs.cida.spec.jsl.SpecValue;
 

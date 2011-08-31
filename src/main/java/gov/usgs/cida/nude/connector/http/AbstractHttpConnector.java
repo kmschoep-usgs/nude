@@ -1,8 +1,8 @@
-package gov.usgs.cida.connector.http;
+package gov.usgs.cida.nude.connector.http;
 
-import gov.usgs.cida.connector.IConnector;
-import gov.usgs.cida.provider.http.HttpProvider;
-import gov.usgs.cida.values.TableRow;
+import gov.usgs.cida.nude.connector.IConnector;
+import gov.usgs.cida.nude.provider.http.HttpProvider;
+import gov.usgs.cida.nude.values.TableRow;
 
 import java.io.IOException;
 import java.util.ArrayList;
