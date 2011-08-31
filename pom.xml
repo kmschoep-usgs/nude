@@ -60,7 +60,7 @@
 	</properties>
 
 	<scm>
-		<developerConnection>scm:svn:https://cida-svn.er.usgs.gov/repos/bms/data-agg-service/trunk</developerConnection>
+		<developerConnection>scm:svn:https://cida-svn.er.usgs.gov/repos/bms/nude/trunk</developerConnection>
 	</scm>
 
 
@@ -227,7 +227,7 @@
 				<artifactId>maven-release-plugin</artifactId>
 				<version>2.1</version>
 				<configuration>
-					<tagBase>${cida.svn.url}/data-agg-service/tags</tagBase>
+					<tagBase>${cida.svn.url}/nude/tags</tagBase>
 				</configuration>
 			</plugin>
 		</plugins>
