@@ -1,7 +1,7 @@
 package gov.usgs.cida.resultset;
 
 import gov.usgs.cida.connector.parser.IParser;
-import gov.usgs.cida.spec.table.Column;
+import gov.usgs.cida.table.Column;
 
 import java.io.InputStream;
 import java.io.Reader;

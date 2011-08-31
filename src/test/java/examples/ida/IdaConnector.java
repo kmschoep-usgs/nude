@@ -7,12 +7,15 @@ import gov.usgs.cida.provider.http.HttpProvider;
 import gov.usgs.cida.resultset.http.HttpResultSet;
 import gov.usgs.cida.spec.jsl.Spec;
 import gov.usgs.cida.spec.jsl.mapping.ColumnMapping;
+import gov.usgs.cida.values.TableRow;
 
 import java.io.IOException;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
@@ -33,13 +36,12 @@ public class IdaConnector extends AbstractHttpConnector {
 		this.inputs = new ArrayList<ResultSet>();
 	}
 	
-	@Override
 	public Spec getSpec() {
 		return new Spec() {
 			
 			protected ColumnMapping[] columns = new ColumnMapping[] {
-					new ColumnMapping("MINDATETIME", "mindatetime"),
-					new ColumnMapping("MAXDATETIME", "maxdatetime")
+					new ColumnMapping(IdaMetadata.MINDATETIME.getName(), "mindatetime"),
+					new ColumnMapping(IdaMetadata.MAXDATETIME.getName(), "maxdatetime")
 			};
 			
 			@Override
@@ -81,16 +83,31 @@ public class IdaConnector extends AbstractHttpConnector {
 	}
 	
 	public static String getURI(String baseUrl, List<ResultSet> inputs) {
-		String result = null;
+		String result = baseUrl;
 		
-		StringBuffer sb = new StringBuffer();
-		sb.append(baseUrl);
+		List<String> params = new ArrayList<String>();
+		for (ResultSet rs : inputs) {
+			try {
+				if (rs.isWrapperFor(Iterable.class)) {
+					String genParams = generateGetParams((Iterable<TableRow<?>>) rs.unwrap(Iterable.class));
+					if (StringUtils.isNotBlank(genParams)) {
+						params.add(genParams);
+					}
+				} else {
+					log.error("Could not unwrap input");
+				}
+			} catch (SQLException e) {
+				log.error("Could not unwrap input", e);
+			}
+		}
 		
-		//TODO
-		sb.append("?sn=04085427");
+		String queryString = StringUtils.join(params, '&');
 		
-		result = sb.toString();
+		if (StringUtils.isNotBlank(queryString)) {
+			result += "?" + queryString;
+		}
 		
+		log.debug("Built URI: {}", result);
 		return result;
 	}
 
@@ -99,7 +116,6 @@ public class IdaConnector extends AbstractHttpConnector {
 		return new IdaParser();
 	}
 
-	@Override
 	public Integer getRowCount() {
 		return new Integer(1);
 	}

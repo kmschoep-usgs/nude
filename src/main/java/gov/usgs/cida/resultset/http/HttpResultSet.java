@@ -2,7 +2,7 @@ package gov.usgs.cida.resultset.http;
 
 import gov.usgs.cida.connector.parser.IParser;
 import gov.usgs.cida.resultset.ParsingResultSet;
-import gov.usgs.cida.spec.table.Column;
+import gov.usgs.cida.table.Column;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;

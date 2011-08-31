@@ -1,10 +1,8 @@
 package examples.ida.test;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import examples.ida.IdaConnector;
 import examples.ida.request.MetadataRequest;
-import examples.ida.response.IdaMetadata;
 import gov.usgs.cida.provider.http.HttpProvider;
 import gov.usgs.cida.resultset.StringTableResultSet;
 import gov.usgs.cida.spec.formatting.ReturnType;
@@ -17,7 +15,6 @@ import gov.usgs.webservices.framework.basic.FormatType;
 
 import java.io.StringWriter;
 import java.sql.ResultSet;
-import java.util.Iterator;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -46,36 +43,6 @@ public class IdaConnectorTest {
 	@After
 	public void tearDown() throws Exception {
 	}
-
-//	@Test
-//	public void testGetsResponse() throws Exception {
-//		IdaConnector ida = new IdaConnector(httpProvider);
-//		
-//		StringTableResultSet<MetadataRequest> params = new StringTableResultSet<MetadataRequest>(MetadataRequest.class);
-//		params.addRow(new TableRow<MetadataRequest>(MetadataRequest.SN, "04085427"));
-//		
-//		ida.addInput(params);
-//		
-//		ResultSet results = ida.getResultSet();
-//		
-//		
-//		
-////		if (results.iterator().hasNext()) {
-////			String expected;
-////			String actual;
-////			for (TableRow<IdaMetadata> row : results) {
-////				expected = "1986-10-01 00:15:00.0";
-////				actual = row.getValue(IdaMetadata.MINDATETIME);
-////				assertEquals(expected, actual);
-////				
-////				expected = "2010-09-30 23:45:00.0";
-////				actual = row.getValue(IdaMetadata.MAXDATETIME);
-////				assertEquals(expected, actual);
-////			}
-////		} else {
-////			assertTrue(false);
-////		}
-//	}
 	
 	@Test
 	public void testFormatsResponse() throws Exception {

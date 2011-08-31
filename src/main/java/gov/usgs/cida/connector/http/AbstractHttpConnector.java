@@ -2,13 +2,14 @@ package gov.usgs.cida.connector.http;
 
 import gov.usgs.cida.connector.IConnector;
 import gov.usgs.cida.provider.http.HttpProvider;
-import gov.usgs.cida.spec.table.Column;
 import gov.usgs.cida.values.TableRow;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map.Entry;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -39,11 +40,25 @@ public abstract class AbstractHttpConnector implements IConnector {
 	}
 	
 	protected static String generateGetParams(Iterable<TableRow<?>> params) {
-		StringBuffer result = new StringBuffer();
+		String result = null;
 		
-		//TODO
+		List<String> kvps = new ArrayList<String>();
+		for (TableRow<?> row : params) {
+			for (Entry<?, String> entry : row.getEntries()) {
+				String key = null;
+				String value = null;
+				
+				key = StringUtils.lowerCase(entry.getKey().toString());
+				value = entry.getValue();
+				
+				if (StringUtils.isNotBlank(key) && StringUtils.isNotBlank(value)) {
+					kvps.add(key + "=" + value);
+				}
+			}
+		}
 		
-		return result.toString();
+		result = StringUtils.join(kvps, '&');
+		return result;
 	}
 	
 	protected static List<NameValuePair> generatePostParams(Iterable<TableRow<?>> params) {

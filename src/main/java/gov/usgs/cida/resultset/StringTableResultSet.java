@@ -1,7 +1,7 @@
 package gov.usgs.cida.resultset;
 
 import gov.usgs.cida.resultset.CursorLocation.Location;
-import gov.usgs.cida.spec.table.Column;
+import gov.usgs.cida.table.Column;
 import gov.usgs.cida.values.TableRow;
 
 import java.io.InputStream;

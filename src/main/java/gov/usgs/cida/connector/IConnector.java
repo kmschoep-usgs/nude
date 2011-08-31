@@ -8,7 +8,5 @@ import java.sql.ResultSet;
 public interface IConnector {
 	public void addInput(ResultSet in);
 	public ResultSet getResultSet();
-	public Integer getRowCount();
 	public IParser<? extends Enum<?>> getParser();
-	public Spec getSpec();
 }
