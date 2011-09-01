@@ -1,19 +1,17 @@
 package gov.usgs.cida.nude.gel;
 
+import gov.usgs.cida.nude.gel.transforms.GelTransform;
 import gov.usgs.cida.nude.table.Column;
-import gov.usgs.cida.nude.table.ColumnGrouping;
 
 import java.util.Collections;
 import java.util.Map;
 
 public class Gel {
-	protected final ColumnGrouping input;
 	
-	protected final Map<Column, GelTransform> output;
+	protected final Map<Column, GelTransform> transforms;
 	
-	public Gel(ColumnGrouping in, Map<Column, GelTransform> out) {
-		this.input = in;
-		this.output = Collections.unmodifiableMap(out);
+	public Gel(Map<Column, GelTransform> out) {
+		this.transforms = Collections.unmodifiableMap(out);
 	}
 	
 	public GelledResultSet getResultSet() {

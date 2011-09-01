@@ -4,6 +4,12 @@ import java.util.EnumMap;
 import java.util.Map.Entry;
 import java.util.Set;
 
+/**
+ * TODO Change Generic to ColumnGrouping
+ * @author dmsibley
+ *
+ * @param <K>
+ */
 public class TableRow<K extends Enum<K>> implements Comparable<TableRow<K>>{
 	protected final EnumMap<K, String> row;
 	protected final K primaryKey;
