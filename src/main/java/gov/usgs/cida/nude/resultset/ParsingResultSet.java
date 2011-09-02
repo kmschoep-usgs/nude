@@ -1,7 +1,6 @@
 package gov.usgs.cida.nude.resultset;
 
 import gov.usgs.cida.nude.connector.parser.IParser;
-import gov.usgs.cida.nude.table.Column;
 
 import java.io.InputStream;
 import java.io.Reader;
@@ -27,7 +26,7 @@ import java.util.Map;
 public abstract class ParsingResultSet extends IndexImplResultSet {
 	protected boolean isClosed = false;
 	
-	protected IParser<? extends Column> parser;
+	protected IParser parser;
 	
 	//TODO actually make this mean something
 	protected int fetchSize = 0;
@@ -38,7 +37,7 @@ public abstract class ParsingResultSet extends IndexImplResultSet {
 		int result = -1;
 		
 		try {
-			result = Enum.valueOf(this.parser.getAvailableColumns(), columnLabel).ordinal();
+			result = this.parser.getAvailableColumns().indexOf(columnLabel);
 		} catch (Exception e) {
 			throw new SQLException(e);
 		}
@@ -66,7 +65,7 @@ public abstract class ParsingResultSet extends IndexImplResultSet {
 
 		@Override
 		public int getColumnCount() throws SQLException {
-			return parser.getAvailableColumns().getEnumConstants().length;
+			return parser.getAvailableColumns().size();
 		}
 
 		@Override
@@ -130,7 +129,7 @@ public abstract class ParsingResultSet extends IndexImplResultSet {
 			if (column >= this.getColumnCount()) {
 				throw new SQLException("Invalid column index");
 			}
-			return parser.getAvailableColumns().getEnumConstants()[column].getName();
+			return parser.getAvailableColumns().get(column).getName();
 		}
 
 		@Override
@@ -138,7 +137,7 @@ public abstract class ParsingResultSet extends IndexImplResultSet {
 			if (column >= this.getColumnCount()) {
 				throw new SQLException("Invalid column index");
 			}
-			return parser.getAvailableColumns().getEnumConstants()[column].getName();
+			return parser.getAvailableColumns().get(column).getName();
 		}
 
 		@Override
@@ -146,7 +145,7 @@ public abstract class ParsingResultSet extends IndexImplResultSet {
 			if (column >= this.getColumnCount()) {
 				throw new SQLException("Invalid column index");
 			}
-			return parser.getAvailableColumns().getEnumConstants()[column].getSchemaName();
+			return parser.getAvailableColumns().get(column).getSchemaName();
 		}
 
 		@Override
@@ -170,7 +169,7 @@ public abstract class ParsingResultSet extends IndexImplResultSet {
 			if (column >= this.getColumnCount()) {
 				throw new SQLException("Invalid column index");
 			}
-			return parser.getAvailableColumns().getEnumConstants()[column].getTableName();
+			return parser.getAvailableColumns().get(column).getTableName();
 		}
 
 		@Override

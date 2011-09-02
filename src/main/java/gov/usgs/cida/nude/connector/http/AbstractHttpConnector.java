@@ -2,6 +2,7 @@ package gov.usgs.cida.nude.connector.http;
 
 import gov.usgs.cida.nude.connector.IConnector;
 import gov.usgs.cida.nude.provider.http.HttpProvider;
+import gov.usgs.cida.nude.table.Column;
 import gov.usgs.cida.nude.values.TableRow;
 
 import java.io.IOException;
@@ -39,16 +40,16 @@ public abstract class AbstractHttpConnector implements IConnector {
 		req.addHeader("Cache-Control", "no-cache");
 	}
 	
-	protected static String generateGetParams(Iterable<TableRow<?>> params) {
+	protected static String generateGetParams(Iterable<TableRow> params) {
 		String result = null;
 		
 		List<String> kvps = new ArrayList<String>();
-		for (TableRow<?> row : params) {
-			for (Entry<?, String> entry : row.getEntries()) {
+		for (TableRow row : params) {
+			for (Entry<Column, String> entry : row.getEntries()) {
 				String key = null;
 				String value = null;
 				
-				key = StringUtils.lowerCase(entry.getKey().toString());
+				key = StringUtils.lowerCase(entry.getKey().getName());
 				value = entry.getValue();
 				
 				if (StringUtils.isNotBlank(key) && StringUtils.isNotBlank(value)) {
@@ -61,7 +62,7 @@ public abstract class AbstractHttpConnector implements IConnector {
 		return result;
 	}
 	
-	protected static List<NameValuePair> generatePostParams(Iterable<TableRow<?>> params) {
+	protected static List<NameValuePair> generatePostParams(Iterable<TableRow> params) {
 		List<NameValuePair> result = new ArrayList<NameValuePair>();
 		
 		//TODO

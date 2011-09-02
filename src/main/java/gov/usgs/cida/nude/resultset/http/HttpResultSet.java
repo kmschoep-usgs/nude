@@ -2,7 +2,6 @@ package gov.usgs.cida.nude.resultset.http;
 
 import gov.usgs.cida.nude.connector.parser.IParser;
 import gov.usgs.cida.nude.resultset.ParsingResultSet;
-import gov.usgs.cida.nude.table.Column;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -38,7 +37,7 @@ public class HttpResultSet extends ParsingResultSet {
 		throw new SQLException("Operation not supported");
 	}
 	
-	public HttpResultSet(HttpEntity httpEntity, IParser<? extends Column> responseParser) {
+	public HttpResultSet(HttpEntity httpEntity, IParser responseParser) {
 		this.httpEntity = httpEntity;
 		
 		InputStream in = null;

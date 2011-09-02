@@ -2,17 +2,23 @@ package examples.ida;
 
 import examples.ida.response.IdaMetadata;
 import gov.usgs.cida.nude.connector.http.AbstractHttpParser;
+import gov.usgs.cida.nude.table.Column;
+import gov.usgs.cida.nude.table.ColumnGrouping;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.EnumMap;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class IdaParser extends AbstractHttpParser<IdaMetadata> {
+public class IdaParser extends AbstractHttpParser {
 	
 	protected IdaMetadata[] columns = IdaMetadata.values();
+	
+	protected ColumnGrouping colGroup = new ColumnGrouping((Column) IdaMetadata.MINDATETIME, Arrays.asList((Column[]) IdaMetadata.values()));
 	
 	protected EnumMap<IdaMetadata, String> row = new EnumMap<IdaMetadata, String>(IdaMetadata.class);
 	
@@ -57,8 +63,8 @@ public class IdaParser extends AbstractHttpParser<IdaMetadata> {
 	}
 
 	@Override
-	public Class<IdaMetadata> getAvailableColumns() {
-		return IdaMetadata.class;
+	public ColumnGrouping getAvailableColumns() {
+		return this.colGroup;
 	}
 
 }

@@ -1,50 +1,57 @@
 package gov.usgs.cida.nude.values;
 
-import java.util.EnumMap;
+import gov.usgs.cida.nude.table.Column;
+import gov.usgs.cida.nude.table.ColumnGrouping;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-/**
- * TODO Change Generic to ColumnGrouping
- * @author dmsibley
- *
- * @param <K>
- */
-public class TableRow<K extends Enum<K>> implements Comparable<TableRow<K>>{
-	protected final EnumMap<K, String> row;
-	protected final K primaryKey;
+public class TableRow implements Comparable<TableRow>{
+	protected final Map<Column, String> row;
+	protected final ColumnGrouping columns;
 	
-	public TableRow(K primaryKey, String value) {
-		if (null == primaryKey || null == value) {
-			throw new RuntimeException("Primary key cannot be null");
-		}
-		this.row = new EnumMap<K, String>(primaryKey.getDeclaringClass());
+	public TableRow(Column primaryKey, String value) {
+		this.columns = new ColumnGrouping(primaryKey);
+		this.row = new HashMap<Column, String>();
 		this.row.put(primaryKey, value);
+	}
+	
+	public TableRow(ColumnGrouping colGroup) {
+		this(colGroup, null);
+	}
+	
+	public TableRow(ColumnGrouping colGroup, Map<Column, String> row) {
+		if (null == colGroup) {
+			throw new RuntimeException("ColumnGroup cannot be null");
+		}
+		if (null == row) {
+			row = new HashMap<Column, String>();
+		}
 		
-		this.primaryKey = primaryKey;
+		this.row = Collections.unmodifiableMap(row);
+		this.columns = colGroup;
 	}
 	
-	public void set(K key, String value) {
-		this.row.put(key, value);
-	}
-	
-	public String getValue(K column) {
+	public String getValue(Column column) {
 		return this.row.get(column);
 	}
 	
-	public K getPrimaryKey() {
-		return this.primaryKey;
+	public ColumnGrouping getColumns() {
+		return this.columns;
 	}
 	
-	public Set<Entry<K, String>> getEntries() {
-		return row.entrySet();
+	public Set<Entry<Column, String>> getEntries() {
+		return this.row.entrySet();
 	}
 
 	/**
 	 * Compares the values of the primary keys. (Values are compared as Strings)
 	 */
 	@Override
-	public int compareTo(TableRow<K> o) {
-		return this.getValue(this.getPrimaryKey()).compareTo(o.getValue(o.getPrimaryKey()));
+	public int compareTo(TableRow o) {
+		return this.getValue(this.getColumns().getPrimaryKey()).compareTo(o.getValue(this.getColumns().getPrimaryKey()));
 	}
 }

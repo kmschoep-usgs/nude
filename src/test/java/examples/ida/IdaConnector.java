@@ -89,7 +89,7 @@ public class IdaConnector extends AbstractHttpConnector {
 		for (ResultSet rs : inputs) {
 			try {
 				if (rs.isWrapperFor(Iterable.class)) {
-					String genParams = generateGetParams((Iterable<TableRow<?>>) rs.unwrap(Iterable.class));
+					String genParams = generateGetParams((Iterable<TableRow>) rs.unwrap(Iterable.class));
 					if (StringUtils.isNotBlank(genParams)) {
 						params.add(genParams);
 					}
@@ -112,7 +112,7 @@ public class IdaConnector extends AbstractHttpConnector {
 	}
 
 	@Override
-	public IParser<IdaMetadata> getParser() {
+	public IParser getParser() {
 		return new IdaParser();
 	}
 

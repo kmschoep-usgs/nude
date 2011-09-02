@@ -1,7 +1,7 @@
 package gov.usgs.cida.nude.resultset;
 
 import gov.usgs.cida.nude.resultset.CursorLocation.Location;
-import gov.usgs.cida.nude.table.Column;
+import gov.usgs.cida.nude.table.ColumnGrouping;
 import gov.usgs.cida.nude.values.TableRow;
 
 import java.io.InputStream;
@@ -28,7 +28,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 
-public class StringTableResultSet<K extends Enum<K> & Column> extends IndexImplResultSet implements Iterable<TableRow<K>> {
+public class StringTableResultSet extends IndexImplResultSet implements Iterable<TableRow> {
 	
 	protected boolean isClosed = false;
 	
@@ -36,20 +36,19 @@ public class StringTableResultSet<K extends Enum<K> & Column> extends IndexImplR
 	
 	protected int fetchsize = 0;
 	
-	protected Collection<TableRow<K>> rows;
-	protected TableRow<K> currRow;
-	protected Iterator<TableRow<K>> it;
+	protected Collection<TableRow> rows;
+	protected TableRow currRow;
+	protected Iterator<TableRow> it;
 	
-	protected Class<K> tableType;
-	protected K[] columns;
+	protected ColumnGrouping columns;
 	
 	/**
 	 * Default construction.
 	 * 
 	 * Rows will be output in the same order they are put in.
 	 */
-	public StringTableResultSet(Class<K> table) {
-		this(table, new ArrayList<TableRow<K>>());
+	public StringTableResultSet(ColumnGrouping columns) {
+		this(columns, new ArrayList<TableRow>());
 	}
 	
 	/**
@@ -57,17 +56,16 @@ public class StringTableResultSet<K extends Enum<K> & Column> extends IndexImplR
 	 * ordering of your rows.
 	 * @param rows
 	 */
-	public StringTableResultSet(Class<K> table, Collection<TableRow<K>> rows) {
+	public StringTableResultSet(ColumnGrouping columns, Collection<TableRow> rows) {
 		this.currLoc = new CursorLocation();
-		this.tableType = table;
-		this.columns = table.getEnumConstants();
+		this.columns = columns;
 		
 		this.rows = rows;
 		this.currRow = null;
 		this.it = null;
 	}
 	
-	public void addRow(TableRow<K> row) {
+	public void addRow(TableRow row) {
 		this.rows.add(row);
 	}
 	
@@ -91,7 +89,7 @@ public class StringTableResultSet<K extends Enum<K> & Column> extends IndexImplR
 
 		@Override
 		public int getColumnCount() throws SQLException {
-			return columns.length;
+			return columns.size();
 		}
 
 		@Override
@@ -155,7 +153,7 @@ public class StringTableResultSet<K extends Enum<K> & Column> extends IndexImplR
 			if (column >= this.getColumnCount()) {
 				throw new SQLException("Invalid column index");
 			}
-			return columns[column].getName();
+			return columns.get(column).getName();
 		}
 
 		@Override
@@ -163,7 +161,7 @@ public class StringTableResultSet<K extends Enum<K> & Column> extends IndexImplR
 			if (column >= this.getColumnCount()) {
 				throw new SQLException("Invalid column index");
 			}
-			return columns[column].getName();
+			return columns.get(column).getName();
 		}
 
 		@Override
@@ -171,7 +169,7 @@ public class StringTableResultSet<K extends Enum<K> & Column> extends IndexImplR
 			if (column >= this.getColumnCount()) {
 				throw new SQLException("Invalid column index");
 			}
-			return columns[column].getSchemaName();
+			return columns.get(column).getSchemaName();
 		}
 
 		@Override
@@ -195,7 +193,7 @@ public class StringTableResultSet<K extends Enum<K> & Column> extends IndexImplR
 			if (column >= this.getColumnCount()) {
 				throw new SQLException("Invalid column index");
 			}
-			return columns[column].getTableName();
+			return columns.get(column).getTableName();
 		}
 
 		@Override
@@ -302,7 +300,7 @@ public class StringTableResultSet<K extends Enum<K> & Column> extends IndexImplR
 		throwIfClosed(this);
 		String result = null;
 		if (null != currRow) {
-			result = currRow.getValue(columns[columnIndex]);
+			result = currRow.getValue(columns.get(columnIndex));
 		} else {
 			throw new SQLException("Cursor after last row");
 		}
@@ -446,9 +444,8 @@ public class StringTableResultSet<K extends Enum<K> & Column> extends IndexImplR
 	public int findColumn(String columnLabel) throws SQLException {
 		throwIfClosed(this);
 		int result = -1;
-		
 		try {
-			result = Enum.valueOf(this.tableType, columnLabel).ordinal();
+			result = this.columns.indexOf(columnLabel);
 		} catch (Exception e) {
 			throw new SQLException(e);
 		}
@@ -643,7 +640,7 @@ public class StringTableResultSet<K extends Enum<K> & Column> extends IndexImplR
 	}
 
 	@Override
-	public Iterator<TableRow<K>> iterator() {
+	public Iterator<TableRow> iterator() {
 		return this.rows.iterator();
 	}
 

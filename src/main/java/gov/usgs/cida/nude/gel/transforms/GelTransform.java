@@ -16,7 +16,9 @@ public class GelTransform {
 	}
 	
 	public String transform(TableRow row) {
+		String result = null;
 		Column inCol = inputColumns.iterator().next();
 		row.getValue(inCol);
+		return result;
 	}
 }

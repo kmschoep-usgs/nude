@@ -18,6 +18,10 @@ public class GelBuilder {
 		this.transforms.put(outColumn, transform);
 	}
 	
+	public void filter(Column inputColumn) {
+		this.transforms.remove(inputColumn);
+	}
+	
 	public Gel buildGel() {
 		return new Gel(this.transforms);
 	}

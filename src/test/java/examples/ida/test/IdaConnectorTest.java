@@ -5,6 +5,7 @@ import examples.ida.IdaConnector;
 import examples.ida.request.MetadataRequest;
 import gov.usgs.cida.nude.provider.http.HttpProvider;
 import gov.usgs.cida.nude.resultset.StringTableResultSet;
+import gov.usgs.cida.nude.table.ColumnGrouping;
 import gov.usgs.cida.nude.values.TableRow;
 import gov.usgs.cida.spec.formatting.ReturnType;
 import gov.usgs.cida.spec.jsl.SpecResponse;
@@ -51,8 +52,8 @@ public class IdaConnectorTest {
 		
 		IdaConnector ida = new IdaConnector(httpProvider);
 		
-		StringTableResultSet<MetadataRequest> params = new StringTableResultSet<MetadataRequest>(MetadataRequest.class);
-		params.addRow(new TableRow<MetadataRequest>(MetadataRequest.SN, "04085427"));
+		StringTableResultSet params = new StringTableResultSet(new ColumnGrouping(MetadataRequest.SN));
+		params.addRow(new TableRow(MetadataRequest.SN, "04085427"));
 		
 		ida.addInput(params);
 		

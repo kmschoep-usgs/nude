@@ -1,12 +1,13 @@
 package gov.usgs.cida.nude.connector.parser;
 
+import gov.usgs.cida.nude.table.ColumnGrouping;
 import gov.usgs.cida.spec.jsl.SpecValue;
 
 import java.io.BufferedReader;
 import java.sql.SQLException;
 
-public interface IParser<Table extends Enum<Table>> {
+public interface IParser {
 	public boolean next(BufferedReader in) throws SQLException;
 	public <T> SpecValue<T> getValue(Class<T> type, int index) throws SQLException;
-	public Class<Table> getAvailableColumns();
+	public ColumnGrouping getAvailableColumns();
 }
