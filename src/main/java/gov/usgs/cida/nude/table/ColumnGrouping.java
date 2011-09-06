@@ -1,6 +1,7 @@
 package gov.usgs.cida.nude.table;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,7 +13,7 @@ public class ColumnGrouping {
 	//When adding column groupings to eachother, the primary key column must match!
 	
 	public ColumnGrouping(Column primaryKeyColumn) {
-		this(primaryKeyColumn, null);
+		this(primaryKeyColumn, new ArrayList<Column>());
 	}
 	
 	/**
@@ -29,6 +30,9 @@ public class ColumnGrouping {
 		this.columns = columns;
 		if (null == this.columns) {
 			this.columns = new ArrayList<Column>();
+		}
+		
+		if (1 > this.columns.size()) {
 			this.columns.add(this.primaryKeyColumn);
 		}
 		

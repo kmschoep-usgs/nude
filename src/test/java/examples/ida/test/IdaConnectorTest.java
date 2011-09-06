@@ -52,8 +52,8 @@ public class IdaConnectorTest {
 		
 		IdaConnector ida = new IdaConnector(httpProvider);
 		
-		StringTableResultSet params = new StringTableResultSet(new ColumnGrouping(MetadataRequest.SN));
-		params.addRow(new TableRow(MetadataRequest.SN, "04085427"));
+		StringTableResultSet params = new StringTableResultSet(new ColumnGrouping(MetadataRequest.sn));
+		params.addRow(new TableRow(MetadataRequest.sn, "04085427"));
 		
 		ida.addInput(params);
 		

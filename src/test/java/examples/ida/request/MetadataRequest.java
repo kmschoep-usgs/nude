@@ -3,7 +3,7 @@ package examples.ida.request;
 import gov.usgs.cida.nude.table.Column;
 
 public enum MetadataRequest implements Column {
-	SN;
+	sn;
 
 	public static final String TABLE_NAME = "REQUEST";
 	public static final String SCHEMA_NAME = "IDA_METADATA";
