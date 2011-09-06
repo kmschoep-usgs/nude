@@ -11,7 +11,7 @@ public class GelTransform {
 	protected Set<Column> inputColumns;
 	
 	public GelTransform(Column in) {
-		this.inputColumns = new HashSet();
+		this.inputColumns = new HashSet<Column>();
 		this.inputColumns.add(in);
 	}
 	

@@ -6,6 +6,7 @@ import gov.usgs.cida.nude.table.Column;
 
 public enum IdaConnectorParams implements Column {
 	SITE_NUMBER,
+	GET_DATA(Boolean.class),
 	FROM_DATE(Date.class),
 	TO_DATE(Date.class);
 	

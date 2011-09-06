@@ -1,7 +1,7 @@
 package examples.ida.test;
 
 import static org.junit.Assert.assertEquals;
-import examples.ida.IdaConnector;
+import examples.ida.IdaMetadataConnector;
 import examples.ida.request.MetadataRequest;
 import gov.usgs.cida.nude.provider.http.HttpProvider;
 import gov.usgs.cida.nude.resultset.StringTableResultSet;
@@ -50,7 +50,7 @@ public class IdaConnectorTest {
 		String expected = null;
 		String actual = null;
 		
-		IdaConnector ida = new IdaConnector(httpProvider);
+		IdaMetadataConnector ida = new IdaMetadataConnector(httpProvider);
 		
 		StringTableResultSet params = new StringTableResultSet(new ColumnGrouping(MetadataRequest.sn));
 		params.addRow(new TableRow(MetadataRequest.sn, "04085427"));

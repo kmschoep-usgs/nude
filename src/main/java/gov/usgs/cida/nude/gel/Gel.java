@@ -7,7 +7,7 @@ import java.util.Collections;
 import java.util.Map;
 
 public class Gel {
-	
+	//TODO add some way to have the primary key in here.
 	protected final Map<Column, GelTransform> transforms;
 	
 	public Gel(Map<Column, GelTransform> out) {

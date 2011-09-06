@@ -6,6 +6,7 @@ import gov.usgs.cida.nude.table.Column;
 import gov.usgs.cida.nude.values.TableRow;
 
 import java.io.IOException;
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
@@ -21,9 +22,11 @@ import org.apache.http.protocol.HttpContext;
 
 public abstract class AbstractHttpConnector implements IConnector {
 	protected final HttpProvider httpProvider;
+	protected List<ResultSet> inputs;
 	
 	public AbstractHttpConnector(HttpProvider httpProvider) {
 		this.httpProvider = httpProvider;
+		this.inputs = new ArrayList<ResultSet>();
 	}
 	
 	protected static void generateFirefoxHeaders(HttpUriRequest req, String referer) {

@@ -24,16 +24,14 @@ import org.apache.http.client.methods.HttpUriRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class IdaConnector extends AbstractHttpConnector {
-	private static final Logger log = LoggerFactory.getLogger(IdaConnector.class);
+public class IdaMetadataConnector extends AbstractHttpConnector {
+	private static final Logger log = LoggerFactory.getLogger(IdaMetadataConnector.class);
 	protected String url;
-	protected List<ResultSet> inputs;
 	
-	public IdaConnector(HttpProvider httpProvider) {
+	public IdaMetadataConnector(HttpProvider httpProvider) {
 		super(httpProvider);
 		
 		this.url = "http://ida.water.usgs.gov/ida/available_records.cfm";
-		this.inputs = new ArrayList<ResultSet>();
 	}
 	
 	public Spec getSpec() {
@@ -118,5 +116,11 @@ public class IdaConnector extends AbstractHttpConnector {
 
 	public Integer getRowCount() {
 		return new Integer(1);
+	}
+
+	@Override
+	public boolean isReady() {
+		// TODO Auto-generated method stub
+		return false;
 	}
 }

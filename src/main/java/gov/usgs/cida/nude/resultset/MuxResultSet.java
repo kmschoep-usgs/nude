@@ -1,4 +1,4 @@
-package gov.usgs.cida.nude.gel;
+package gov.usgs.cida.nude.resultset;
 
 import java.io.InputStream;
 import java.io.Reader;
@@ -21,16 +21,8 @@ import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.Map;
 
-import gov.usgs.cida.nude.resultset.IndexImplResultSet;
+public class MuxResultSet extends IndexImplResultSet {
 
-public class GelledResultSet extends IndexImplResultSet {
-
-	protected final Gel sourceGel;
-	
-	public GelledResultSet(Gel source) {
-		this.sourceGel = source;
-	}
-	
 	@Override
 	public boolean next() throws SQLException {
 		// TODO Auto-generated method stub
@@ -40,7 +32,7 @@ public class GelledResultSet extends IndexImplResultSet {
 	@Override
 	public void close() throws SQLException {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
@@ -155,7 +147,7 @@ public class GelledResultSet extends IndexImplResultSet {
 	@Override
 	public void clearWarnings() throws SQLException {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
@@ -221,7 +213,7 @@ public class GelledResultSet extends IndexImplResultSet {
 	@Override
 	public void setFetchSize(int rows) throws SQLException {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override

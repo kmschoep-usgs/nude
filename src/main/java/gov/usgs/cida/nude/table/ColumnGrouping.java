@@ -1,12 +1,12 @@
 package gov.usgs.cida.nude.table;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-public class ColumnGrouping {
+public class ColumnGrouping implements Iterable<Column> {
 	protected Column primaryKeyColumn;
 	protected Map<String, Integer> colToIndex;
 	protected List<Column> columns;
@@ -67,5 +67,10 @@ public class ColumnGrouping {
 		}
 		
 		return result;
+	}
+
+	@Override
+	public Iterator<Column> iterator() {
+		return this.columns.iterator();
 	}
 }
