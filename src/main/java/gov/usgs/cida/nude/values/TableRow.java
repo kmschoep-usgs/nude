@@ -46,6 +46,10 @@ public class TableRow implements Comparable<TableRow>{
 	public Set<Entry<Column, String>> getEntries() {
 		return this.row.entrySet();
 	}
+	
+	public Map<Column, String> getMap() {
+		return this.row;
+	}
 
 	/**
 	 * Compares the values of the primary keys. (Values are compared as Strings)

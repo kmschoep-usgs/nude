@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class ColumnGrouping implements Iterable<Column> {
 	protected final Column primaryKeyColumn;
@@ -28,10 +30,11 @@ public class ColumnGrouping implements Iterable<Column> {
 			throw new RuntimeException("Y U NO PRIMARY KEY?");
 		}
 		
-		List<Column> cols = columns;
-		if (null == cols) {
-			cols = new ArrayList<Column>();
-		}
+		Set<Column> colSet = new LinkedHashSet<Column>();
+		colSet.addAll(columns);
+		
+		List<Column> cols = new ArrayList<Column>();
+		cols.addAll(colSet);
 		
 		if (1 > cols.size()) {
 			cols.add(this.primaryKeyColumn);
@@ -53,7 +56,7 @@ public class ColumnGrouping implements Iterable<Column> {
 	}
 	
 	public List<Column> getColumns() {
-		return this.getColumns();
+		return this.columns;
 	}
 	
 	public ColumnGrouping join(ColumnGrouping columns) {

@@ -6,13 +6,14 @@ import examples.ida.IdaOverseer;
 import examples.ida.request.IdaConnectorParams;
 import gov.usgs.cida.nude.params.OutputFormat;
 import gov.usgs.cida.nude.provider.http.HttpProvider;
+import gov.usgs.cida.nude.resultset.ColumnGroupedResultSet;
 import gov.usgs.cida.nude.resultset.StringTableResultSet;
 import gov.usgs.cida.nude.table.Column;
 import gov.usgs.cida.nude.table.ColumnGrouping;
+import gov.usgs.cida.nude.table.DummyColumn;
 import gov.usgs.cida.nude.values.TableRow;
 
 import java.io.StringWriter;
-import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -78,13 +79,13 @@ public class IdaOverseerTest {
 		assertEquals(expected, actual);
 	}
 	
-	public static ResultSet buildXmlFormatParam() {
-		ResultSet result = null;
+	public static ColumnGroupedResultSet buildXmlFormatParam() {
+		ColumnGroupedResultSet result = null;
 		
-		//TODO this primary key is wrong
-		ColumnGrouping colGroup = new ColumnGrouping(OutputFormat.FORMAT_TYPE, Arrays.asList(new Column[] {OutputFormat.FORMAT_TYPE, OutputFormat.SCHEMA_TYPE}));
+		ColumnGrouping colGroup = new ColumnGrouping(DummyColumn.DUMMY, Arrays.asList(new Column[] {DummyColumn.DUMMY, OutputFormat.FORMAT_TYPE, OutputFormat.SCHEMA_TYPE}));
 		StringTableResultSet params = new StringTableResultSet(colGroup);
 		Map<Column, String> row = new HashMap<Column, String>();
+		row.put(DummyColumn.DUMMY, "1");
 		row.put(OutputFormat.FORMAT_TYPE, "XML");
 		row.put(OutputFormat.SCHEMA_TYPE, "passthrough");
 		TableRow tableRow = new TableRow(colGroup, row);
@@ -94,16 +95,18 @@ public class IdaOverseerTest {
 		return result;
 	}
 	
-	public static ResultSet buildIdaParams(String siteNo) {
-		ResultSet result = null;
+	public static ColumnGroupedResultSet buildIdaParams(String siteNo) {
+		ColumnGroupedResultSet result = null;
 		
 		List<Column> colList = new ArrayList<Column>();
+		colList.add(DummyColumn.DUMMY);
 		colList.addAll(Arrays.asList(IdaConnectorParams.values()));
-		ColumnGrouping colGroup = new ColumnGrouping(IdaConnectorParams.SITE_NUMBER, colList);
-		//TODO this primary key is wrong
+		ColumnGrouping colGroup = new ColumnGrouping(DummyColumn.DUMMY, colList);
+		
 		StringTableResultSet params = new StringTableResultSet(colGroup);
 		
 		Map<Column, String> row = new HashMap<Column, String>();
+		row.put(DummyColumn.DUMMY, "1");
 		row.put(IdaConnectorParams.GET_DATA, "true");
 		row.put(IdaConnectorParams.SITE_NUMBER, siteNo);
 		row.put(IdaConnectorParams.TO_DATE, "2010-08-30");
