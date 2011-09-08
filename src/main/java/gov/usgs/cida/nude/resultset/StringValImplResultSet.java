@@ -1,8 +1,6 @@
 package gov.usgs.cida.nude.resultset;
 
 import gov.usgs.cida.nude.resultset.CursorLocation.Location;
-import gov.usgs.cida.nude.table.ColumnGrouping;
-import gov.usgs.cida.nude.values.TableRow;
 
 import java.io.InputStream;
 import java.io.Reader;
@@ -14,7 +12,6 @@ import java.sql.Clob;
 import java.sql.Date;
 import java.sql.NClob;
 import java.sql.Ref;
-import java.sql.ResultSetMetaData;
 import java.sql.RowId;
 import java.sql.SQLException;
 import java.sql.SQLWarning;
@@ -22,114 +19,19 @@ import java.sql.SQLXML;
 import java.sql.Statement;
 import java.sql.Time;
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.Map;
 
-public class StringTableResultSet extends IndexImplResultSet implements Iterable<TableRow>, ColumnGroupedResultSet {
-	
-	protected boolean isClosed = false;
-	
-	protected CursorLocation currLoc;
-	protected ResultSetMetaData metadata;
-	
-	protected int fetchsize = 0;
-	
-	protected Collection<TableRow> rows;
-	protected TableRow currRow;
-	protected Iterator<TableRow> it;
-	
-	protected ColumnGrouping columns;
-	
-	/**
-	 * Default construction.
-	 * 
-	 * Rows will be output in the same order they are put in.
-	 */
-	public StringTableResultSet(ColumnGrouping columns) {
-		this(columns, new ArrayList<TableRow>());
-	}
-	
-	/**
-	 * Use this constructor when you need to specify a different
-	 * ordering of your rows.
-	 * @param rows
-	 */
-	public StringTableResultSet(ColumnGrouping columns, Collection<TableRow> rows) {
-		this.currLoc = new CursorLocation();
-		this.columns = columns;
 
-		this.metadata = new CGResultSetMetaData(this.columns);
-		
-		this.rows = rows;
-		this.currRow = null;
-		this.it = null;
-	}
-	
-	public void addRow(TableRow row) {
-		this.rows.add(row);
-	}
-	
-	@Override
-	public ResultSetMetaData getMetaData() throws SQLException {
-		throwIfClosed(this);
-		return this.metadata;
-	}
-	
-	
-	@Override
-	public boolean next() throws SQLException {
-		throwIfClosed(this);
-		boolean result = false;
-		if (this.rows != null && !this.isAfterLast()) {
-			
-			if (this.isFirst()) {
-				this.currLoc.setLocation(Location.MIDDLE);
-			} else if (this.isBeforeFirst()) {
-				this.it = this.rows.iterator();
-				if (null != this.it) {
-					this.currLoc.setLocation(Location.FIRST);
-				}
-			}
-			
-			if (this.it.hasNext()) {
-				this.currRow = this.it.next();
-				if (!this.it.hasNext()) {
-					this.currLoc.setLocation(Location.LAST);
-				}
-				result = true;
-			} else {
-				this.currLoc.setLocation(Location.AFTERLAST);
-			}
-			
-		}
-		return result;
-	}
+public abstract class StringValImplResultSet extends IndexImplResultSet {
 
-	@Override
-	public void close() throws SQLException {
-		this.isClosed = true;
-	}
-
+	public CursorLocation loc = new CursorLocation();
+	
 	@Override
 	public boolean wasNull() throws SQLException {
 		throwIfClosed(this);
 		throwNotSupported();
 		return false;
-	}
-
-	@Override
-	public String getString(int columnIndex) throws SQLException {
-		throwIfClosed(this);
-		String result = null;
-		if (null != currRow) {
-			result = currRow.getValue(columns.get(columnIndex));
-		} else {
-			throw new SQLException("Cursor after last row");
-		}
-		return result;
 	}
 
 	@Override
@@ -181,7 +83,6 @@ public class StringTableResultSet extends IndexImplResultSet implements Iterable
 		return 0;
 	}
 
-	@Deprecated
 	@Override
 	public BigDecimal getBigDecimal(int columnIndex, int scale)
 			throws SQLException {
@@ -249,36 +150,13 @@ public class StringTableResultSet extends IndexImplResultSet implements Iterable
 	@Override
 	public void clearWarnings() throws SQLException {
 		throwIfClosed(this);
-
 	}
-
-	@Override
-	public String getCursorName() throws SQLException {
-		throwIfClosed(this);
-		return "" + this.hashCode();
-	}
-
+	
 	@Override
 	public Object getObject(int columnIndex) throws SQLException {
 		throwIfClosed(this);
 		throwNotSupported();
 		return null;
-	}
-
-	@Override
-	public int findColumn(String columnLabel) throws SQLException {
-		throwIfClosed(this);
-		int result = -1;
-		try {
-			result = this.columns.indexOf(columnLabel);
-			if (0 > result) {
-				throw new SQLException("Invalid Column Label: " + columnLabel);
-			}
-		} catch (Exception e) {
-			throw new SQLException(e);
-		}
-		
-		return result;
 	}
 
 	@Override
@@ -298,37 +176,54 @@ public class StringTableResultSet extends IndexImplResultSet implements Iterable
 	@Override
 	public boolean isBeforeFirst() throws SQLException {
 		throwIfClosed(this);
-		return (Location.BEFOREFIRST == this.currLoc.getLocation());
+		boolean result = false;
+		
+		result = (Location.BEFOREFIRST == this.loc.getLocation());
+		
+		return result;
 	}
 
 	@Override
 	public boolean isAfterLast() throws SQLException {
 		throwIfClosed(this);
-		return (Location.AFTERLAST == this.currLoc.getLocation());
+		boolean result = false;
+		
+		result = (Location.AFTERLAST == this.loc.getLocation());
+		
+		return result;
 	}
 
 	@Override
 	public boolean isFirst() throws SQLException {
 		throwIfClosed(this);
-		return (Location.FIRST == this.currLoc.getLocation());
+		boolean result = false;
+		
+		result = (Location.FIRST == this.loc.getLocation());
+		
+		return result;
 	}
 
 	@Override
 	public boolean isLast() throws SQLException {
 		throwIfClosed(this);
-		return (Location.LAST == this.currLoc.getLocation());
+		boolean result = false;
+		
+		result = (Location.LAST == this.loc.getLocation());
+		
+		return result;
 	}
 
 	@Override
 	public void setFetchSize(int rows) throws SQLException {
 		throwIfClosed(this);
-		this.fetchsize = rows;
+		throwNotSupported();
 	}
 
 	@Override
 	public int getFetchSize() throws SQLException {
 		throwIfClosed(this);
-		return this.fetchsize;
+		throwNotSupported();
+		return 0;
 	}
 
 	@Override
@@ -409,12 +304,7 @@ public class StringTableResultSet extends IndexImplResultSet implements Iterable
 		throwNotSupported();
 		return null;
 	}
-
-	@Override
-	public boolean isClosed() throws SQLException {
-		return this.isClosed;
-	}
-
+	
 	@Override
 	public NClob getNClob(int columnIndex) throws SQLException {
 		throwIfClosed(this);
@@ -443,39 +333,16 @@ public class StringTableResultSet extends IndexImplResultSet implements Iterable
 		return null;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public <T> T unwrap(Class<T> iface) throws SQLException {
 		throwIfClosed(this);
-		T result = null;
-		if (Iterable.class.equals(iface)) {
-			result = (T) this;
-		} else {
-			throw new SQLException("Instance is not an unwrappable into requested interface " + iface.getName());
-		}
-		return result;
+		throw new SQLException("Instance is not an unwrappable into requested interface " + iface.getName());
 	}
 
 	@Override
 	public boolean isWrapperFor(Class<?> iface) throws SQLException {
 		throwIfClosed(this);
-		boolean result = false;
-		
-		if (Iterable.class.equals(iface)) {
-			result = true;
-		}
-		
-		return result;
-	}
-
-	@Override
-	public Iterator<TableRow> iterator() {
-		return this.rows.iterator();
-	}
-
-	@Override
-	public ColumnGrouping getColumnGrouping() {
-		return this.columns;
+		return false;
 	}
 
 }

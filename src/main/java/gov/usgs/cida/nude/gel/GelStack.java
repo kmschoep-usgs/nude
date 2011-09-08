@@ -1,17 +1,35 @@
 package gov.usgs.cida.nude.gel;
 
-import java.sql.ResultSet;
+import gov.usgs.cida.nude.resultset.ColumnGroupedResultSet;
+import gov.usgs.cida.nude.resultset.MuxResultSet;
+
+import java.util.LinkedList;
+import java.util.List;
 
 public class GelStack {
-
+	
+	protected List<Gel> gels;
+	
+	public GelStack() {
+		this.gels = new LinkedList<Gel>();
+	}
+	
 	public void addGel(Gel buildGel) {
-		// TODO Auto-generated method stub
-		
+		this.gels.add(buildGel);
 	}
 
-	public ResultSet buildOutput(ResultSet input) {
-		// TODO Auto-generated method stub
-		return null;
+	public GelledResultSet gel(List<ColumnGroupedResultSet> input) {
+		GelledResultSet result = null;
+		
+		for (Gel gel : this.gels) {
+			if (null == result) {
+				result = new GelledResultSet(new MuxResultSet(input), gel);
+			} else {
+				result = new GelledResultSet(result, gel);
+			}
+		}
+		
+		return result;
 	}
 
 }

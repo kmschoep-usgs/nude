@@ -26,6 +26,8 @@ import java.util.Map;
 public abstract class ParsingResultSet extends IndexImplResultSet {
 	protected boolean isClosed = false;
 	
+	protected ResultSetMetaData metadata = new ParsingResultSetMetaData();
+	
 	protected IParser parser;
 	
 	//TODO actually make this mean something
@@ -48,7 +50,7 @@ public abstract class ParsingResultSet extends IndexImplResultSet {
 	@Override
 	public ResultSetMetaData getMetaData() throws SQLException {
 		throwIfClosed(this);
-		return new ParsingResultSetMetaData();
+		return this.metadata;
 	}
 	
 	protected class ParsingResultSetMetaData implements ResultSetMetaData {

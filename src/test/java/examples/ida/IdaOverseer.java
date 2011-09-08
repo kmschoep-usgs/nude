@@ -5,10 +5,12 @@ import gov.usgs.cida.nude.overseer.Overseer;
 
 import java.io.Writer;
 import java.sql.ResultSet;
+import java.util.List;
 
 public class IdaOverseer extends Overseer {
 	
 	protected GelStack gelledInput;
+	protected List<ResultSet> inputs;
 	
 	public IdaOverseer() {
 		this.gelledInput = new GelStack();
@@ -18,21 +20,20 @@ public class IdaOverseer extends Overseer {
 	
 	@Override
 	public void addInput(ResultSet in) {
-		// TODO Auto-generated method stub
-		
+		this.inputs.add(in);
 	}
 
 	@Override
 	public void dispatch(Writer out) {
 		// configure the outGelStack
 		
-		// GelStack the inputs
+		// run the inputs through the GelStack
 		
-		// pass gelled inputs to the connectors.
+		// pass gelled input to the Connectors.
 		
-		// Get the resultsets from the connectors.
+		// Get the ResultSets from the Connectors.
 		
-		// GelStack the resultsets
+		// GelStack the ResultSets
 		
 		// pass the output to the dispatcher
 		

@@ -2,23 +2,39 @@ package gov.usgs.cida.nude.gel;
 
 import gov.usgs.cida.nude.gel.transforms.GelTransform;
 import gov.usgs.cida.nude.table.Column;
+import gov.usgs.cida.nude.table.ColumnGrouping;
+import gov.usgs.cida.nude.values.TableRow;
 
+import java.sql.SQLException;
 import java.util.Collections;
 import java.util.Map;
 
 public class Gel {
-	//TODO add some way to have the primary key in here.
+	protected final ColumnGrouping inColumns;
 	protected final Map<Column, GelTransform> transforms;
+	protected final ColumnGrouping outColumns;
 	
-	public Gel(Map<Column, GelTransform> out) {
-		this.transforms = Collections.unmodifiableMap(out);
+	public Gel(ColumnGrouping in, Map<Column, GelTransform> transform, ColumnGrouping out) {
+		this.inColumns = in;
+		this.transforms = Collections.unmodifiableMap(transform);
+		this.outColumns = out;
 	}
 	
-	public GelledResultSet getResultSet() {
-		GelledResultSet result = null;
+	public ColumnGrouping getInputColumns() {
+		return this.inColumns;
+	}
+	
+	public ColumnGrouping getOutputColumns() {
+		return this.outColumns;
+	}
+	
+	public String transform(int columnIndex, TableRow in) throws SQLException {
+		String result = null;
 		
-		result = new GelledResultSet(this);
+		Column outCol = this.outColumns.get(columnIndex);
+		result = this.transforms.get(outCol).transform(in);
 		
 		return result;
 	}
+	
 }

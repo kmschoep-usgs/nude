@@ -81,11 +81,12 @@ public class IdaOverseerTest {
 	public static ResultSet buildXmlFormatParam() {
 		ResultSet result = null;
 		
+		//TODO this primary key is wrong
 		ColumnGrouping colGroup = new ColumnGrouping(OutputFormat.FORMAT_TYPE, Arrays.asList(new Column[] {OutputFormat.FORMAT_TYPE, OutputFormat.SCHEMA_TYPE}));
 		StringTableResultSet params = new StringTableResultSet(colGroup);
 		Map<Column, String> row = new HashMap<Column, String>();
 		row.put(OutputFormat.FORMAT_TYPE, "XML");
-		row.put(OutputFormat.SCHEMA_TYPE, "camelCase");
+		row.put(OutputFormat.SCHEMA_TYPE, "passthrough");
 		TableRow tableRow = new TableRow(colGroup, row);
 		params.addRow(tableRow);
 		result = params;
@@ -99,7 +100,7 @@ public class IdaOverseerTest {
 		List<Column> colList = new ArrayList<Column>();
 		colList.addAll(Arrays.asList(IdaConnectorParams.values()));
 		ColumnGrouping colGroup = new ColumnGrouping(IdaConnectorParams.SITE_NUMBER, colList);
-		
+		//TODO this primary key is wrong
 		StringTableResultSet params = new StringTableResultSet(colGroup);
 		
 		Map<Column, String> row = new HashMap<Column, String>();
@@ -120,784 +121,219 @@ public class IdaOverseerTest {
 		
 		result.append("<?xml version='1.0' encoding='UTF-8'?>");
 		result.append("<success rowCount=\"-1\">");
-		result.append(	"<data>");
-		result.append(		"<timestamp>");
-		result.append(			"20100830000000");
-		result.append(		"</timestamp>");
-		result.append(		"<value>");
-		result.append(			"118");
-		result.append(		"</value>");
-		result.append(	"</data>");
-		result.append(	"<data>");
-		result.append(		"<timestamp>");
-		result.append(			"20100830001500");
-		result.append(		"</timestamp>");
-		result.append(		"<value>");
-		result.append(			"113");
-		result.append(		"</value>");
-		result.append(	"</data>");
-		result.append(	"<data>");
-		result.append(		"<timestamp>");
-		result.append(			"20100830003000");
-		result.append(		"</timestamp>");
-		result.append(		"<value>");
-		result.append(			"113");
-		result.append(		"</value>");
-		result.append(	"</data>");
-		result.append(	"<data>");
-		result.append(		"<timestamp>");
-		result.append(			"20100830004500");
-		result.append(		"</timestamp>");
-		result.append(		"<value>");
-		result.append(			"115");
-		result.append(		"</value>");
-		result.append(	"</data>");
-		result.append(	"<data>");
-		result.append(		"<timestamp>");
-		result.append(			"20100830010000");
-		result.append(		"</timestamp>");
-		result.append(		"<value>");
-		result.append(			"113");
-		result.append(		"</value>");
-		result.append(	"</data>");
-		result.append(	"<data>");
-		result.append(		"<timestamp>");
-		result.append(			"20100830011500");
-		result.append(		"</timestamp>");
-		result.append(		"<value>");
-		result.append(			"118");
-		result.append(		"</value>");
-		result.append(	"</data>");
-		result.append(	"<data>");
-		result.append(		"<timestamp>");
-		result.append(			"20100830013000");
-		result.append(		"</timestamp>");
-		result.append(		"<value>");
-		result.append(			"113");
-		result.append(		"</value>");
-		result.append(	"</data>");
-		result.append(	"<data>");
-		result.append(		"<timestamp>");
-		result.append(			"20100830014500");
-		result.append(		"</timestamp>");
-		result.append(		"<value>");
-		result.append(			"113");
-		result.append(		"</value>");
-		result.append(	"</data>");
-		result.append(	"<data>");
-		result.append(		"<timestamp>");
-		result.append(			"20100830020000");
-		result.append(		"</timestamp>");
-		result.append(		"<value>");
-		result.append(			"118");
-		result.append(		"</value>");
-		result.append(	"</data>");
-		result.append(	"<data>");
-		result.append(		"<timestamp>");
-		result.append(			"20100830021500");
-		result.append(		"</timestamp>");
-		result.append(		"<value>");
-		result.append(			"115");
-		result.append(		"</value>");
-		result.append(	"</data>");
-		result.append(	"<data>");
-		result.append(		"<timestamp>");
-		result.append(			"20100830023000");
-		result.append(		"</timestamp>");
-		result.append(		"<value>");
-		result.append(			"115");
-		result.append(		"</value>");
-		result.append(	"</data>");
-		result.append(	"<data>");
-		result.append(		"<timestamp>");
-		result.append(			"20100830024500");
-		result.append(		"</timestamp>");
-		result.append(		"<value>");
-		result.append(			"115");
-		result.append(		"</value>");
-		result.append(	"</data>");
-		result.append(	"<data>");
-		result.append(		"<timestamp>");
-		result.append(			"20100830030000");
-		result.append(		"</timestamp>");
-		result.append(		"<value>");
-		result.append(			"113");
-		result.append(		"</value>");
-		result.append(	"</data>");
-		result.append(	"<data>");
-		result.append(		"<timestamp>");
-		result.append(			"20100830031500");
-		result.append(		"</timestamp>");
-		result.append(		"<value>");
-		result.append(			"115");
-		result.append(		"</value>");
-		result.append(	"</data>");
-		result.append(	"<data>");
-		result.append(		"<timestamp>");
-		result.append(			"20100830033000");
-		result.append(		"</timestamp>");
-		result.append(		"<value>");
-		result.append(			"115");
-		result.append(		"</value>");
-		result.append(	"</data>");
-		result.append(	"<data>");
-		result.append(		"<timestamp>");
-		result.append(			"20100830034500");
-		result.append(		"</timestamp>");
-		result.append(		"<value>");
-		result.append(			"111");
-		result.append(		"</value>");
-		result.append(	"</data>");
-		result.append(	"<data>");
-		result.append(		"<timestamp>");
-		result.append(			"20100830040000");
-		result.append(		"</timestamp>");
-		result.append(		"<value>");
-		result.append(			"115");
-		result.append(		"</value>");
-		result.append(	"</data>");
-		result.append(	"<data>");
-		result.append(		"<timestamp>");
-		result.append(			"20100830041500");
-		result.append(		"</timestamp>");
-		result.append(		"<value>");
-		result.append(			"111");
-		result.append(		"</value>");
-		result.append(	"</data>");
-		result.append(	"<data>");
-		result.append(		"<timestamp>");
-		result.append(			"20100830043000");
-		result.append(		"</timestamp>");
-		result.append(		"<value>");
-		result.append(			"115");
-		result.append(		"</value>");
-		result.append(	"</data>");
-		result.append(	"<data>");
-		result.append(		"<timestamp>");
-		result.append(			"20100830044500");
-		result.append(		"</timestamp>");
-		result.append(		"<value>");
-		result.append(			"115");
-		result.append(		"</value>");
-		result.append(	"</data>");
-		result.append(	"<data>");
-		result.append(		"<timestamp>");
-		result.append(			"20100830050000");
-		result.append(		"</timestamp>");
-		result.append(		"<value>");
-		result.append(			"111");
-		result.append(		"</value>");
-		result.append(	"</data>");
-		result.append(	"<data>");
-		result.append(		"<timestamp>");
-		result.append(			"20100830051500");
-		result.append(		"</timestamp>");
-		result.append(		"<value>");
-		result.append(			"111");
-		result.append(		"</value>");
-		result.append(	"</data>");
-		result.append(	"<data>");
-		result.append(		"<timestamp>");
-		result.append(			"20100830053000");
-		result.append(		"</timestamp>");
-		result.append(		"<value>");
-		result.append(			"115");
-		result.append(		"</value>");
-		result.append(	"</data>");
-		result.append(	"<data>");
-		result.append(		"<timestamp>");
-		result.append(			"20100830054500");
-		result.append(		"</timestamp>");
-		result.append(		"<value>");
-		result.append(			"113");
-		result.append(		"</value>");
-		result.append(	"</data>");
-		result.append(	"<data>");
-		result.append(		"<timestamp>");
-		result.append(			"20100830060000");
-		result.append(		"</timestamp>");
-		result.append(		"<value>");
-		result.append(			"115");
-		result.append(		"</value>");
-		result.append(	"</data>");
-		result.append(	"<data>");
-		result.append(		"<timestamp>");
-		result.append(			"20100830061500");
-		result.append(		"</timestamp>");
-		result.append(		"<value>");
-		result.append(			"115");
-		result.append(		"</value>");
-		result.append(	"</data>");
-		result.append(	"<data>");
-		result.append(		"<timestamp>");
-		result.append(			"20100830063000");
-		result.append(		"</timestamp>");
-		result.append(		"<value>");
-		result.append(			"115");
-		result.append(		"</value>");
-		result.append(	"</data>");
-		result.append(	"<data>");
-		result.append(		"<timestamp>");
-		result.append(			"20100830064500");
-		result.append(		"</timestamp>");
-		result.append(		"<value>");
-		result.append(			"111");
-		result.append(		"</value>");
-		result.append(	"</data>");
-		result.append(	"<data>");
-		result.append(		"<timestamp>");
-		result.append(			"20100830070000");
-		result.append(		"</timestamp>");
-		result.append(		"<value>");
-		result.append(			"118");
-		result.append(		"</value>");
-		result.append(	"</data>");
-		result.append(	"<data>");
-		result.append(		"<timestamp>");
-		result.append(			"20100830071500");
-		result.append(		"</timestamp>");
-		result.append(		"<value>");
-		result.append(			"113");
-		result.append(		"</value>");
-		result.append(	"</data>");
-		result.append(	"<data>");
-		result.append(		"<timestamp>");
-		result.append(			"20100830073000");
-		result.append(		"</timestamp>");
-		result.append(		"<value>");
-		result.append(			"113");
-		result.append(		"</value>");
-		result.append(	"</data>");
-		result.append(	"<data>");
-		result.append(		"<timestamp>");
-		result.append(			"20100830074500");
-		result.append(		"</timestamp>");
-		result.append(		"<value>");
-		result.append(			"111");
-		result.append(		"</value>");
-		result.append(	"</data>");
-		result.append(	"<data>");
-		result.append(		"<timestamp>");
-		result.append(			"20100830080000");
-		result.append(		"</timestamp>");
-		result.append(		"<value>");
-		result.append(			"111");
-		result.append(		"</value>");
-		result.append(	"</data>");
-		result.append(	"<data>");
-		result.append(		"<timestamp>");
-		result.append(			"20100830081500");
-		result.append(		"</timestamp>");
-		result.append(		"<value>");
-		result.append(			"105");
-		result.append(		"</value>");
-		result.append(	"</data>");
-		result.append(	"<data>");
-		result.append(		"<timestamp>");
-		result.append(			"20100830083000");
-		result.append(		"</timestamp>");
-		result.append(		"<value>");
-		result.append(			"111");
-		result.append(		"</value>");
-		result.append(	"</data>");
-		result.append(	"<data>");
-		result.append(		"<timestamp>");
-		result.append(			"20100830084500");
-		result.append(		"</timestamp>");
-		result.append(		"<value>");
-		result.append(			"111");
-		result.append(		"</value>");
-		result.append(	"</data>");
-		result.append(	"<data>");
-		result.append(		"<timestamp>");
-		result.append(			"20100830090000");
-		result.append(		"</timestamp>");
-		result.append(		"<value>");
-		result.append(			"111");
-		result.append(		"</value>");
-		result.append(	"</data>");
-		result.append(	"<data>");
-		result.append(		"<timestamp>");
-		result.append(			"20100830091500");
-		result.append(		"</timestamp>");
-		result.append(		"<value>");
-		result.append(			"107");
-		result.append(		"</value>");
-		result.append(	"</data>");
-		result.append(	"<data>");
-		result.append(		"<timestamp>");
-		result.append(			"20100830093000");
-		result.append(		"</timestamp>");
-		result.append(		"<value>");
-		result.append(			"107");
-		result.append(		"</value>");
-		result.append(	"</data>");
-		result.append(	"<data>");
-		result.append(		"<timestamp>");
-		result.append(			"20100830094500");
-		result.append(		"</timestamp>");
-		result.append(		"<value>");
-		result.append(			"107");
-		result.append(		"</value>");
-		result.append(	"</data>");
-		result.append(	"<data>");
-		result.append(		"<timestamp>");
-		result.append(			"20100830100000");
-		result.append(		"</timestamp>");
-		result.append(		"<value>");
-		result.append(			"105");
-		result.append(		"</value>");
-		result.append(	"</data>");
-		result.append(	"<data>");
-		result.append(		"<timestamp>");
-		result.append(			"20100830101500");
-		result.append(		"</timestamp>");
-		result.append(		"<value>");
-		result.append(			"107");
-		result.append(		"</value>");
-		result.append(	"</data>");
-		result.append(	"<data>");
-		result.append(		"<timestamp>");
-		result.append(			"20100830103000");
-		result.append(		"</timestamp>");
-		result.append(		"<value>");
-		result.append(			"105");
-		result.append(		"</value>");
-		result.append(	"</data>");
-		result.append(	"<data>");
-		result.append(		"<timestamp>");
-		result.append(			"20100830104500");
-		result.append(		"</timestamp>");
-		result.append(		"<value>");
-		result.append(			"111");
-		result.append(		"</value>");
-		result.append(	"</data>");
-		result.append(	"<data>");
-		result.append(		"<timestamp>");
-		result.append(			"20100830110000");
-		result.append(		"</timestamp>");
-		result.append(		"<value>");
-		result.append(			"107");
-		result.append(		"</value>");
-		result.append(	"</data>");
-		result.append(	"<data>");
-		result.append(		"<timestamp>");
-		result.append(			"20100830111500");
-		result.append(		"</timestamp>");
-		result.append(		"<value>");
-		result.append(			"105");
-		result.append(		"</value>");
-		result.append(	"</data>");
-		result.append(	"<data>");
-		result.append(		"<timestamp>");
-		result.append(			"20100830113000");
-		result.append(		"</timestamp>");
-		result.append(		"<value>");
-		result.append(			"105");
-		result.append(		"</value>");
-		result.append(	"</data>");
-		result.append(	"<data>");
-		result.append(		"<timestamp>");
-		result.append(			"20100830114500");
-		result.append(		"</timestamp>");
-		result.append(		"<value>");
-		result.append(			"105");
-		result.append(		"</value>");
-		result.append(	"</data>");
-		result.append(	"<data>");
-		result.append(		"<timestamp>");
-		result.append(			"20100830120000");
-		result.append(		"</timestamp>");
-		result.append(		"<value>");
-		result.append(			"111");
-		result.append(		"</value>");
-		result.append(	"</data>");
-		result.append(	"<data>");
-		result.append(		"<timestamp>");
-		result.append(			"20100830121500");
-		result.append(		"</timestamp>");
-		result.append(		"<value>");
-		result.append(			"107");
-		result.append(		"</value>");
-		result.append(	"</data>");
-		result.append(	"<data>");
-		result.append(		"<timestamp>");
-		result.append(			"20100830123000");
-		result.append(		"</timestamp>");
-		result.append(		"<value>");
-		result.append(			"107");
-		result.append(		"</value>");
-		result.append(	"</data>");
-		result.append(	"<data>");
-		result.append(		"<timestamp>");
-		result.append(			"20100830124500");
-		result.append(		"</timestamp>");
-		result.append(		"<value>");
-		result.append(			"107");
-		result.append(		"</value>");
-		result.append(	"</data>");
-		result.append(	"<data>");
-		result.append(		"<timestamp>");
-		result.append(			"20100830130000");
-		result.append(		"</timestamp>");
-		result.append(		"<value>");
-		result.append(			"105");
-		result.append(		"</value>");
-		result.append(	"</data>");
-		result.append(	"<data>");
-		result.append(		"<timestamp>");
-		result.append(			"20100830131500");
-		result.append(		"</timestamp>");
-		result.append(		"<value>");
-		result.append(			"107");
-		result.append(		"</value>");
-		result.append(	"</data>");
-		result.append(	"<data>");
-		result.append(		"<timestamp>");
-		result.append(			"20100830133000");
-		result.append(		"</timestamp>");
-		result.append(		"<value>");
-		result.append(			"103");
-		result.append(		"</value>");
-		result.append(	"</data>");
-		result.append(	"<data>");
-		result.append(		"<timestamp>");
-		result.append(			"20100830134500");
-		result.append(		"</timestamp>");
-		result.append(		"<value>");
-		result.append(			"103");
-		result.append(		"</value>");
-		result.append(	"</data>");
-		result.append(	"<data>");
-		result.append(		"<timestamp>");
-		result.append(			"20100830140000");
-		result.append(		"</timestamp>");
-		result.append(		"<value>");
-		result.append(			"101");
-		result.append(		"</value>");
-		result.append(	"</data>");
-		result.append(	"<data>");
-		result.append(		"<timestamp>");
-		result.append(			"20100830141500");
-		result.append(		"</timestamp>");
-		result.append(		"<value>");
-		result.append(			"107");
-		result.append(		"</value>");
-		result.append(	"</data>");
-		result.append(	"<data>");
-		result.append(		"<timestamp>");
-		result.append(			"20100830143000");
-		result.append(		"</timestamp>");
-		result.append(		"<value>");
-		result.append(			"105");
-		result.append(		"</value>");
-		result.append(	"</data>");
-		result.append(	"<data>");
-		result.append(		"<timestamp>");
-		result.append(			"20100830144500");
-		result.append(		"</timestamp>");
-		result.append(		"<value>");
-		result.append(			"105");
-		result.append(		"</value>");
-		result.append(	"</data>");
-		result.append(	"<data>");
-		result.append(		"<timestamp>");
-		result.append(			"20100830150000");
-		result.append(		"</timestamp>");
-		result.append(		"<value>");
-		result.append(			"105");
-		result.append(		"</value>");
-		result.append(	"</data>");
-		result.append(	"<data>");
-		result.append(		"<timestamp>");
-		result.append(			"20100830151500");
-		result.append(		"</timestamp>");
-		result.append(		"<value>");
-		result.append(			"105");
-		result.append(		"</value>");
-		result.append(	"</data>");
-		result.append(	"<data>");
-		result.append(		"<timestamp>");
-		result.append(			"20100830153000");
-		result.append(		"</timestamp>");
-		result.append(		"<value>");
-		result.append(			"105");
-		result.append(		"</value>");
-		result.append(	"</data>");
-		result.append(	"<data>");
-		result.append(		"<timestamp>");
-		result.append(			"20100830154500");
-		result.append(		"</timestamp>");
-		result.append(		"<value>");
-		result.append(			"101");
-		result.append(		"</value>");
-		result.append(	"</data>");
-		result.append(	"<data>");
-		result.append(		"<timestamp>");
-		result.append(			"20100830160000");
-		result.append(		"</timestamp>");
-		result.append(		"<value>");
-		result.append(			"105");
-		result.append(		"</value>");
-		result.append(	"</data>");
-		result.append(	"<data>");
-		result.append(		"<timestamp>");
-		result.append(			"20100830161500");
-		result.append(		"</timestamp>");
-		result.append(		"<value>");
-		result.append(			"103");
-		result.append(		"</value>");
-		result.append(	"</data>");
-		result.append(	"<data>");
-		result.append(		"<timestamp>");
-		result.append(			"20100830163000");
-		result.append(		"</timestamp>");
-		result.append(		"<value>");
-		result.append(			"103");
-		result.append(		"</value>");
-		result.append(	"</data>");
-		result.append(	"<data>");
-		result.append(		"<timestamp>");
-		result.append(			"20100830164500");
-		result.append(		"</timestamp>");
-		result.append(		"<value>");
-		result.append(			"105");
-		result.append(		"</value>");
-		result.append(	"</data>");
-		result.append(	"<data>");
-		result.append(		"<timestamp>");
-		result.append(			"20100830170000");
-		result.append(		"</timestamp>");
-		result.append(		"<value>");
-		result.append(			"101");
-		result.append(		"</value>");
-		result.append(	"</data>");
-		result.append(	"<data>");
-		result.append(		"<timestamp>");
-		result.append(			"20100830171500");
-		result.append(		"</timestamp>");
-		result.append(		"<value>");
-		result.append(			"103");
-		result.append(		"</value>");
-		result.append(	"</data>");
-		result.append(	"<data>");
-		result.append(		"<timestamp>");
-		result.append(			"20100830173000");
-		result.append(		"</timestamp>");
-		result.append(		"<value>");
-		result.append(			"105");
-		result.append(		"</value>");
-		result.append(	"</data>");
-		result.append(	"<data>");
-		result.append(		"<timestamp>");
-		result.append(			"20100830174500");
-		result.append(		"</timestamp>");
-		result.append(		"<value>");
-		result.append(			"99");
-		result.append(		"</value>");
-		result.append(	"</data>");
-		result.append(	"<data>");
-		result.append(		"<timestamp>");
-		result.append(			"20100830180000");
-		result.append(		"</timestamp>");
-		result.append(		"<value>");
-		result.append(			"103");
-		result.append(		"</value>");
-		result.append(	"</data>");
-		result.append(	"<data>");
-		result.append(		"<timestamp>");
-		result.append(			"20100830181500");
-		result.append(		"</timestamp>");
-		result.append(		"<value>");
-		result.append(			"103");
-		result.append(		"</value>");
-		result.append(	"</data>");
-		result.append(	"<data>");
-		result.append(		"<timestamp>");
-		result.append(			"20100830183000");
-		result.append(		"</timestamp>");
-		result.append(		"<value>");
-		result.append(			"105");
-		result.append(		"</value>");
-		result.append(	"</data>");
-		result.append(	"<data>");
-		result.append(		"<timestamp>");
-		result.append(			"20100830184500");
-		result.append(		"</timestamp>");
-		result.append(		"<value>");
-		result.append(			"101");
-		result.append(		"</value>");
-		result.append(	"</data>");
-		result.append(	"<data>");
-		result.append(		"<timestamp>");
-		result.append(			"20100830190000");
-		result.append(		"</timestamp>");
-		result.append(		"<value>");
-		result.append(			"103");
-		result.append(		"</value>");
-		result.append(	"</data>");
-		result.append(	"<data>");
-		result.append(		"<timestamp>");
-		result.append(			"20100830191500");
-		result.append(		"</timestamp>");
-		result.append(		"<value>");
-		result.append(			"101");
-		result.append(		"</value>");
-		result.append(	"</data>");
-		result.append(	"<data>");
-		result.append(		"<timestamp>");
-		result.append(			"20100830193000");
-		result.append(		"</timestamp>");
-		result.append(		"<value>");
-		result.append(			"101");
-		result.append(		"</value>");
-		result.append(	"</data>");
-		result.append(	"<data>");
-		result.append(		"<timestamp>");
-		result.append(			"20100830194500");
-		result.append(		"</timestamp>");
-		result.append(		"<value>");
-		result.append(			"101");
-		result.append(		"</value>");
-		result.append(	"</data>");
-		result.append(	"<data>");
-		result.append(		"<timestamp>");
-		result.append(			"20100830200000");
-		result.append(		"</timestamp>");
-		result.append(		"<value>");
-		result.append(			"99");
-		result.append(		"</value>");
-		result.append(	"</data>");
-		result.append(	"<data>");
-		result.append(		"<timestamp>");
-		result.append(			"20100830201500");
-		result.append(		"</timestamp>");
-		result.append(		"<value>");
-		result.append(			"103");
-		result.append(		"</value>");
-		result.append(	"</data>");
-		result.append(	"<data>");
-		result.append(		"<timestamp>");
-		result.append(			"20100830203000");
-		result.append(		"</timestamp>");
-		result.append(		"<value>");
-		result.append(			"103");
-		result.append(		"</value>");
-		result.append(	"</data>");
-		result.append(	"<data>");
-		result.append(		"<timestamp>");
-		result.append(			"20100830204500");
-		result.append(		"</timestamp>");
-		result.append(		"<value>");
-		result.append(			"103");
-		result.append(		"</value>");
-		result.append(	"</data>");
-		result.append(	"<data>");
-		result.append(		"<timestamp>");
-		result.append(			"20100830210000");
-		result.append(		"</timestamp>");
-		result.append(		"<value>");
-		result.append(			"101");
-		result.append(		"</value>");
-		result.append(	"</data>");
-		result.append(	"<data>");
-		result.append(		"<timestamp>");
-		result.append(			"20100830211500");
-		result.append(		"</timestamp>");
-		result.append(		"<value>");
-		result.append(			"103");
-		result.append(		"</value>");
-		result.append(	"</data>");
-		result.append(	"<data>");
-		result.append(		"<timestamp>");
-		result.append(			"20100830213000");
-		result.append(		"</timestamp>");
-		result.append(		"<value>");
-		result.append(			"103");
-		result.append(		"</value>");
-		result.append(	"</data>");
-		result.append(	"<data>");
-		result.append(		"<timestamp>");
-		result.append(			"20100830214500");
-		result.append(		"</timestamp>");
-		result.append(		"<value>");
-		result.append(			"101");
-		result.append(		"</value>");
-		result.append(	"</data>");
-		result.append(	"<data>");
-		result.append(		"<timestamp>");
-		result.append(			"20100830220000");
-		result.append(		"</timestamp>");
-		result.append(		"<value>");
-		result.append(			"101");
-		result.append(		"</value>");
-		result.append(	"</data>");
-		result.append(	"<data>");
-		result.append(		"<timestamp>");
-		result.append(			"20100830221500");
-		result.append(		"</timestamp>");
-		result.append(		"<value>");
-		result.append(			"101");
-		result.append(		"</value>");
-		result.append(	"</data>");
-		result.append(	"<data>");
-		result.append(		"<timestamp>");
-		result.append(			"20100830223000");
-		result.append(		"</timestamp>");
-		result.append(		"<value>");
-		result.append(			"101");
-		result.append(		"</value>");
-		result.append(	"</data>");
-		result.append(	"<data>");
-		result.append(		"<timestamp>");
-		result.append(			"20100830224500");
-		result.append(		"</timestamp>");
-		result.append(		"<value>");
-		result.append(			"99");
-		result.append(		"</value>");
-		result.append(	"</data>");
-		result.append(	"<data>");
-		result.append(		"<timestamp>");
-		result.append(			"20100830230000");
-		result.append(		"</timestamp>");
-		result.append(		"<value>");
-		result.append(			"103");
-		result.append(		"</value>");
-		result.append(	"</data>");
-		result.append(	"<data>");
-		result.append(		"<timestamp>");
-		result.append(			"20100830231500");
-		result.append(		"</timestamp>");
-		result.append(		"<value>");
-		result.append(			"99");
-		result.append(		"</value>");
-		result.append(	"</data>");
-		result.append(	"<data>");
-		result.append(		"<timestamp>");
-		result.append(			"20100830233000");
-		result.append(		"</timestamp>");
-		result.append(		"<value>");
-		result.append(			"99");
-		result.append(		"</value>");
-		result.append(	"</data>");
-		result.append(	"<data>");
-		result.append(		"<timestamp>");
-		result.append(			"20100830234500");
-		result.append(		"</timestamp>");
-		result.append(		"<value>");
-		result.append(			"101");
-		result.append(		"</value>");
-		result.append(	"</data>");
-		result.append(	"<data>");
-		result.append(		"<timestamp>");
-		result.append(			"20100831000000");
-		result.append(		"</timestamp>");
-		result.append(		"<value>");
-		result.append(			"103");
-		result.append(		"</value>");
-		result.append(	"</data>");
+		for (int i = 0; i < dates.length && i < values.length; i++) {
+			result.append(	"<data>");
+			result.append(		"<timestamp>");
+			result.append(			dates[i]);
+			result.append(		"</timestamp>");
+			result.append(		"<value>");
+			result.append(			values[i]);
+			result.append(		"</value>");
+			result.append(	"</data>");
+		}
+		
 		result.append("</success>");
 		
 		return result.toString();
 	}
+	
+	protected static String[] dates = new String[] {
+			"20100830000000",
+			"20100830001500",
+			"20100830003000",
+			"20100830004500",
+			"20100830010000",
+			"20100830011500",
+			"20100830013000",
+			"20100830014500",
+			"20100830020000",
+			"20100830021500",
+			"20100830023000",
+			"20100830024500",
+			"20100830030000",
+			"20100830031500",
+			"20100830033000",
+			"20100830034500",
+			"20100830040000",
+			"20100830041500",
+			"20100830043000",
+			"20100830044500",
+			"20100830050000",
+			"20100830051500",
+			"20100830053000",
+			"20100830054500",
+			"20100830060000",
+			"20100830061500",
+			"20100830063000",
+			"20100830064500",
+			"20100830070000",
+			"20100830071500",
+			"20100830073000",
+			"20100830074500",
+			"20100830080000",
+			"20100830081500",
+			"20100830083000",
+			"20100830084500",
+			"20100830090000",
+			"20100830091500",
+			"20100830093000",
+			"20100830094500",
+			"20100830100000",
+			"20100830101500",
+			"20100830103000",
+			"20100830104500",
+			"20100830110000",
+			"20100830111500",
+			"20100830113000",
+			"20100830114500",
+			"20100830120000",
+			"20100830121500",
+			"20100830123000",
+			"20100830124500",
+			"20100830130000",
+			"20100830131500",
+			"20100830133000",
+			"20100830134500",
+			"20100830140000",
+			"20100830141500",
+			"20100830143000",
+			"20100830144500",
+			"20100830150000",
+			"20100830151500",
+			"20100830153000",
+			"20100830154500",
+			"20100830160000",
+			"20100830161500",
+			"20100830163000",
+			"20100830164500",
+			"20100830170000",
+			"20100830171500",
+			"20100830173000",
+			"20100830174500",
+			"20100830180000",
+			"20100830181500",
+			"20100830183000",
+			"20100830184500",
+			"20100830190000",
+			"20100830191500",
+			"20100830193000",
+			"20100830194500",
+			"20100830200000",
+			"20100830201500",
+			"20100830203000",
+			"20100830204500",
+			"20100830210000",
+			"20100830211500",
+			"20100830213000",
+			"20100830214500",
+			"20100830220000",
+			"20100830221500",
+			"20100830223000",
+			"20100830224500",
+			"20100830230000",
+			"20100830231500",
+			"20100830233000",
+			"20100830234500",
+			"20100831000000"
+	};
+	
+	protected static String[] values = new String[] {
+			"118",
+			"113",
+			"113",
+			"115",
+			"113",
+			"118",
+			"113",
+			"113",
+			"118",
+			"115",
+			"115",
+			"115",
+			"113",
+			"115",
+			"115",
+			"111",
+			"115",
+			"111",
+			"115",
+			"115",
+			"111",
+			"111",
+			"115",
+			"113",
+			"115",
+			"115",
+			"115",
+			"111",
+			"118",
+			"113",
+			"113",
+			"111",
+			"111",
+			"105",
+			"111",
+			"111",
+			"111",
+			"107",
+			"107",
+			"107",
+			"105",
+			"107",
+			"105",
+			"111",
+			"107",
+			"105",
+			"105",
+			"105",
+			"111",
+			"107",
+			"107",
+			"107",
+			"105",
+			"107",
+			"103",
+			"103",
+			"101",
+			"107",
+			"105",
+			"105",
+			"105",
+			"105",
+			"105",
+			"101",
+			"105",
+			"103",
+			"103",
+			"105",
+			"101",
+			"103",
+			"105",
+			"99",
+			"103",
+			"103",
+			"105",
+			"101",
+			"103",
+			"101",
+			"101",
+			"101",
+			"99",
+			"103",
+			"103",
+			"103",
+			"101",
+			"103",
+			"103",
+			"101",
+			"101",
+			"101",
+			"101",
+			"99",
+			"103",
+			"99",
+			"99",
+			"101",
+			"103"
+	};
 }
