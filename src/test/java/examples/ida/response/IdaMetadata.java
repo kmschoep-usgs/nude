@@ -3,8 +3,8 @@ package examples.ida.response;
 import gov.usgs.cida.nude.table.Column;
 
 public enum IdaMetadata implements Column {
-	MAXDATETIME,
-	MINDATETIME;
+	MINDATETIME,
+	MAXDATETIME;
 	
 	public static final String TABLE_NAME = "RESPONSE";
 	public static final String SCHEMA_NAME = "IDA_METADATA";

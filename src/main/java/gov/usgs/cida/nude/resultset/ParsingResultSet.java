@@ -1,6 +1,7 @@
 package gov.usgs.cida.nude.resultset;
 
 import gov.usgs.cida.nude.connector.parser.IParser;
+import gov.usgs.cida.nude.table.ColumnGrouping;
 
 import java.io.InputStream;
 import java.io.Reader;
@@ -23,12 +24,17 @@ import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.Map;
 
-public abstract class ParsingResultSet extends IndexImplResultSet {
+public abstract class ParsingResultSet extends IndexImplResultSet implements ColumnGroupedResultSet {
 	protected boolean isClosed = false;
 	
 	protected ResultSetMetaData metadata = new ParsingResultSetMetaData();
 	
 	protected IParser parser;
+	
+	@Override
+	public ColumnGrouping getColumnGrouping() {
+		return parser.getAvailableColumns();
+	}
 	
 	//TODO actually make this mean something
 	protected int fetchSize = 0;

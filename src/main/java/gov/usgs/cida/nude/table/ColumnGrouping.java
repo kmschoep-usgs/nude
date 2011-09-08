@@ -1,5 +1,7 @@
 package gov.usgs.cida.nude.table;
 
+import gov.usgs.cida.spec.jsl.mapping.ColumnMapping;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -97,4 +99,15 @@ public class ColumnGrouping implements Iterable<Column> {
 		return this.columns.iterator();
 	}
 	
+	public static ColumnMapping[] getColumnMappings(ColumnGrouping colGroup) {
+		ColumnMapping[] result = null;
+		
+		List<ColumnMapping> cm = new ArrayList<ColumnMapping>();
+		for (Column col : colGroup) {
+			cm.add(new ColumnMapping(col.getName(), col.getName()));
+		}
+		
+		result = cm.toArray(new ColumnMapping[0]);
+		return result;
+	}
 }
