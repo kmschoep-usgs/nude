@@ -21,6 +21,7 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class IdaConnectorTest {
@@ -45,6 +46,7 @@ public class IdaConnectorTest {
 	public void tearDown() throws Exception {
 	}
 	
+//	@Ignore
 	@Test
 	public void testFormatsResponse() throws Exception {
 		String expected = null;

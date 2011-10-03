@@ -24,6 +24,7 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class IdaOverseerTest {
@@ -61,10 +62,11 @@ public class IdaOverseerTest {
 		sbEx = null;
 	}
 	
+	@Ignore
 	@Test
 	public void testSomethingNew() throws Exception {
 		
-		IdaOverseer overseer = new IdaOverseer();
+		IdaOverseer overseer = new IdaOverseer(httpProvider);
 		
 		String siteNumber = "04085427";
 		
