@@ -1,6 +1,5 @@
 package gov.usgs.cida.nude.connector.http;
 
-import gov.usgs.cida.nude.connector.IConnector;
 import gov.usgs.cida.nude.provider.http.HttpProvider;
 import gov.usgs.cida.nude.table.Column;
 import gov.usgs.cida.nude.values.TableRow;
@@ -20,7 +19,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.protocol.HttpContext;
 
-public abstract class AbstractHttpConnector implements IConnector {
+public abstract class AbstractHttpConnector implements HttpConnector {
 	protected final HttpProvider httpProvider;
 	protected List<ResultSet> inputs;
 	

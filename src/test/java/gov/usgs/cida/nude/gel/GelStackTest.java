@@ -7,7 +7,7 @@ import static org.junit.Assert.assertTrue;
 import examples.ida.response.ClientData;
 import examples.ida.response.IdaData;
 import gov.usgs.cida.nude.gel.transforms.GelTransform;
-import gov.usgs.cida.nude.resultset.ColumnGroupedResultSet;
+import gov.usgs.cida.nude.resultset.CGResultSet;
 import gov.usgs.cida.nude.resultset.StringTableResultSet;
 import gov.usgs.cida.nude.table.Column;
 import gov.usgs.cida.nude.table.ColumnGrouping;
@@ -51,9 +51,9 @@ public class GelStackTest {
 		cols.addAll(Arrays.asList(ClientData.values()));
 		this.outColGroup = new ColumnGrouping(ClientData.timestamp, cols);
 		
-		this.muxCg = new ColumnGrouping(IdaData.date_time, Arrays.asList(new Column[] {IdaData.date_time, DummyColumn.DUMMY})); 
+		this.muxCg = new ColumnGrouping(IdaData.date_time, Arrays.asList(new Column[] {IdaData.date_time, DummyColumn.JOIN})); 
 		
-		this.muxOutCg = this.outColGroup.join(new ColumnGrouping(ClientData.timestamp, Arrays.asList(new Column[] {ClientData.timestamp, DummyColumn.DUMMY})));
+		this.muxOutCg = this.outColGroup.join(new ColumnGrouping(ClientData.timestamp, Arrays.asList(new Column[] {ClientData.timestamp, DummyColumn.JOIN})));
 	}
 	
 	@After
@@ -69,7 +69,7 @@ public class GelStackTest {
 	
 	@Test
 	public void testGellingResults() throws Exception {
-		ColumnGroupedResultSet input = buildInputResultSet();
+		CGResultSet input = buildInputResultSet();
 		ResultSet exOut = buildExpectedOutput();
 		GelStack gelStack = new GelStack();
 		
@@ -84,10 +84,10 @@ public class GelStackTest {
 		
 		gelStack.addGel(gb.buildGel());
 		
-		List<ColumnGroupedResultSet> inputs = new ArrayList<ColumnGroupedResultSet>();
+		List<CGResultSet> inputs = new ArrayList<CGResultSet>();
 		inputs.add(input);
 		
-		ResultSet output = gelStack.gel(inputs);
+		ResultSet output = gelStack.filter(inputs);
 		
 		assertNotNull(output);
 		
@@ -113,8 +113,8 @@ public class GelStackTest {
 	
 	@Test
 	public void testMuxGelling() throws SQLException {
-		ColumnGroupedResultSet input = buildInputResultSet();
-		ColumnGroupedResultSet muxIn = buildMuxTestResultSet();
+		CGResultSet input = buildInputResultSet();
+		CGResultSet muxIn = buildMuxTestResultSet();
 		ResultSet exOut = buildMuxOut();
 		GelStack gelStack = new GelStack();
 		
@@ -129,11 +129,11 @@ public class GelStackTest {
 		
 		gelStack.addGel(gb.buildGel());
 		
-		List<ColumnGroupedResultSet> inputs = new ArrayList<ColumnGroupedResultSet>();
+		List<CGResultSet> inputs = new ArrayList<CGResultSet>();
 		inputs.add(input);
 		inputs.add(muxIn);
 		
-		ResultSet output = gelStack.gel(inputs);
+		ResultSet output = gelStack.filter(inputs);
 		
 		assertNotNull(output);
 		
@@ -195,7 +195,7 @@ public class GelStackTest {
 		return result;
 	}
 	
-	public ColumnGroupedResultSet buildInputResultSet() {
+	public CGResultSet buildInputResultSet() {
 		ResultSet result = null;
 		
 		StringTableResultSet rs = new StringTableResultSet(this.inColGroup);
@@ -216,10 +216,10 @@ public class GelStackTest {
 		}
 		
 		result = rs;
-		return (ColumnGroupedResultSet) result;
+		return (CGResultSet) result;
 	}
 	
-	public ColumnGroupedResultSet buildMuxTestResultSet() {
+	public CGResultSet buildMuxTestResultSet() {
 		ResultSet result = null;
 		
 		StringTableResultSet rs = new StringTableResultSet(this.muxCg);
@@ -229,12 +229,12 @@ public class GelStackTest {
 		for (int i = 0; i < dates.length && i < values.length; i++) {
 			row = new HashMap<Column, String>();
 			row.put(IdaData.date_time, dates[i]);
-			row.put(DummyColumn.DUMMY, "" + i);
+			row.put(DummyColumn.JOIN, "" + i);
 			rs.addRow(new TableRow(this.muxCg, row));
 		}
 		
 		result = rs;
-		return (ColumnGroupedResultSet) result;
+		return (CGResultSet) result;
 	}
 	
 	public ResultSet buildMuxOut() {
@@ -245,7 +245,7 @@ public class GelStackTest {
 		Map<Column, String> row = null;
 		for (int i = 0; i < dates.length && i < values.length; i++) {
 			row = new HashMap<Column, String>();
-			row.put(DummyColumn.DUMMY, "" + i);
+			row.put(DummyColumn.JOIN, "" + i);
 			row.put(ClientData.timestamp, dates[i]);
 			row.put(ClientData.value, values[i]);
 			rs.addRow(new TableRow(this.muxOutCg, row));

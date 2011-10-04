@@ -1,11 +1,10 @@
 package gov.usgs.cida.nude.connector.http;
 
-import gov.usgs.cida.nude.connector.parser.IParser;
 import gov.usgs.cida.spec.jsl.SpecValue;
 
 import java.sql.SQLException;
 
-public abstract class AbstractHttpParser implements IParser {
+public abstract class AbstractHttpParser implements HttpParser {
 	
 	/**
 	 * 1 index based

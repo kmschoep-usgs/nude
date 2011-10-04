@@ -6,6 +6,16 @@ public enum IdaMetadata implements Column {
 	MINDATETIME,
 	MAXDATETIME;
 	
+	private Class<?> valueType;
+	
+	private IdaMetadata() {
+		this.valueType = String.class;
+	}
+	
+	private <T> IdaMetadata(Class<T> valueType) {
+		this.valueType = valueType;
+	}
+	
 	public static final String TABLE_NAME = "RESPONSE";
 	public static final String SCHEMA_NAME = "IDA_METADATA";
 	
@@ -32,6 +42,11 @@ public enum IdaMetadata implements Column {
 	@Override
 	public String getSchemaName() {
 		return SCHEMA_NAME;
+	}
+	
+	@Override
+	public Class<?> getValueType() {
+		return this.valueType;
 	}
 
 }

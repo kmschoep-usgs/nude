@@ -8,6 +8,16 @@ public enum MetadataRequest implements Column {
 	public static final String TABLE_NAME = "REQUEST";
 	public static final String SCHEMA_NAME = "IDA_METADATA";
 	
+	private Class<?> valueType;
+	
+	private MetadataRequest() {
+		this.valueType = String.class;
+	}
+	
+	private <T> MetadataRequest(Class<T> valueType) {
+		this.valueType = valueType;
+	}
+	
 	@Override
 	public String getName() {
 		return toString();
@@ -33,4 +43,9 @@ public enum MetadataRequest implements Column {
 		return SCHEMA_NAME;
 	}
 
+	@Override
+	public Class<?> getValueType() {
+		return this.valueType;
+	}
+	
 }

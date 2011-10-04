@@ -6,7 +6,7 @@ import examples.ida.IdaOverseer;
 import examples.ida.request.IdaConnectorParams;
 import gov.usgs.cida.nude.params.OutputFormat;
 import gov.usgs.cida.nude.provider.http.HttpProvider;
-import gov.usgs.cida.nude.resultset.ColumnGroupedResultSet;
+import gov.usgs.cida.nude.resultset.CGResultSet;
 import gov.usgs.cida.nude.resultset.StringTableResultSet;
 import gov.usgs.cida.nude.table.Column;
 import gov.usgs.cida.nude.table.ColumnGrouping;
@@ -81,15 +81,15 @@ public class IdaOverseerTest {
 		assertEquals(expected, actual);
 	}
 	
-	public static ColumnGroupedResultSet buildXmlFormatParam() {
-		ColumnGroupedResultSet result = null;
+	public static CGResultSet buildXmlFormatParam() {
+		CGResultSet result = null;
 		
-		ColumnGrouping colGroup = new ColumnGrouping(DummyColumn.DUMMY, Arrays.asList(new Column[] {DummyColumn.DUMMY, OutputFormat.FORMAT_TYPE, OutputFormat.SCHEMA_TYPE}));
+		ColumnGrouping colGroup = new ColumnGrouping(DummyColumn.JOIN, Arrays.asList(new Column[] {DummyColumn.JOIN, OutputFormat.FORMAT_TYPE, OutputFormat.SCHEMA_NAME}));
 		StringTableResultSet params = new StringTableResultSet(colGroup);
 		Map<Column, String> row = new HashMap<Column, String>();
-		row.put(DummyColumn.DUMMY, "1");
+		row.put(DummyColumn.JOIN, "1");
 		row.put(OutputFormat.FORMAT_TYPE, "XML");
-		row.put(OutputFormat.SCHEMA_TYPE, "passthrough");
+		row.put(OutputFormat.SCHEMA_NAME, "passthrough");
 		TableRow tableRow = new TableRow(colGroup, row);
 		params.addRow(tableRow);
 		result = params;
@@ -97,18 +97,18 @@ public class IdaOverseerTest {
 		return result;
 	}
 	
-	public static ColumnGroupedResultSet buildIdaParams(String siteNo) {
-		ColumnGroupedResultSet result = null;
+	public static CGResultSet buildIdaParams(String siteNo) {
+		CGResultSet result = null;
 		
 		List<Column> colList = new ArrayList<Column>();
-		colList.add(DummyColumn.DUMMY);
+		colList.add(DummyColumn.JOIN);
 		colList.addAll(Arrays.asList(IdaConnectorParams.values()));
-		ColumnGrouping colGroup = new ColumnGrouping(DummyColumn.DUMMY, colList);
+		ColumnGrouping colGroup = new ColumnGrouping(DummyColumn.JOIN, colList);
 		
 		StringTableResultSet params = new StringTableResultSet(colGroup);
 		
 		Map<Column, String> row = new HashMap<Column, String>();
-		row.put(DummyColumn.DUMMY, "1");
+		row.put(DummyColumn.JOIN, "1");
 		row.put(IdaConnectorParams.GET_DATA, "true");
 		row.put(IdaConnectorParams.SITE_NUMBER, siteNo);
 		row.put(IdaConnectorParams.TO_DATE, "2010-08-30");

@@ -5,7 +5,7 @@ import gov.usgs.webservices.framework.basic.FormatType;
 
 public enum OutputFormat implements Column {
 	FORMAT_TYPE(FormatType.class),
-	SCHEMA_TYPE;
+	SCHEMA_NAME;
 
 	private Class<?> valueType;
 	
@@ -42,6 +42,7 @@ public enum OutputFormat implements Column {
 		return "";
 	}
 	
+	@Override
 	public Class<?> getValueType() {
 		return this.valueType;
 	}

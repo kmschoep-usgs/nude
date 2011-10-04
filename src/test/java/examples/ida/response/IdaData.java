@@ -12,6 +12,16 @@ public enum IdaData implements Column {
 	precision,
 	remark;
 
+	private Class<?> valueType;
+	
+	private IdaData() {
+		this.valueType = String.class;
+	}
+	
+	private <T> IdaData(Class<T> valueType) {
+		this.valueType = valueType;
+	}
+	
 	@Override
 	public String getName() {
 		return this.toString();
@@ -37,4 +47,8 @@ public enum IdaData implements Column {
 		return "";
 	}
 
+	@Override
+	public Class<?> getValueType() {
+		return this.valueType;
+	}
 }

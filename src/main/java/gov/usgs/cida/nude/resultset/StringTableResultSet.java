@@ -28,7 +28,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 
-public class StringTableResultSet extends IndexImplResultSet implements Iterable<TableRow>, ColumnGroupedResultSet {
+public class StringTableResultSet extends IndexImplResultSet implements Iterable<TableRow>, CGResultSet {
 	
 	protected boolean isClosed = false;
 	

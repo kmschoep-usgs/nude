@@ -11,6 +11,16 @@ public enum DataRequest implements Column {
 	submit1,
 	todate;
 
+	private Class<?> valueType;
+	
+	private DataRequest() {
+		this.valueType = String.class;
+	}
+	
+	private <T> DataRequest(Class<T> valueType) {
+		this.valueType = valueType;
+	}
+	
 	@Override
 	public String getName() {
 		return this.toString();
@@ -35,5 +45,9 @@ public enum DataRequest implements Column {
 	public String getSchemaName() {
 		return "";
 	}
-
+	
+	@Override
+	public Class<?> getValueType() {
+		return this.valueType;
+	}
 }

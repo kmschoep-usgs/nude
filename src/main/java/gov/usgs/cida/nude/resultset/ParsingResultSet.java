@@ -24,7 +24,7 @@ import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.Map;
 
-public abstract class ParsingResultSet extends IndexImplResultSet implements ColumnGroupedResultSet {
+public abstract class ParsingResultSet extends IndexImplResultSet implements CGResultSet {
 	protected boolean isClosed = false;
 	
 	protected ResultSetMetaData metadata = new ParsingResultSetMetaData();

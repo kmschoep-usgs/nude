@@ -26,4 +26,9 @@ public interface Column {
 	 * @return the name of the schema the columns belongs to
 	 */
 	public String getSchemaName();
+	
+	/**
+	 * @return the Class that this column is expected to hold
+	 */
+	public Class<?> getValueType();
 }

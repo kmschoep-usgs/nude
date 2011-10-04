@@ -1,7 +1,7 @@
 package gov.usgs.cida.nude.gel;
 
 import gov.usgs.cida.nude.resultset.CGResultSetMetaData;
-import gov.usgs.cida.nude.resultset.ColumnGroupedResultSet;
+import gov.usgs.cida.nude.resultset.CGResultSet;
 import gov.usgs.cida.nude.resultset.CursorLocation.Location;
 import gov.usgs.cida.nude.resultset.StringValImplResultSet;
 import gov.usgs.cida.nude.table.Column;
@@ -16,7 +16,7 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
 
-public class GelledResultSet extends StringValImplResultSet implements ColumnGroupedResultSet {
+public class GelledResultSet extends StringValImplResultSet implements CGResultSet {
 	
 	protected boolean isClosed;
 	protected final Gel gel;

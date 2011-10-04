@@ -6,6 +6,16 @@ public enum ClientData implements Column {
 	timestamp,
 	value;
 
+	private Class<?> valueType;
+	
+	private ClientData() {
+		this.valueType = String.class;
+	}
+	
+	private <T> ClientData(Class<T> valueType) {
+		this.valueType = valueType;
+	}
+	
 	@Override
 	public String getName() {
 		return this.toString();
@@ -29,6 +39,11 @@ public enum ClientData implements Column {
 	@Override
 	public String getSchemaName() {
 		return "";
+	}
+	
+	@Override
+	public Class<?> getValueType() {
+		return this.valueType;
 	}
 	
 }

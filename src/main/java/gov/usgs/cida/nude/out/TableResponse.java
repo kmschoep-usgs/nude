@@ -1,18 +1,18 @@
 package gov.usgs.cida.nude.out;
 
-import gov.usgs.cida.nude.resultset.ColumnGroupedResultSet;
+import gov.usgs.cida.nude.resultset.CGResultSet;
 import gov.usgs.cida.spec.jsl.mapping.NodeAttribute;
 
 import javax.xml.stream.XMLStreamReader;
 
 public class TableResponse {
 
-	protected final ColumnGroupedResultSet rs;
+	protected final CGResultSet rs;
 	protected final String docTag;
 	protected final String rowTag;
 	protected final String fullRowCount;
 	
-	public TableResponse(ColumnGroupedResultSet rset) {
+	public TableResponse(CGResultSet rset) {
 		this.rs = rset;
 		this.docTag = "success";
 		this.rowTag = "data";

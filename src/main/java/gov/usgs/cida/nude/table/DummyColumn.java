@@ -1,8 +1,18 @@
 package gov.usgs.cida.nude.table;
 
 public enum DummyColumn implements Column {
-	DUMMY;
+	JOIN;
 
+	private Class<?> valueType;
+	
+	private DummyColumn() {
+		this.valueType = String.class;
+	}
+	
+	private <T> DummyColumn(Class<T> valueType) {
+		this.valueType = valueType;
+	}
+	
 	@Override
 	public String getName() {
 		return this.toString();
@@ -26,6 +36,11 @@ public enum DummyColumn implements Column {
 	@Override
 	public String getSchemaName() {
 		return "";
+	}
+	
+	@Override
+	public Class<?> getValueType() {
+		return this.valueType;
 	}
 
 }

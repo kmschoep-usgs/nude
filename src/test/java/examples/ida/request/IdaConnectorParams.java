@@ -45,6 +45,7 @@ public enum IdaConnectorParams implements Column {
 		return "";
 	}
 	
+	@Override
 	public Class<?> getValueType() {
 		return this.valueType;
 	}
