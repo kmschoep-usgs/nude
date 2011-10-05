@@ -3,7 +3,6 @@ package examples.ida;
 import gov.usgs.cida.nude.connector.http.AbstractHttpConnector;
 import gov.usgs.cida.nude.connector.parser.IParser;
 import gov.usgs.cida.nude.provider.http.HttpProvider;
-import gov.usgs.cida.nude.resultset.CGResultSet;
 
 import java.sql.ResultSet;
 
@@ -24,7 +23,7 @@ public class IdaDataConnector extends AbstractHttpConnector {
 	}
 
 	@Override
-	public CGResultSet getResultSet() {
+	public ResultSet getResultSet() {
 		// TODO Auto-generated method stub
 		return null;
 	}

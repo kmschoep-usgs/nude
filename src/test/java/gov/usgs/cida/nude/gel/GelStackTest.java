@@ -7,7 +7,6 @@ import static org.junit.Assert.assertTrue;
 import examples.ida.response.ClientData;
 import examples.ida.response.IdaData;
 import gov.usgs.cida.nude.gel.transforms.GelTransform;
-import gov.usgs.cida.nude.resultset.CGResultSet;
 import gov.usgs.cida.nude.resultset.StringTableResultSet;
 import gov.usgs.cida.nude.table.Column;
 import gov.usgs.cida.nude.table.ColumnGrouping;
@@ -69,7 +68,7 @@ public class GelStackTest {
 	
 	@Test
 	public void testGellingResults() throws Exception {
-		CGResultSet input = buildInputResultSet();
+		ResultSet input = buildInputResultSet();
 		ResultSet exOut = buildExpectedOutput();
 		GelStack gelStack = new GelStack();
 		
@@ -84,7 +83,7 @@ public class GelStackTest {
 		
 		gelStack.addGel(gb.buildGel());
 		
-		List<CGResultSet> inputs = new ArrayList<CGResultSet>();
+		List<ResultSet> inputs = new ArrayList<ResultSet>();
 		inputs.add(input);
 		
 		ResultSet output = gelStack.filter(inputs);
@@ -113,8 +112,8 @@ public class GelStackTest {
 	
 	@Test
 	public void testMuxGelling() throws SQLException {
-		CGResultSet input = buildInputResultSet();
-		CGResultSet muxIn = buildMuxTestResultSet();
+		ResultSet input = buildInputResultSet();
+		ResultSet muxIn = buildMuxTestResultSet();
 		ResultSet exOut = buildMuxOut();
 		GelStack gelStack = new GelStack();
 		
@@ -129,7 +128,7 @@ public class GelStackTest {
 		
 		gelStack.addGel(gb.buildGel());
 		
-		List<CGResultSet> inputs = new ArrayList<CGResultSet>();
+		List<ResultSet> inputs = new ArrayList<ResultSet>();
 		inputs.add(input);
 		inputs.add(muxIn);
 		
@@ -195,7 +194,7 @@ public class GelStackTest {
 		return result;
 	}
 	
-	public CGResultSet buildInputResultSet() {
+	public ResultSet buildInputResultSet() {
 		ResultSet result = null;
 		
 		StringTableResultSet rs = new StringTableResultSet(this.inColGroup);
@@ -216,10 +215,10 @@ public class GelStackTest {
 		}
 		
 		result = rs;
-		return (CGResultSet) result;
+		return result;
 	}
 	
-	public CGResultSet buildMuxTestResultSet() {
+	public ResultSet buildMuxTestResultSet() {
 		ResultSet result = null;
 		
 		StringTableResultSet rs = new StringTableResultSet(this.muxCg);
@@ -234,7 +233,7 @@ public class GelStackTest {
 		}
 		
 		result = rs;
-		return (CGResultSet) result;
+		return result;
 	}
 	
 	public ResultSet buildMuxOut() {

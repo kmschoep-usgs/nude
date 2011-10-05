@@ -1,18 +1,19 @@
 package gov.usgs.cida.nude.out;
 
-import gov.usgs.cida.nude.resultset.CGResultSet;
 import gov.usgs.cida.spec.jsl.mapping.NodeAttribute;
+
+import java.sql.ResultSet;
 
 import javax.xml.stream.XMLStreamReader;
 
 public class TableResponse {
 
-	protected final CGResultSet rs;
+	protected final ResultSet rs;
 	protected final String docTag;
 	protected final String rowTag;
 	protected final String fullRowCount;
 	
-	public TableResponse(CGResultSet rset) {
+	public TableResponse(ResultSet rset) {
 		this.rs = rset;
 		this.docTag = "success";
 		this.rowTag = "data";
@@ -20,7 +21,7 @@ public class TableResponse {
 	}
 	
 	public XMLStreamReader makeXMLReader() {
-		return new CGXmlReader(rs, this.getDocTag(), this.getRowTag(), new NodeAttribute[] {new NodeAttribute("rowCount", this.getFullRowCount(), 0, false, null)}, null);
+		return new CGXmlReader(this.rs, this.getDocTag(), this.getRowTag(), new NodeAttribute[] {new NodeAttribute("rowCount", this.getFullRowCount(), 0, false, null)}, null);
 	}
 
 	public String getDocTag() {

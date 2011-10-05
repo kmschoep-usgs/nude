@@ -6,7 +6,6 @@ import examples.ida.IdaOverseer;
 import examples.ida.request.IdaConnectorParams;
 import gov.usgs.cida.nude.params.OutputFormat;
 import gov.usgs.cida.nude.provider.http.HttpProvider;
-import gov.usgs.cida.nude.resultset.CGResultSet;
 import gov.usgs.cida.nude.resultset.StringTableResultSet;
 import gov.usgs.cida.nude.table.Column;
 import gov.usgs.cida.nude.table.ColumnGrouping;
@@ -14,6 +13,7 @@ import gov.usgs.cida.nude.table.DummyColumn;
 import gov.usgs.cida.nude.values.TableRow;
 
 import java.io.StringWriter;
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -81,8 +81,8 @@ public class IdaOverseerTest {
 		assertEquals(expected, actual);
 	}
 	
-	public static CGResultSet buildXmlFormatParam() {
-		CGResultSet result = null;
+	public static ResultSet buildXmlFormatParam() {
+		ResultSet result = null;
 		
 		ColumnGrouping colGroup = new ColumnGrouping(DummyColumn.JOIN, Arrays.asList(new Column[] {DummyColumn.JOIN, OutputFormat.FORMAT_TYPE, OutputFormat.SCHEMA_NAME}));
 		StringTableResultSet params = new StringTableResultSet(colGroup);
@@ -97,8 +97,8 @@ public class IdaOverseerTest {
 		return result;
 	}
 	
-	public static CGResultSet buildIdaParams(String siteNo) {
-		CGResultSet result = null;
+	public static ResultSet buildIdaParams(String siteNo) {
+		ResultSet result = null;
 		
 		List<Column> colList = new ArrayList<Column>();
 		colList.add(DummyColumn.JOIN);

@@ -1,6 +1,5 @@
 package gov.usgs.cida.nude.out;
 
-import gov.usgs.cida.nude.resultset.CGResultSet;
 import gov.usgs.cida.nude.table.ColumnGrouping;
 import gov.usgs.cida.spec.jsl.mapping.ColumnMapping;
 import gov.usgs.cida.spec.jsl.mapping.NodeAttribute;
@@ -32,14 +31,14 @@ public class CGXmlReader extends BasicXMLStreamReader {
 	
 	protected final Stack<String> elementStack = new Stack<String>();
 	
-	public CGXmlReader(CGResultSet rset, String docElement, String rowElement, NodeAttribute[] docAttributes, NodeAttribute[] rowAttributes) {
+	public CGXmlReader(ResultSet rset, String docElement, String rowElement, NodeAttribute[] docAttributes, NodeAttribute[] rowAttributes) {
 		this._rset = rset;
 		this.docElement = docElement;
 		this.rowElement = rowElement;
 		this.docAttributes = docAttributes;
 		this.rowAttributes = rowAttributes;
 		
-		this.columnMappings = ColumnGrouping.getColumnMappings(rset.getColumnGrouping());
+		this.columnMappings = ColumnGrouping.getColumnMappings(ColumnGrouping.getColumnGrouping(rset));
 	}
 	
 	@Override

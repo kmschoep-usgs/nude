@@ -1,8 +1,8 @@
 package gov.usgs.cida.nude.gel;
 
-import gov.usgs.cida.nude.resultset.CGResultSet;
 import gov.usgs.cida.nude.resultset.MuxResultSet;
 
+import java.sql.ResultSet;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -18,7 +18,7 @@ public class GelStack {
 		this.gels.add(buildGel);
 	}
 
-	public GelledResultSet filter(List<CGResultSet> input) {
+	public GelledResultSet filter(List<ResultSet> input) {
 		GelledResultSet result = null;
 		
 		for (Gel gel : this.gels) {

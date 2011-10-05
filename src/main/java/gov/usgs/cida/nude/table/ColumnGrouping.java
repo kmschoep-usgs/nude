@@ -1,7 +1,11 @@
 package gov.usgs.cida.nude.table;
 
+import gov.usgs.cida.nude.resultset.CGResultSetMetaData;
 import gov.usgs.cida.spec.jsl.mapping.ColumnMapping;
 
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -11,7 +15,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class ColumnGrouping implements Iterable<Column> {
+	private static final Logger log = LoggerFactory
+			.getLogger(ColumnGrouping.class);
 	protected final Column primaryKeyColumn;
 	protected final Map<String, Integer> colToIndex;
 	protected final List<Column> columns;
@@ -19,6 +28,14 @@ public class ColumnGrouping implements Iterable<Column> {
 	
 	public ColumnGrouping(Column primaryKeyColumn) {
 		this(primaryKeyColumn, new ArrayList<Column>());
+	}
+	
+	/**
+	 * Takes the first column and expects it to be the primary key
+	 * @param columns
+	 */
+	public ColumnGrouping(List<Column> columns) {
+		this(columns.get(0), columns);
 	}
 	
 	/**
@@ -75,6 +92,11 @@ public class ColumnGrouping implements Iterable<Column> {
 		return result;
 	}
 	
+	/**
+	 * 1 indexed
+	 * @param index
+	 * @return
+	 */
 	public Column get(int index) {
 		return this.columns.get(index - 1);
 	}
@@ -108,6 +130,48 @@ public class ColumnGrouping implements Iterable<Column> {
 		}
 		
 		result = cm.toArray(new ColumnMapping[0]);
+		return result;
+	}
+	
+	public static ColumnGrouping getColumnGrouping(ResultSet rset) {
+		ColumnGrouping result = null;
+		
+		try {
+			if (null != rset) {
+				ResultSetMetaData md = rset.getMetaData();
+				if (null != md) {
+					if (md.isWrapperFor(CGResultSetMetaData.class)) {
+						CGResultSetMetaData cgmd = md.unwrap(CGResultSetMetaData.class);
+						result = cgmd.getColumnGrouping();
+					} else {
+						List<Column> cols = new ArrayList<Column>();
+						int numCols = md.getColumnCount();
+						
+						for (int i = 1; i <= numCols; i++) {
+							String colName = md.getColumnName(i);
+							String tabName = md.getTableName(i);
+							String schName = md.getSchemaName(i);
+							Class<?> valType = Class.forName(md.getColumnClassName(i));
+							
+							Column col = new SimpleColumn(colName, tabName, schName, valType);
+							
+							cols.add(col);
+						}
+						
+						result = new ColumnGrouping(cols);
+					}
+				} else {
+					log.trace("non-null ResultSet evaluated null ResultSetMetaData");
+				}
+			} else {
+				log.trace("null ResultSet passed to getColumnGrouping");
+			}
+		} catch (SQLException e) {
+			log.error("Exception caught when getting ColumnGrouping from ResultSet", e);
+		} catch (ClassNotFoundException e) {
+			log.error("Exception caught when deciphering valueType of Column", e);
+		}
+		
 		return result;
 	}
 }

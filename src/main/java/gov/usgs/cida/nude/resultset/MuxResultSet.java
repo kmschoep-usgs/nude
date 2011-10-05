@@ -20,12 +20,12 @@ import java.util.Queue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class MuxResultSet extends StringValImplResultSet implements CGResultSet {
+public class MuxResultSet extends StringValImplResultSet implements ResultSet {
 	private static final Logger log = LoggerFactory
 			.getLogger(MuxResultSet.class);
 	protected boolean isClosed;
 		
-	protected final Map<CGResultSet, TableRow> rsetRows;
+	protected final Map<ResultSet, TableRow> rsetRows;
 	
 	protected final ResultSetMetaData metadata;
 	
@@ -34,21 +34,21 @@ public class MuxResultSet extends StringValImplResultSet implements CGResultSet 
 	protected TableRow currRow;
 	protected final Queue<TableRow> nextRows;
 	
-	public MuxResultSet(Collection<CGResultSet> inputs) {
+	public MuxResultSet(Collection<ResultSet> inputs) {
 		this.isClosed = false;
 		
 		if (null == inputs) {
-			inputs = new ArrayList<CGResultSet>();
+			inputs = new ArrayList<ResultSet>();
 		}
 		
-		this.rsetRows = new HashMap<CGResultSet, TableRow>();
-		for (CGResultSet rs : inputs) {
+		this.rsetRows = new HashMap<ResultSet, TableRow>();
+		for (ResultSet rs : inputs) {
 			this.rsetRows.put(rs, null);
 		}
 		
 		ColumnGrouping columns = null;
-		for (CGResultSet rs : inputs) {
-			ColumnGrouping cg = rs.getColumnGrouping(); 
+		for (ResultSet rs : inputs) {
+			ColumnGrouping cg = ColumnGrouping.getColumnGrouping(rs);
 			if (null == columns) {
 				columns = new ColumnGrouping(cg.getPrimaryKey());
 			}
@@ -99,10 +99,10 @@ public class MuxResultSet extends StringValImplResultSet implements CGResultSet 
 		TableRow result = null;
 		Map<Column, String> row = new HashMap<Column, String>();
 		
-		List<Entry<CGResultSet, TableRow>> usedEntries = new ArrayList<Entry<CGResultSet, TableRow>>();
+		List<Entry<ResultSet, TableRow>> usedEntries = new ArrayList<Entry<ResultSet, TableRow>>();
 		TableRow minPrimaryKey = null;
-		for (Entry<CGResultSet, TableRow> rsTr : this.rsetRows.entrySet()) {
-			CGResultSet rs = rsTr.getKey();
+		for (Entry<ResultSet, TableRow> rsTr : this.rsetRows.entrySet()) {
+			ResultSet rs = rsTr.getKey();
 			TableRow tr = rsTr.getValue();
 			
 			if (null == tr) { //Build next row
@@ -133,7 +133,7 @@ public class MuxResultSet extends StringValImplResultSet implements CGResultSet 
 			}
 		}
 		
-		for (Entry<CGResultSet, TableRow> ent : usedEntries) {
+		for (Entry<ResultSet, TableRow> ent : usedEntries) {
 			row.putAll(ent.getValue().getMap());
 			ent.setValue(null);
 		}
@@ -144,15 +144,15 @@ public class MuxResultSet extends StringValImplResultSet implements CGResultSet 
 		}
 	}
 	
-	protected static TableRow buildRow(CGResultSet rs) throws SQLException {
+	protected static TableRow buildRow(ResultSet rs) throws SQLException {
 		TableRow result = null;
 		Map<Column, String> row = new HashMap<Column, String>();
 		
-		for (Column col : rs.getColumnGrouping()) {
+		for (Column col : ColumnGrouping.getColumnGrouping(rs)) { //TODO
 			row.put(col, rs.getString(col.getName()));
 		}
 		
-		result = new TableRow(rs.getColumnGrouping(), row);
+		result = new TableRow(ColumnGrouping.getColumnGrouping(rs), row);
 		
 		return result;
 	}
@@ -196,11 +196,6 @@ public class MuxResultSet extends StringValImplResultSet implements CGResultSet 
 	@Override
 	public boolean isClosed() throws SQLException {
 		return this.isClosed;
-	}
-
-	@Override
-	public ColumnGrouping getColumnGrouping() {
-		return this.columns;
 	}
 
 }

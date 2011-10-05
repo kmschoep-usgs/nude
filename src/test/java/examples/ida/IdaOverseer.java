@@ -11,7 +11,6 @@ import gov.usgs.cida.nude.out.TableResponse;
 import gov.usgs.cida.nude.overseer.Overseer;
 import gov.usgs.cida.nude.params.OutputFormat;
 import gov.usgs.cida.nude.provider.http.HttpProvider;
-import gov.usgs.cida.nude.resultset.CGResultSet;
 import gov.usgs.cida.nude.table.Column;
 import gov.usgs.cida.nude.table.ColumnGrouping;
 import gov.usgs.cida.nude.table.DummyColumn;
@@ -21,10 +20,10 @@ import gov.usgs.webservices.framework.basic.FormatType;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,17 +46,17 @@ public class IdaOverseer extends Overseer {
 		gelParamsIn = buildInputGelStack();
 	}
 	
-	protected List<CGResultSet> inputs;
+	protected List<ResultSet> inputs;
 	
 	protected HttpProvider httpProvider;
 	
 	public IdaOverseer(HttpProvider httpProvider) {
-		this.inputs = new ArrayList<CGResultSet>();
+		this.inputs = new ArrayList<ResultSet>();
 		this.httpProvider = httpProvider;
 	}
 	
 	@Override
-	public void addInput(CGResultSet in) {
+	public void addInput(ResultSet in) {
 		this.inputs.add(in);
 	}
 
@@ -71,7 +70,7 @@ public class IdaOverseer extends Overseer {
 		GelStack gelOut = req.outputFilter;
 		
 		// Get the ResultSets from the Connectors.
-		List<CGResultSet> outputs = queryConnectors(requestedConnectors);
+		List<ResultSet> outputs = queryConnectors(requestedConnectors);
 		
 		// GelStack the ResultSets
 		GelledResultSet results = gelOut.filter(outputs);
@@ -84,11 +83,15 @@ public class IdaOverseer extends Overseer {
 			GelledResultSet params) {
 		OverseerRequest result = null;
 		
+		
+		
 		List<HttpConnector> cons = new ArrayList<HttpConnector>();
 		//TODO configure
 		
 		GelStack gelOut = new GelStack();
 		//TODO configure
+		
+		result = new OverseerRequest(cons, gelOut);
 		
 		return result;
 	}
@@ -103,13 +106,13 @@ public class IdaOverseer extends Overseer {
 		}
 	}
 	
-	public static List<CGResultSet> queryConnectors(List<? extends IConnector> reqConnectors) {
-		List<CGResultSet> result = new ArrayList<CGResultSet>();
+	public static List<ResultSet> queryConnectors(List<? extends IConnector> reqConnectors) {
+		List<ResultSet> result = new ArrayList<ResultSet>();
 		
 		if (null != reqConnectors) {
 			for (IConnector con : reqConnectors) {
 				if (con.isReady()) {
-					CGResultSet resp = con.getResultSet();
+					ResultSet resp = con.getResultSet();
 					if (null != resp) {
 						result.add(resp);
 					}
@@ -152,6 +155,7 @@ public class IdaOverseer extends Overseer {
 		result.addGel(gb.buildGel());
 		
 		//TODO add more transforms for configuration
+		
 		
 		return result;
 	}

@@ -6,7 +6,6 @@ import examples.ida.request.MetadataRequest;
 import gov.usgs.cida.nude.out.Dispatcher;
 import gov.usgs.cida.nude.out.TableResponse;
 import gov.usgs.cida.nude.provider.http.HttpProvider;
-import gov.usgs.cida.nude.resultset.CGResultSet;
 import gov.usgs.cida.nude.resultset.StringTableResultSet;
 import gov.usgs.cida.nude.table.ColumnGrouping;
 import gov.usgs.cida.nude.values.TableRow;
@@ -16,12 +15,12 @@ import gov.usgs.cida.spec.out.StreamResponse;
 import gov.usgs.webservices.framework.basic.FormatType;
 
 import java.io.StringWriter;
+import java.sql.ResultSet;
 
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class IdaConnectorTest {
@@ -59,7 +58,9 @@ public class IdaConnectorTest {
 		
 		ida.addInput(params);
 		
-		CGResultSet rset = null;
+		
+		
+		ResultSet rset = null;
 		StringWriter sw = null;
 		
 		try {

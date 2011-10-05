@@ -13,14 +13,31 @@ public class CGResultSetMetaData implements ResultSetMetaData {
 		this.cg = columns;
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public <T> T unwrap(Class<T> iface) throws SQLException {
-		throw new SQLException("Instance is not unwrappable to interface: " + iface.getName());
+		T result = null;
+		if (!this.isWrapperFor(iface)) {
+			throw new SQLException("Instance is not unwrappable to interface: " + iface.getName());
+		}
+		try {
+			result = (T) this;
+		} catch (Exception e) {
+			throw new SQLException(e);
+		}
+		
+		return result;
 	}
 
 	@Override
 	public boolean isWrapperFor(Class<?> iface) throws SQLException {
-		return false;
+		boolean result = false;
+		
+		if (CGResultSetMetaData.class == iface) {
+			result = true;
+		}
+		
+		return result;
 	}
 
 	@Override
@@ -114,13 +131,13 @@ public class CGResultSetMetaData implements ResultSetMetaData {
 	@Override
 	public int getColumnType(int column) throws SQLException {
 		throwIfInvalidIndex(column);
-		return java.sql.Types.VARCHAR;
+		return java.sql.Types.VARCHAR; //TODO match this up with the column
 	}
 
 	@Override
 	public String getColumnTypeName(int column) throws SQLException {
 		throwIfInvalidIndex(column);
-		return "VARCHAR";
+		return "VARCHAR"; //TODO match this up with the column
 	}
 
 	@Override
@@ -144,7 +161,7 @@ public class CGResultSetMetaData implements ResultSetMetaData {
 	@Override
 	public String getColumnClassName(int column) throws SQLException {
 		throwIfInvalidIndex(column);
-		return String.class.getCanonicalName();
+		return this.cg.get(column).getValueType().getCanonicalName();
 	}
 	
 	protected void throwIfInvalidIndex(int column) throws SQLException {
@@ -153,4 +170,7 @@ public class CGResultSetMetaData implements ResultSetMetaData {
 		}
 	}
 	
+	public ColumnGrouping getColumnGrouping() {
+		return this.cg;
+	}
 }

@@ -1,11 +1,9 @@
 package gov.usgs.cida.nude.gel;
 
 import gov.usgs.cida.nude.resultset.CGResultSetMetaData;
-import gov.usgs.cida.nude.resultset.CGResultSet;
 import gov.usgs.cida.nude.resultset.CursorLocation.Location;
 import gov.usgs.cida.nude.resultset.StringValImplResultSet;
 import gov.usgs.cida.nude.table.Column;
-import gov.usgs.cida.nude.table.ColumnGrouping;
 import gov.usgs.cida.nude.values.TableRow;
 
 import java.sql.ResultSet;
@@ -16,7 +14,7 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
 
-public class GelledResultSet extends StringValImplResultSet implements CGResultSet {
+public class GelledResultSet extends StringValImplResultSet implements ResultSet {
 	
 	protected boolean isClosed;
 	protected final Gel gel;
@@ -134,11 +132,6 @@ public class GelledResultSet extends StringValImplResultSet implements CGResultS
 	@Override
 	public boolean isClosed() throws SQLException {
 		return this.isClosed;
-	}
-
-	@Override
-	public ColumnGrouping getColumnGrouping() {
-		return this.gel.getOutputColumns();
 	}
 
 }

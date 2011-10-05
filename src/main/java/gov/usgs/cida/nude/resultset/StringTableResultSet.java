@@ -14,6 +14,7 @@ import java.sql.Clob;
 import java.sql.Date;
 import java.sql.NClob;
 import java.sql.Ref;
+import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.RowId;
 import java.sql.SQLException;
@@ -28,7 +29,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 
-public class StringTableResultSet extends IndexImplResultSet implements Iterable<TableRow>, CGResultSet {
+public class StringTableResultSet extends IndexImplResultSet implements Iterable<TableRow>, ResultSet {
 	
 	protected boolean isClosed = false;
 	
@@ -471,11 +472,6 @@ public class StringTableResultSet extends IndexImplResultSet implements Iterable
 	@Override
 	public Iterator<TableRow> iterator() {
 		return this.rows.iterator();
-	}
-
-	@Override
-	public ColumnGrouping getColumnGrouping() {
-		return this.columns;
 	}
 
 }

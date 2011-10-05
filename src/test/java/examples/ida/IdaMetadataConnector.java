@@ -4,7 +4,6 @@ import examples.ida.response.IdaMetadata;
 import gov.usgs.cida.nude.connector.http.AbstractHttpConnector;
 import gov.usgs.cida.nude.connector.parser.IParser;
 import gov.usgs.cida.nude.provider.http.HttpProvider;
-import gov.usgs.cida.nude.resultset.CGResultSet;
 import gov.usgs.cida.nude.resultset.http.HttpResultSet;
 import gov.usgs.cida.nude.values.TableRow;
 import gov.usgs.cida.spec.jsl.Spec;
@@ -51,8 +50,8 @@ public class IdaMetadataConnector extends AbstractHttpConnector {
 	}
 	
 	@Override
-	public CGResultSet getResultSet() {
-		CGResultSet result = null;
+	public ResultSet getResultSet() {
+		ResultSet result = null;
 		
 		try {
 			HttpEntity methodEntity = makeCall();
