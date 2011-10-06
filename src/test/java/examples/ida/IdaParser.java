@@ -1,9 +1,9 @@
 package examples.ida;
 
 import examples.ida.response.IdaMetadata;
+import gov.usgs.cida.nude.column.Column;
+import gov.usgs.cida.nude.column.ColumnGrouping;
 import gov.usgs.cida.nude.connector.http.AbstractHttpParser;
-import gov.usgs.cida.nude.table.Column;
-import gov.usgs.cida.nude.table.ColumnGrouping;
 
 import java.io.BufferedReader;
 import java.io.IOException;

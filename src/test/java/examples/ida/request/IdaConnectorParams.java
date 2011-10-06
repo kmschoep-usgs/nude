@@ -2,7 +2,7 @@ package examples.ida.request;
 
 import java.util.Date;
 
-import gov.usgs.cida.nude.table.Column;
+import gov.usgs.cida.nude.column.Column;
 
 public enum IdaConnectorParams implements Column {
 	SITE_NUMBER,

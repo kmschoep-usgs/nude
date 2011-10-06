@@ -1,8 +1,8 @@
 package gov.usgs.cida.nude.gel;
 
+import gov.usgs.cida.nude.column.Column;
+import gov.usgs.cida.nude.column.ColumnGrouping;
 import gov.usgs.cida.nude.gel.transforms.GelTransform;
-import gov.usgs.cida.nude.table.Column;
-import gov.usgs.cida.nude.table.ColumnGrouping;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -1,5 +1,6 @@
 package gov.usgs.cida.nude.resultset;
 
+import gov.usgs.cida.nude.column.CGResultSetMetaData;
 import gov.usgs.cida.nude.connector.parser.IParser;
 
 import java.io.InputStream;

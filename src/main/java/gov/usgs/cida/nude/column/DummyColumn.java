@@ -1,4 +1,4 @@
-package gov.usgs.cida.nude.table;
+package gov.usgs.cida.nude.column;
 
 public enum DummyColumn implements Column {
 	JOIN;

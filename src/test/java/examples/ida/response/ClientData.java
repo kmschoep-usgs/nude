@@ -1,6 +1,6 @@
 package examples.ida.response;
 
-import gov.usgs.cida.nude.table.Column;
+import gov.usgs.cida.nude.column.Column;
 
 public enum ClientData implements Column {
 	timestamp,

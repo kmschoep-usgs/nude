@@ -1,6 +1,6 @@
 package gov.usgs.cida.nude.params;
 
-import gov.usgs.cida.nude.table.Column;
+import gov.usgs.cida.nude.column.Column;
 import gov.usgs.webservices.framework.basic.FormatType;
 
 public enum OutputFormat implements Column {

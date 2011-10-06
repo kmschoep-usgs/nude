@@ -1,7 +1,7 @@
-package gov.usgs.cida.nude.values;
+package gov.usgs.cida.nude.resultset.inmemory;
 
-import gov.usgs.cida.nude.table.Column;
-import gov.usgs.cida.nude.table.ColumnGrouping;
+import gov.usgs.cida.nude.column.Column;
+import gov.usgs.cida.nude.column.ColumnGrouping;
 
 import java.util.Collections;
 import java.util.HashMap;

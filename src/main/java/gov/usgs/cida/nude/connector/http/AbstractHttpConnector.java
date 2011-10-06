@@ -1,8 +1,8 @@
 package gov.usgs.cida.nude.connector.http;
 
+import gov.usgs.cida.nude.column.Column;
 import gov.usgs.cida.nude.provider.http.HttpProvider;
-import gov.usgs.cida.nude.table.Column;
-import gov.usgs.cida.nude.values.TableRow;
+import gov.usgs.cida.nude.resultset.inmemory.TableRow;
 
 import java.io.IOException;
 import java.sql.ResultSet;

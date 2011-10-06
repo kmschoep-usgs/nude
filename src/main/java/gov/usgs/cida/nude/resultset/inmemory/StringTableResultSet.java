@@ -1,8 +1,10 @@
-package gov.usgs.cida.nude.resultset;
+package gov.usgs.cida.nude.resultset.inmemory;
 
+import gov.usgs.cida.nude.column.CGResultSetMetaData;
+import gov.usgs.cida.nude.column.ColumnGrouping;
+import gov.usgs.cida.nude.resultset.CursorLocation;
+import gov.usgs.cida.nude.resultset.IndexImplResultSet;
 import gov.usgs.cida.nude.resultset.CursorLocation.Location;
-import gov.usgs.cida.nude.table.ColumnGrouping;
-import gov.usgs.cida.nude.values.TableRow;
 
 import java.io.InputStream;
 import java.io.Reader;

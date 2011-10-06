@@ -6,12 +6,12 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import examples.ida.response.ClientData;
 import examples.ida.response.IdaData;
+import gov.usgs.cida.nude.column.Column;
+import gov.usgs.cida.nude.column.ColumnGrouping;
+import gov.usgs.cida.nude.column.DummyColumn;
 import gov.usgs.cida.nude.gel.transforms.GelTransform;
-import gov.usgs.cida.nude.resultset.StringTableResultSet;
-import gov.usgs.cida.nude.table.Column;
-import gov.usgs.cida.nude.table.ColumnGrouping;
-import gov.usgs.cida.nude.table.DummyColumn;
-import gov.usgs.cida.nude.values.TableRow;
+import gov.usgs.cida.nude.resultset.inmemory.StringTableResultSet;
+import gov.usgs.cida.nude.resultset.inmemory.TableRow;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

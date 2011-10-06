@@ -1,41 +1,30 @@
 package gov.usgs.cida.nude.resultset;
 
-import gov.usgs.cida.nude.resultset.CursorLocation.Location;
-import gov.usgs.cida.nude.table.Column;
-import gov.usgs.cida.nude.table.ColumnGrouping;
-import gov.usgs.cida.nude.values.TableRow;
+import gov.usgs.cida.nude.column.CGResultSetMetaData;
+import gov.usgs.cida.nude.column.Column;
+import gov.usgs.cida.nude.column.ColumnGrouping;
+import gov.usgs.cida.nude.resultset.inmemory.TableRow;
 
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Queue;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class MuxResultSet extends StringValImplResultSet implements ResultSet {
+public class MuxResultSet extends PeekingResultSet {
 	private static final Logger log = LoggerFactory
 			.getLogger(MuxResultSet.class);
-	protected boolean isClosed;
 		
 	protected final Map<ResultSet, TableRow> rsetRows;
 	
-	protected final ResultSetMetaData metadata;
-	
-	protected final ColumnGrouping columns;
-	
-	protected TableRow currRow;
-	protected final Queue<TableRow> nextRows;
-	
 	public MuxResultSet(Collection<ResultSet> inputs) {
-		this.isClosed = false;
+		this.closed = false;
 		
 		if (null == inputs) {
 			inputs = new ArrayList<ResultSet>();
@@ -58,41 +47,6 @@ public class MuxResultSet extends StringValImplResultSet implements ResultSet {
 		
 		this.metadata = new CGResultSetMetaData(this.columns);
 		
-		this.currRow = null;
-		this.nextRows = new LinkedList<TableRow>();
-	}
-	
-	@Override
-	public boolean next() throws SQLException {
-		throwIfClosed(this);
-		boolean result = false;
-		
-		if (!this.isAfterLast()) {
-			if (null == this.currRow) {
-				addNextRow(); //Add an extra one if we're just starting off.
-			}
-			addNextRow();
-			
-			this.currRow = this.nextRows.poll();
-			
-			if (null == this.nextRows.peek()) {
-				this.loc.setLocation(Location.LAST);
-			}
-			
-			if (null == this.currRow) {
-				result = false;
-				this.loc.setLocation(Location.AFTERLAST);
-			} else {
-				result = true;
-				if (this.isFirst()) {
-					this.loc.setLocation(Location.MIDDLE);
-				} else if (this.isBeforeFirst()) {
-					this.loc.setLocation(Location.FIRST);
-				}
-			}
-		}
-		
-		return result;
 	}
 
 	protected void addNextRow() throws SQLException {
@@ -148,7 +102,7 @@ public class MuxResultSet extends StringValImplResultSet implements ResultSet {
 		TableRow result = null;
 		Map<Column, String> row = new HashMap<Column, String>();
 		
-		for (Column col : ColumnGrouping.getColumnGrouping(rs)) { //TODO
+		for (Column col : ColumnGrouping.getColumnGrouping(rs)) {
 			row.put(col, rs.getString(col.getName()));
 		}
 		
@@ -159,7 +113,7 @@ public class MuxResultSet extends StringValImplResultSet implements ResultSet {
 	
 	@Override
 	public void close() throws SQLException {
-		this.isClosed = true;
+		this.closed = true;
 		for (ResultSet rs : this.rsetRows.keySet()) {
 			try {
 				rs.close();
@@ -170,32 +124,9 @@ public class MuxResultSet extends StringValImplResultSet implements ResultSet {
 	}
 
 	@Override
-	public String getString(int columnIndex) throws SQLException {
-		throwIfClosed(this);
-		return this.currRow.getValue(this.columns.get(columnIndex));
-	}
-
-	@Override
 	public String getCursorName() throws SQLException {
 		throwIfClosed(this);
 		return "" + this.hashCode();
-	}
-
-	@Override
-	public ResultSetMetaData getMetaData() throws SQLException {
-		throwIfClosed(this);
-		return this.metadata;
-	}
-
-	@Override
-	public int findColumn(String columnLabel) throws SQLException {
-		throwIfClosed(this);
-		return this.columns.indexOf(columnLabel);
-	}
-
-	@Override
-	public boolean isClosed() throws SQLException {
-		return this.isClosed;
 	}
 
 }

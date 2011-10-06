@@ -1,6 +1,5 @@
-package gov.usgs.cida.nude.resultset;
+package gov.usgs.cida.nude.column;
 
-import gov.usgs.cida.nude.table.ColumnGrouping;
 
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;

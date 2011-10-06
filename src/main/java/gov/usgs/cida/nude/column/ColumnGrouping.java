@@ -1,6 +1,5 @@
-package gov.usgs.cida.nude.table;
+package gov.usgs.cida.nude.column;
 
-import gov.usgs.cida.nude.resultset.CGResultSetMetaData;
 import gov.usgs.cida.spec.jsl.mapping.ColumnMapping;
 
 import java.sql.ResultSet;

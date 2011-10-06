@@ -1,6 +1,9 @@
 package examples.ida;
 
 import examples.ida.request.IdaConnectorParams;
+import gov.usgs.cida.nude.column.Column;
+import gov.usgs.cida.nude.column.ColumnGrouping;
+import gov.usgs.cida.nude.column.DummyColumn;
 import gov.usgs.cida.nude.connector.IConnector;
 import gov.usgs.cida.nude.connector.http.HttpConnector;
 import gov.usgs.cida.nude.gel.GelBuilder;
@@ -11,9 +14,6 @@ import gov.usgs.cida.nude.out.TableResponse;
 import gov.usgs.cida.nude.overseer.Overseer;
 import gov.usgs.cida.nude.params.OutputFormat;
 import gov.usgs.cida.nude.provider.http.HttpProvider;
-import gov.usgs.cida.nude.table.Column;
-import gov.usgs.cida.nude.table.ColumnGrouping;
-import gov.usgs.cida.nude.table.DummyColumn;
 import gov.usgs.cida.spec.formatting.ReturnType;
 import gov.usgs.cida.spec.out.StreamResponse;
 import gov.usgs.webservices.framework.basic.FormatType;

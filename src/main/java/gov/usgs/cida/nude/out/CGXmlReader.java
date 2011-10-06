@@ -1,6 +1,6 @@
 package gov.usgs.cida.nude.out;
 
-import gov.usgs.cida.nude.table.ColumnGrouping;
+import gov.usgs.cida.nude.column.ColumnGrouping;
 import gov.usgs.cida.spec.jsl.mapping.ColumnMapping;
 import gov.usgs.cida.spec.jsl.mapping.NodeAttribute;
 import gov.usgs.cida.spec.resultset.JoiningResultSet;

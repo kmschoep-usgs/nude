@@ -344,5 +344,14 @@ public abstract class StringValImplResultSet extends IndexImplResultSet {
 		throwIfClosed(this);
 		return false;
 	}
-
+	
+	public static void throwIfBadLocation(CursorLocation loc) throws SQLException {
+		Location currLoc = loc.getLocation();
+		if (Location.BEFOREFIRST == currLoc) {
+			throw new SQLException("Cursor positioned before first row");
+		}
+		if (Location.AFTERLAST == currLoc) {
+			throw new SQLException("Cursor positioned after last row");
+		}
+	}
 }
