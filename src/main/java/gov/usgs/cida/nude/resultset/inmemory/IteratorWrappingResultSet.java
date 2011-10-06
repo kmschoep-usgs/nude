@@ -2,7 +2,6 @@ package gov.usgs.cida.nude.resultset.inmemory;
 
 import gov.usgs.cida.nude.column.CGResultSetMetaData;
 import gov.usgs.cida.nude.resultset.CursorLocation.Location;
-import gov.usgs.cida.nude.resultset.PeekingResultSet;
 
 import java.sql.SQLException;
 import java.util.Iterator;

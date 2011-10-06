@@ -1,6 +1,6 @@
 package gov.usgs.cida.nude.gel;
 
-import gov.usgs.cida.nude.resultset.MuxResultSet;
+import gov.usgs.cida.nude.resultset.inmemory.MuxResultSet;
 
 import java.sql.ResultSet;
 import java.util.LinkedList;

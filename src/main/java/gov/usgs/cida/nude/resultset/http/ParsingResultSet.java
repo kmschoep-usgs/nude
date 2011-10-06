@@ -1,7 +1,8 @@
-package gov.usgs.cida.nude.resultset;
+package gov.usgs.cida.nude.resultset.http;
 
 import gov.usgs.cida.nude.column.CGResultSetMetaData;
 import gov.usgs.cida.nude.connector.parser.IParser;
+import gov.usgs.cida.nude.resultset.IndexImplResultSet;
 
 import java.io.InputStream;
 import java.io.Reader;

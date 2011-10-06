@@ -1,9 +1,8 @@
-package gov.usgs.cida.nude.resultset;
+package gov.usgs.cida.nude.resultset.inmemory;
 
 import gov.usgs.cida.nude.column.CGResultSetMetaData;
 import gov.usgs.cida.nude.column.Column;
 import gov.usgs.cida.nude.column.ColumnGrouping;
-import gov.usgs.cida.nude.resultset.inmemory.TableRow;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

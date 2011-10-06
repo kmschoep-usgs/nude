@@ -1,7 +1,6 @@
 package gov.usgs.cida.nude.resultset.http;
 
 import gov.usgs.cida.nude.connector.parser.IParser;
-import gov.usgs.cida.nude.resultset.ParsingResultSet;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
