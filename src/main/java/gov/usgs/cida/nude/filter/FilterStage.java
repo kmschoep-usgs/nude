@@ -1,20 +1,19 @@
-package gov.usgs.cida.nude.gel;
+package gov.usgs.cida.nude.filter;
 
 import gov.usgs.cida.nude.column.Column;
 import gov.usgs.cida.nude.column.ColumnGrouping;
-import gov.usgs.cida.nude.gel.transforms.GelTransform;
 import gov.usgs.cida.nude.resultset.inmemory.TableRow;
 
 import java.sql.SQLException;
 import java.util.Collections;
 import java.util.Map;
 
-public class Gel {
+public class FilterStage {
 	protected final ColumnGrouping inColumns;
-	protected final Map<Column, GelTransform> transforms;
+	protected final Map<Column, ColumnAlias> transforms;
 	protected final ColumnGrouping outColumns;
 	
-	public Gel(ColumnGrouping in, Map<Column, GelTransform> transform, ColumnGrouping out) {
+	public FilterStage(ColumnGrouping in, Map<Column, ColumnAlias> transform, ColumnGrouping out) {
 		this.inColumns = in;
 		this.transforms = Collections.unmodifiableMap(transform);
 		this.outColumns = out;

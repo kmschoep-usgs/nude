@@ -6,9 +6,9 @@ import gov.usgs.cida.nude.column.ColumnGrouping;
 import gov.usgs.cida.nude.column.DummyColumn;
 import gov.usgs.cida.nude.connector.IConnector;
 import gov.usgs.cida.nude.connector.http.HttpConnector;
-import gov.usgs.cida.nude.gel.GelBuilder;
-import gov.usgs.cida.nude.gel.GelStack;
-import gov.usgs.cida.nude.gel.GelledResultSet;
+import gov.usgs.cida.nude.filter.FilterStageBuilder;
+import gov.usgs.cida.nude.filter.FilteredResultSet;
+import gov.usgs.cida.nude.filter.NudeFilter;
 import gov.usgs.cida.nude.out.Dispatcher;
 import gov.usgs.cida.nude.out.TableResponse;
 import gov.usgs.cida.nude.overseer.Overseer;
@@ -32,7 +32,7 @@ import javax.xml.stream.XMLStreamException;
 
 public class IdaOverseer extends Overseer {
 	
-	protected static GelStack gelParamsIn;
+	protected static NudeFilter gelParamsIn;
 	
 	/**
 	 * Use like this:<br>
@@ -63,24 +63,24 @@ public class IdaOverseer extends Overseer {
 	@Override
 	public void dispatch(Writer out) throws SQLException, XMLStreamException, IOException {
 		// run the inputs through the GelStack
-		GelledResultSet params = gelParamsIn.filter(inputs);
+		FilteredResultSet params = gelParamsIn.filter(inputs);
 		
 		OverseerRequest req = configureRequest(params);
 		List<? extends IConnector> requestedConnectors = req.reqConnectors;
-		GelStack gelOut = req.outputFilter;
+		NudeFilter gelOut = req.outputFilter;
 		
 		// Get the ResultSets from the Connectors.
 		List<ResultSet> outputs = queryConnectors(requestedConnectors);
 		
 		// GelStack the ResultSets
-		GelledResultSet results = gelOut.filter(outputs);
+		FilteredResultSet results = gelOut.filter(outputs);
 		// pass the output to the dispatcher
 		StreamResponse outStrm = Dispatcher.buildFormattedResponse(ReturnType.xml, FormatType.XML, new TableResponse(results));
 		StreamResponse.dispatch(outStrm, out);
 	}
 	
 	public static OverseerRequest configureRequest(
-			GelledResultSet params) {
+			FilteredResultSet params) {
 		OverseerRequest result = null;
 		
 		
@@ -88,7 +88,7 @@ public class IdaOverseer extends Overseer {
 		List<HttpConnector> cons = new ArrayList<HttpConnector>();
 		//TODO configure
 		
-		GelStack gelOut = new GelStack();
+		NudeFilter gelOut = new NudeFilter();
 		//TODO configure
 		
 		result = new OverseerRequest(cons, gelOut);
@@ -98,9 +98,9 @@ public class IdaOverseer extends Overseer {
 
 	public static class OverseerRequest {
 		public final List<? extends IConnector> reqConnectors;
-		public final GelStack outputFilter;
+		public final NudeFilter outputFilter;
 		
-		public OverseerRequest(List<? extends IConnector> reqConnectors, GelStack outputFilter) {
+		public OverseerRequest(List<? extends IConnector> reqConnectors, NudeFilter outputFilter) {
 			this.reqConnectors = reqConnectors;
 			this.outputFilter = outputFilter;
 		}
@@ -147,11 +147,11 @@ public class IdaOverseer extends Overseer {
 		return result;
 	}
 	
-	public static GelStack buildInputGelStack() {
-		GelStack result = null;
+	public static NudeFilter buildInputGelStack() {
+		NudeFilter result = null;
 		
-		result = new GelStack();
-		GelBuilder gb = new GelBuilder(buildExpectedUserInput());
+		result = new NudeFilter();
+		FilterStageBuilder gb = new FilterStageBuilder(buildExpectedUserInput());
 		result.addGel(gb.buildGel());
 		
 		//TODO add more transforms for configuration

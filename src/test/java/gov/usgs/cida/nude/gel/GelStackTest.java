@@ -9,7 +9,9 @@ import examples.ida.response.IdaData;
 import gov.usgs.cida.nude.column.Column;
 import gov.usgs.cida.nude.column.ColumnGrouping;
 import gov.usgs.cida.nude.column.DummyColumn;
-import gov.usgs.cida.nude.gel.transforms.GelTransform;
+import gov.usgs.cida.nude.filter.ColumnAlias;
+import gov.usgs.cida.nude.filter.FilterStageBuilder;
+import gov.usgs.cida.nude.filter.NudeFilter;
 import gov.usgs.cida.nude.resultset.inmemory.StringTableResultSet;
 import gov.usgs.cida.nude.resultset.inmemory.TableRow;
 
@@ -70,16 +72,16 @@ public class GelStackTest {
 	public void testGellingResults() throws Exception {
 		ResultSet input = buildInputResultSet();
 		ResultSet exOut = buildExpectedOutput();
-		GelStack gelStack = new GelStack();
+		NudeFilter gelStack = new NudeFilter();
 		
-		GelBuilder gb = new GelBuilder(inColGroup);
+		FilterStageBuilder gb = new FilterStageBuilder(inColGroup);
 		
-		gb.addGelTransform(ClientData.timestamp, new GelTransform(IdaData.date_time));
-		gb.addGelTransform(ClientData.value, new GelTransform(IdaData.value));
+		gb.addGelTransform(ClientData.timestamp, new ColumnAlias(IdaData.date_time));
+		gb.addGelTransform(ClientData.value, new ColumnAlias(IdaData.value));
 		
 		gelStack.addGel(gb.buildGel());
 		
-		gb = new GelBuilder(outColGroup);
+		gb = new FilterStageBuilder(outColGroup);
 		
 		gelStack.addGel(gb.buildGel());
 		
@@ -115,16 +117,16 @@ public class GelStackTest {
 		ResultSet input = buildInputResultSet();
 		ResultSet muxIn = buildMuxTestResultSet();
 		ResultSet exOut = buildMuxOut();
-		GelStack gelStack = new GelStack();
+		NudeFilter gelStack = new NudeFilter();
 		
-		GelBuilder gb = new GelBuilder(inColGroup.join(muxCg));
+		FilterStageBuilder gb = new FilterStageBuilder(inColGroup.join(muxCg));
 		
-		gb.addGelTransform(ClientData.timestamp, new GelTransform(IdaData.date_time));
-		gb.addGelTransform(ClientData.value, new GelTransform(IdaData.value));
+		gb.addGelTransform(ClientData.timestamp, new ColumnAlias(IdaData.date_time));
+		gb.addGelTransform(ClientData.value, new ColumnAlias(IdaData.value));
 		
 		gelStack.addGel(gb.buildGel());
 		
-		gb = new GelBuilder(this.muxOutCg);
+		gb = new FilterStageBuilder(this.muxOutCg);
 		
 		gelStack.addGel(gb.buildGel());
 		
