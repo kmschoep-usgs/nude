@@ -9,6 +9,7 @@ public abstract class AbstractHttpParser implements HttpParser {
 	/**
 	 * 1 index based
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public <T> SpecValue<T> getValue(Class<T> type, int columnIndex)
 			throws SQLException {
