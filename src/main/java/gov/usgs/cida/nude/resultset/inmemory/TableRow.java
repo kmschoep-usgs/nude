@@ -3,6 +3,8 @@ package gov.usgs.cida.nude.resultset.inmemory;
 import gov.usgs.cida.nude.column.Column;
 import gov.usgs.cida.nude.column.ColumnGrouping;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -57,5 +59,20 @@ public class TableRow implements Comparable<TableRow>{
 	@Override
 	public int compareTo(TableRow o) {
 		return this.getValue(this.getColumns().getPrimaryKey()).compareTo(o.getValue(this.getColumns().getPrimaryKey()));
+	}
+	
+	public static TableRow buildTableRow(ResultSet rs) throws SQLException {
+		TableRow result = null;
+		
+		ColumnGrouping cg = ColumnGrouping.getColumnGrouping(rs);
+		Map<Column, String> row = new HashMap<Column, String>();
+		for (Column col : cg) {
+			String strVal = rs.getString(col.getName());
+			row.put(col, strVal);
+		}
+		
+		result = new TableRow(cg, row);
+		
+		return result;
 	}
 }

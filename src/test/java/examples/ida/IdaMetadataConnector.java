@@ -123,4 +123,10 @@ public class IdaMetadataConnector extends AbstractHttpConnector {
 		// TODO Auto-generated method stub
 		return false;
 	}
+	
+	@Override
+	public boolean isValidInput() {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }

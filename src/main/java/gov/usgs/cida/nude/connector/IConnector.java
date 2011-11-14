@@ -8,5 +8,6 @@ public interface IConnector {
 	public void addInput(ResultSet in);
 	public ResultSet getResultSet();
 	public IParser getParser();
+	public boolean isValidInput();
 	public boolean isReady();
 }

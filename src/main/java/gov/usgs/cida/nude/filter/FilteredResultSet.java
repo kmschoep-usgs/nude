@@ -33,11 +33,11 @@ public class FilteredResultSet extends PeekingResultSet {
 		
 		Map<Column, String> row = new HashMap<Column, String>();
 		
-		for (Column col : filterStage.inColumns) {
-			row.put(col, in.getString(col.getName()));
+		for (Column col : this.filterStage.inColumns) {
+			row.put(col, this.in.getString(col.getName()));
 		}
 		
-		result = new TableRow(filterStage.inColumns, row);
+		result = new TableRow(this.filterStage.inColumns, row);
 		
 		return result;
 	}
