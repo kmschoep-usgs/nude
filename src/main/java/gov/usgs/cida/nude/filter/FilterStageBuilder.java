@@ -20,18 +20,18 @@ public class FilterStageBuilder {
 		this.outColumns = new ArrayList<Column>();
 		
 		for (Column col : input) {
-			this.addGelTransform(col, new ColumnAlias(col));
+			this.addTransform(col, new ColumnAlias(col));
 		}
-		this.setGelPrimaryKey(this.inColumns.getPrimaryKey());
+		this.setPrimaryKey(this.inColumns.getPrimaryKey());
 	}
 	
-	public void setGelPrimaryKey(Column outColumn) {
+	public void setPrimaryKey(Column outColumn) {
 		if (this.transforms.containsKey(outColumn)) {
 			this.primaryKey = outColumn;
 		}
 	}
 	
-	public void addGelTransform(Column outColumn, ColumnAlias transform) {
+	public void addTransform(Column outColumn, ColumnAlias transform) {
 		this.transforms.put(outColumn, transform);
 		this.outColumns.add(outColumn);
 	}
@@ -40,7 +40,7 @@ public class FilterStageBuilder {
 //		this.transforms.remove(inputColumn);
 //	}
 	
-	public FilterStage buildGel() {
+	public FilterStage buildFilterStage() {
 		ColumnGrouping outCols = new ColumnGrouping(this.primaryKey, this.outColumns);
 		return new FilterStage(this.inColumns, this.transforms, outCols);
 	}

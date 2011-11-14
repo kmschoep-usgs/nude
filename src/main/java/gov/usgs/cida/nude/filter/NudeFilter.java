@@ -8,24 +8,24 @@ import java.util.List;
 
 public class NudeFilter {
 	
-	protected List<FilterStage> gels;
+	protected List<FilterStage> filterStages;
 	
 	public NudeFilter() {
-		this.gels = new LinkedList<FilterStage>();
+		this.filterStages = new LinkedList<FilterStage>();
 	}
 	
-	public void addGel(FilterStage buildGel) {
-		this.gels.add(buildGel);
+	public void addFilterStage(FilterStage stage) {
+		this.filterStages.add(stage);
 	}
 
 	public FilteredResultSet filter(List<ResultSet> input) {
 		FilteredResultSet result = null;
 		
-		for (FilterStage gel : this.gels) {
+		for (FilterStage filterStage : this.filterStages) {
 			if (null == result) {
-				result = new FilteredResultSet(new MuxResultSet(input), gel);
+				result = new FilteredResultSet(new MuxResultSet(input), filterStage);
 			} else {
-				result = new FilteredResultSet(result, gel);
+				result = new FilteredResultSet(result, filterStage);
 			}
 		}
 		

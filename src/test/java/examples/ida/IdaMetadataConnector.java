@@ -105,7 +105,7 @@ public class IdaMetadataConnector extends AbstractHttpConnector {
 			result += "?" + queryString;
 		}
 		
-		log.debug("Built URI: {}", result);
+		log.debug("Built URI: " + result);
 		return result;
 	}
 

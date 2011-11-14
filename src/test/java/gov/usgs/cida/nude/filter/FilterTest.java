@@ -1,4 +1,4 @@
-package gov.usgs.cida.nude.gel;
+package gov.usgs.cida.nude.filter;
 
 
 import static org.junit.Assert.assertEquals;
@@ -9,9 +9,6 @@ import examples.ida.response.IdaData;
 import gov.usgs.cida.nude.column.Column;
 import gov.usgs.cida.nude.column.ColumnGrouping;
 import gov.usgs.cida.nude.column.DummyColumn;
-import gov.usgs.cida.nude.filter.ColumnAlias;
-import gov.usgs.cida.nude.filter.FilterStageBuilder;
-import gov.usgs.cida.nude.filter.NudeFilter;
 import gov.usgs.cida.nude.resultset.inmemory.StringTableResultSet;
 import gov.usgs.cida.nude.resultset.inmemory.TableRow;
 
@@ -31,9 +28,9 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class GelStackTest {
+public class FilterTest {
 	private static final Logger log = LoggerFactory
-			.getLogger(GelStackTest.class);
+			.getLogger(FilterTest.class);
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 	}
@@ -69,26 +66,26 @@ public class GelStackTest {
 	protected ColumnGrouping muxOutCg;
 	
 	@Test
-	public void testGellingResults() throws Exception {
+	public void testFilteringResults() throws Exception {
 		ResultSet input = buildInputResultSet();
 		ResultSet exOut = buildExpectedOutput();
-		NudeFilter gelStack = new NudeFilter();
+		NudeFilter filter = new NudeFilter();
 		
 		FilterStageBuilder gb = new FilterStageBuilder(inColGroup);
 		
-		gb.addGelTransform(ClientData.timestamp, new ColumnAlias(IdaData.date_time));
-		gb.addGelTransform(ClientData.value, new ColumnAlias(IdaData.value));
+		gb.addTransform(ClientData.timestamp, new ColumnAlias(IdaData.date_time));
+		gb.addTransform(ClientData.value, new ColumnAlias(IdaData.value));
 		
-		gelStack.addGel(gb.buildGel());
+		filter.addFilterStage(gb.buildFilterStage());
 		
 		gb = new FilterStageBuilder(outColGroup);
 		
-		gelStack.addGel(gb.buildGel());
+		filter.addFilterStage(gb.buildFilterStage());
 		
 		List<ResultSet> inputs = new ArrayList<ResultSet>();
 		inputs.add(input);
 		
-		ResultSet output = gelStack.filter(inputs);
+		ResultSet output = filter.filter(inputs);
 		
 		assertNotNull(output);
 		
@@ -113,28 +110,28 @@ public class GelStackTest {
 	}
 	
 	@Test
-	public void testMuxGelling() throws SQLException {
+	public void testMuxFiltering() throws SQLException {
 		ResultSet input = buildInputResultSet();
 		ResultSet muxIn = buildMuxTestResultSet();
 		ResultSet exOut = buildMuxOut();
-		NudeFilter gelStack = new NudeFilter();
+		NudeFilter filter = new NudeFilter();
 		
 		FilterStageBuilder gb = new FilterStageBuilder(inColGroup.join(muxCg));
 		
-		gb.addGelTransform(ClientData.timestamp, new ColumnAlias(IdaData.date_time));
-		gb.addGelTransform(ClientData.value, new ColumnAlias(IdaData.value));
+		gb.addTransform(ClientData.timestamp, new ColumnAlias(IdaData.date_time));
+		gb.addTransform(ClientData.value, new ColumnAlias(IdaData.value));
 		
-		gelStack.addGel(gb.buildGel());
+		filter.addFilterStage(gb.buildFilterStage());
 		
 		gb = new FilterStageBuilder(this.muxOutCg);
 		
-		gelStack.addGel(gb.buildGel());
+		filter.addFilterStage(gb.buildFilterStage());
 		
 		List<ResultSet> inputs = new ArrayList<ResultSet>();
 		inputs.add(input);
 		inputs.add(muxIn);
 		
-		ResultSet output = gelStack.filter(inputs);
+		ResultSet output = filter.filter(inputs);
 		
 		assertNotNull(output);
 		

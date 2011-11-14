@@ -38,8 +38,7 @@ public class HttpProvider implements IProvider {
 		clientConnectionManager = new ThreadSafeClientConnManager(SchemeRegistryFactory.createDefault(), CONNECTION_TTL, TimeUnit.MILLISECONDS);
 		clientConnectionManager.setMaxTotal(CONNECTIONS_MAX_TOTAL);
 		clientConnectionManager.setDefaultMaxPerRoute(CONNECTIONS_MAX_ROUTE);
-		log.info("Created HTTP client connection manager {}: maximum connections total = {}, maximum connections per route = {}",
-				new Integer[] {clientConnectionManager.hashCode(), clientConnectionManager.getMaxTotal(), clientConnectionManager.getDefaultMaxPerRoute()});
+		log.info("Created HTTP client connection manager " + clientConnectionManager.hashCode() + ": maximum connections total = " + clientConnectionManager.getMaxTotal() + ", maximum connections per route = " + clientConnectionManager.getDefaultMaxPerRoute());
 		
 	}
 
@@ -66,7 +65,7 @@ public class HttpProvider implements IProvider {
 		int code = clientConnectionManager.hashCode();
 		clientConnectionManager.shutdown();
 		clientConnectionManager = null;
-		log.info("Destroyed HTTP client connection manager {}", code);
+		log.info("Destroyed HTTP client connection manager " + code);
 	}
 
 }

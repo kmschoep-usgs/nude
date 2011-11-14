@@ -49,17 +49,17 @@ public class IdaOverseerTest {
 	
 	@Before
 	public void setUp() throws Exception {
-		sw = new StringWriter();
-		sbEx = new StringBuffer();
+		this.sw = new StringWriter();
+		this.sbEx = new StringBuffer();
 	}
 
 	@After
 	public void tearDown() throws Exception {
-		expected = null;
-		actual = null;
+		this.expected = null;
+		this.actual = null;
 		
-		sw = null;
-		sbEx = null;
+		this.sw = null;
+		this.sbEx = null;
 	}
 	
 	@Ignore
@@ -73,12 +73,12 @@ public class IdaOverseerTest {
 		overseer.addInput(buildXmlFormatParam());
 		overseer.addInput(buildIdaParams(siteNumber));
 		
-		overseer.dispatch(sw);
+		overseer.dispatch(this.sw);
 		
-		expected = getExpectedResponse();
-		actual = sw.toString();
+		this.expected = getExpectedResponse();
+		this.actual = this.sw.toString();
 		
-		assertEquals(expected, actual);
+		assertEquals(this.expected, this.actual);
 	}
 	
 	public static ResultSet buildXmlFormatParam() {

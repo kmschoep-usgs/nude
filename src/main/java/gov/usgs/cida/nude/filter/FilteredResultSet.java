@@ -12,7 +12,7 @@ import java.util.Map;
 
 public class FilteredResultSet extends PeekingResultSet {
 	
-	protected final FilterStage gel;
+	protected final FilterStage filterStage;
 	protected final ResultSet in;
 	
 	public FilteredResultSet(ResultSet input, FilterStage transform) {
@@ -23,9 +23,9 @@ public class FilteredResultSet extends PeekingResultSet {
 		}
 		
 		this.in = input;
-		this.gel = transform;
+		this.filterStage = transform;
 				
-		this.metadata = new CGResultSetMetaData(this.gel.outColumns);
+		this.metadata = new CGResultSetMetaData(this.filterStage.outColumns);
 	}
 	
 	protected TableRow buildRow() throws SQLException {
@@ -33,11 +33,11 @@ public class FilteredResultSet extends PeekingResultSet {
 		
 		Map<Column, String> row = new HashMap<Column, String>();
 		
-		for (Column col : gel.inColumns) {
+		for (Column col : filterStage.inColumns) {
 			row.put(col, in.getString(col.getName()));
 		}
 		
-		result = new TableRow(gel.inColumns, row);
+		result = new TableRow(filterStage.inColumns, row);
 		
 		return result;
 	}
@@ -63,7 +63,7 @@ public class FilteredResultSet extends PeekingResultSet {
 	public String getString(int columnIndex) throws SQLException {
 		throwIfClosed(this);
 		throwIfBadLocation(loc);
-		return this.gel.transform(columnIndex, this.currRow);
+		return this.filterStage.transform(columnIndex, this.currRow);
 	}
 
 	@Override
@@ -75,7 +75,7 @@ public class FilteredResultSet extends PeekingResultSet {
 	@Override
 	public int findColumn(String columnLabel) throws SQLException {
 		throwIfClosed(this);
-		return this.gel.outColumns.indexOf(columnLabel);
+		return this.filterStage.outColumns.indexOf(columnLabel);
 	}
 
 }

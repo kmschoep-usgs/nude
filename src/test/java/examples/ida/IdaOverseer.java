@@ -32,7 +32,7 @@ import javax.xml.stream.XMLStreamException;
 
 public class IdaOverseer extends Overseer {
 	
-	protected static NudeFilter gelParamsIn;
+	protected static NudeFilter filterParamsIn;
 	
 	/**
 	 * Use like this:<br>
@@ -43,7 +43,7 @@ public class IdaOverseer extends Overseer {
 	static {
 		connectors = buildAvailableConnectors();
 		
-		gelParamsIn = buildInputGelStack();
+		filterParamsIn = buildInputFilter();
 	}
 	
 	protected List<ResultSet> inputs;
@@ -62,18 +62,18 @@ public class IdaOverseer extends Overseer {
 
 	@Override
 	public void dispatch(Writer out) throws SQLException, XMLStreamException, IOException {
-		// run the inputs through the GelStack
-		FilteredResultSet params = gelParamsIn.filter(inputs);
+		// run the inputs through the Filter
+		FilteredResultSet params = filterParamsIn.filter(inputs);
 		
 		OverseerRequest req = configureRequest(params);
 		List<? extends IConnector> requestedConnectors = req.reqConnectors;
-		NudeFilter gelOut = req.outputFilter;
+		NudeFilter outFilter = req.outputFilter;
 		
 		// Get the ResultSets from the Connectors.
 		List<ResultSet> outputs = queryConnectors(requestedConnectors);
 		
-		// GelStack the ResultSets
-		FilteredResultSet results = gelOut.filter(outputs);
+		// Filter the ResultSets
+		FilteredResultSet results = outFilter.filter(outputs);
 		// pass the output to the dispatcher
 		StreamResponse outStrm = Dispatcher.buildFormattedResponse(ReturnType.xml, FormatType.XML, new TableResponse(results));
 		StreamResponse.dispatch(outStrm, out);
@@ -88,10 +88,10 @@ public class IdaOverseer extends Overseer {
 		List<HttpConnector> cons = new ArrayList<HttpConnector>();
 		//TODO configure
 		
-		NudeFilter gelOut = new NudeFilter();
+		NudeFilter outFilter = new NudeFilter();
 		//TODO configure
 		
-		result = new OverseerRequest(cons, gelOut);
+		result = new OverseerRequest(cons, outFilter);
 		
 		return result;
 	}
@@ -147,12 +147,12 @@ public class IdaOverseer extends Overseer {
 		return result;
 	}
 	
-	public static NudeFilter buildInputGelStack() {
+	public static NudeFilter buildInputFilter() {
 		NudeFilter result = null;
 		
 		result = new NudeFilter();
 		FilterStageBuilder gb = new FilterStageBuilder(buildExpectedUserInput());
-		result.addGel(gb.buildGel());
+		result.addFilterStage(gb.buildFilterStage());
 		
 		//TODO add more transforms for configuration
 		

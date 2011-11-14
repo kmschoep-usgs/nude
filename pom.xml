@@ -6,7 +6,11 @@
 	<version>1.0.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<name>NUDE</name>
-	<description>Transparent Webservice Aggregator</description>
+	<description>
+		Natural Uniform Data Export Framework
+		
+		Transparent Webservice Aggregator
+	</description>
 
 	<inceptionYear>2011</inceptionYear>
 	<organization>
