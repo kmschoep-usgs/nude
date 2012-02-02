@@ -49,17 +49,10 @@ public class IdaOverseer extends Overseer {
 
 		filterParamsIn = buildInputFilter();
 	}
-	protected List<ResultSet> inputs;
 	protected HttpProvider httpProvider;
 
 	public IdaOverseer(HttpProvider httpProvider) {
-		this.inputs = new ArrayList<ResultSet>();
 		this.httpProvider = httpProvider;
-	}
-
-	@Override
-	public void addInput(ResultSet in) {
-		this.inputs.add(in);
 	}
 
 	@Override

@@ -2,6 +2,7 @@ package gov.usgs.cida.nude.connector.http;
 
 import gov.usgs.cida.nude.column.Column;
 import gov.usgs.cida.nude.provider.http.HttpProvider;
+import gov.usgs.cida.nude.resultset.http.HttpResultSet;
 import gov.usgs.cida.nude.resultset.inmemory.TableRow;
 
 import java.io.IOException;
@@ -16,10 +17,14 @@ import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.protocol.HttpContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class AbstractHttpConnector implements HttpConnector {
+	private static final Logger log = LoggerFactory.getLogger(AbstractHttpConnector.class);
 	protected final HttpProvider httpProvider;
 	protected List<ResultSet> inputs;
 	
@@ -27,6 +32,13 @@ public abstract class AbstractHttpConnector implements HttpConnector {
 		this.httpProvider = httpProvider;
 		this.inputs = new ArrayList<ResultSet>();
 	}
+
+	@Override
+	public void addInput(ResultSet in) {
+		this.inputs.add(in);
+	}
+	
+	protected abstract String getURI();
 	
 	protected static void generateFirefoxHeaders(HttpUriRequest req, String referer) {
 		req.addHeader("User-Agent", "Mozilla/5.0 (X11; Linux x86_64; rv:5.0) Gecko/20100101 Firefox/5.0");
@@ -68,6 +80,32 @@ public abstract class AbstractHttpConnector implements HttpConnector {
 		List<NameValuePair> result = new ArrayList<NameValuePair>();
 		
 		//TODO
+		
+		return result;
+	}
+	
+		@Override
+	public ResultSet getResultSet() {
+		ResultSet result = null;
+		
+		try {
+			HttpEntity methodEntity = makeCall();
+			result = new HttpResultSet(methodEntity, this.getParser());
+		} catch (Exception e) {
+			log.error("Could not make call", e);
+		}
+		
+		return result;
+	}
+	
+	public HttpEntity makeCall() throws ClientProtocolException, IOException {
+		HttpEntity result = null;
+		
+		HttpClient httpClient = httpProvider.getClient();
+		HttpUriRequest req = new HttpGet(getURI());
+		generateFirefoxHeaders(req, null);
+		
+		result = makeCall(httpClient, req, null);
 		
 		return result;
 	}

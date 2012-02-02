@@ -8,13 +8,11 @@ import gov.usgs.cida.nude.resultset.http.HttpResultSet;
 import gov.usgs.cida.nude.resultset.inmemory.TableRow;
 import gov.usgs.cida.spec.jsl.Spec;
 import gov.usgs.cida.spec.jsl.mapping.ColumnMapping;
-
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.ClientProtocolException;
