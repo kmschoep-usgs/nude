@@ -46,4 +46,9 @@ public class IdaDataConnector extends AbstractHttpConnector {
 		return false;
 	}
 
+	@Override
+	protected String getURI() {
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
+
 }

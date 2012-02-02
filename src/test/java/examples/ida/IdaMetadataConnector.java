@@ -66,16 +66,9 @@ public class IdaMetadataConnector extends AbstractHttpConnector {
 		inputs.add(in);
 	}
 	
-	public HttpEntity makeCall() throws ClientProtocolException, IOException {
-		HttpEntity result = null;
-		
-		HttpClient httpClient = httpProvider.getClient();
-		HttpUriRequest req = new HttpGet(getURI(this.url, this.inputs));
-		generateFirefoxHeaders(req, null);
-		
-		result = makeCall(httpClient, req, null);
-		
-		return result;
+	@Override
+	public String getURI() {
+		return getURI(this.url, this.inputs);
 	}
 	
 	public static String getURI(String baseUrl, List<ResultSet> inputs) {
