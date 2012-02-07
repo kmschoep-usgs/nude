@@ -7,7 +7,6 @@ import gov.usgs.cida.nude.column.ColumnGrouping;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,7 +21,7 @@ public class MuxResultSet extends PeekingResultSet {
 		
 	protected final Map<ResultSet, TableRow> rsetRows;
 	
-	public MuxResultSet(Collection<ResultSet> inputs) {
+	public MuxResultSet(Iterable<ResultSet> inputs) {
 		this.closed = false;
 		
 		if (null == inputs) {

@@ -74,16 +74,14 @@ public class SimpleColumn implements Column {
 	public boolean equals(Object obj) {
 		if (obj == null) { return false; }
 		if (obj == this) { return true; }
-		Column rhs = null;
-		try {
-			rhs = (Column) obj;
-		} catch (Exception e) {
-			return false;
-		}
-		return new EqualsBuilder()
+		if (obj instanceof Column) {
+			Column rhs = (Column) obj;
+			return new EqualsBuilder()
 				.append(this.getFullName(), rhs.getFullName())
 				.append(this.getValueType(), rhs.getValueType())
 				.isEquals();
+		}
+		return false;
 	}
 
 	@Override
