@@ -54,6 +54,7 @@ public abstract class AbstractHttpConnector implements HttpConnector {
 		req.addHeader("Cache-Control", "no-cache");
 	}
 	
+	//TODO change this to ResultSet instead of Iterable<TableRow>
 	protected static String generateGetParams(Iterable<TableRow> params) {
 		String result = null;
 		

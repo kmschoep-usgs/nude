@@ -1,6 +1,8 @@
 package gov.usgs.cida.nude.column;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 
 public class SimpleColumn implements Column {
 
@@ -68,4 +70,27 @@ public class SimpleColumn implements Column {
 		return this.valueType;
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null) { return false; }
+		if (obj == this) { return true; }
+		Column rhs = null;
+		try {
+			rhs = (Column) obj;
+		} catch (Exception e) {
+			return false;
+		}
+		return new EqualsBuilder()
+				.append(this.getFullName(), rhs.getFullName())
+				.append(this.getValueType(), rhs.getValueType())
+				.isEquals();
+	}
+
+	@Override
+	public int hashCode() {
+		return new HashCodeBuilder(51, 89)
+				.append(this.getFullName())
+				.append(this.getValueType())
+				.toHashCode();
+	}
 }

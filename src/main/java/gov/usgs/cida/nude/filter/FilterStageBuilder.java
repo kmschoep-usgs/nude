@@ -9,14 +9,14 @@ import java.util.List;
 import java.util.Map;
 
 public class FilterStageBuilder {
-	protected Map<Column, ColumnAlias> transforms;
+	protected Map<Column, ColumnTransform> transforms;
 	protected ColumnGrouping inColumns;
 	protected Column primaryKey;
 	protected List<Column> outColumns;
 	
 	public FilterStageBuilder(ColumnGrouping input) {
 		this.inColumns = input;
-		this.transforms = new HashMap<Column, ColumnAlias>();
+		this.transforms = new HashMap<Column, ColumnTransform>();
 		this.outColumns = new ArrayList<Column>();
 		
 		for (Column col : input) {
@@ -31,7 +31,7 @@ public class FilterStageBuilder {
 		}
 	}
 	
-	public void addTransform(Column outColumn, ColumnAlias transform) {
+	public void addTransform(Column outColumn, ColumnTransform transform) {
 		this.transforms.put(outColumn, transform);
 		this.outColumns.add(outColumn);
 	}

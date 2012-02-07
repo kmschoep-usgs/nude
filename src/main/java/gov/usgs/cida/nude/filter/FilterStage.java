@@ -10,10 +10,10 @@ import java.util.Map;
 
 public class FilterStage {
 	protected final ColumnGrouping inColumns;
-	protected final Map<Column, ColumnAlias> transforms;
+	protected final Map<Column, ColumnTransform> transforms;
 	protected final ColumnGrouping outColumns;
 	
-	public FilterStage(ColumnGrouping in, Map<Column, ColumnAlias> transform, ColumnGrouping out) {
+	public FilterStage(ColumnGrouping in, Map<Column, ColumnTransform> transform, ColumnGrouping out) {
 		this.inColumns = in;
 		this.transforms = Collections.unmodifiableMap(transform);
 		this.outColumns = out;

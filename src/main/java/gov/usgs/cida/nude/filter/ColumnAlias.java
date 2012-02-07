@@ -3,23 +3,19 @@ package gov.usgs.cida.nude.filter;
 import gov.usgs.cida.nude.column.Column;
 import gov.usgs.cida.nude.resultset.inmemory.TableRow;
 
-import java.util.HashSet;
-import java.util.Set;
-
-public class ColumnAlias {
+public class ColumnAlias implements ColumnTransform {
 	
-	protected Set<Column> inputColumns;
+	protected Column inputCol;
 	
 	public ColumnAlias(Column in) {
-		this.inputColumns = new HashSet<Column>();
-		this.inputColumns.add(in);
+		this.inputCol = in;
 	}
 	
+	@Override
 	public String transform(TableRow row) {
 		String result = null;
 		
-		Column inCol = inputColumns.iterator().next();
-		result = row.getValue(inCol);
+		result = row.getValue(inputCol);
 		
 		return result;
 	}
