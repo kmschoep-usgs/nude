@@ -18,12 +18,12 @@ public class NudeFilter {
 		this.filterStages.add(stage);
 	}
 
-	public FilteredResultSet filter(List<ResultSet> input) {
+	public FilteredResultSet filter(ResultSet input) {
 		FilteredResultSet result = null;
 		
 		for (FilterStage filterStage : this.filterStages) {
 			if (null == result) {
-				result = new FilteredResultSet(new MuxResultSet(input), filterStage);
+				result = new FilteredResultSet(input, filterStage);
 			} else {
 				result = new FilteredResultSet(result, filterStage);
 			}

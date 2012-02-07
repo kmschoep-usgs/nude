@@ -14,8 +14,8 @@ import gov.usgs.cida.nude.out.TableResponse;
 import gov.usgs.cida.nude.overseer.Overseer;
 import gov.usgs.cida.nude.params.OutputFormat;
 import gov.usgs.cida.nude.provider.http.HttpProvider;
+import gov.usgs.cida.nude.resultset.inmemory.MuxResultSet;
 import gov.usgs.cida.nude.resultset.inmemory.ResultSetCloner;
-import gov.usgs.cida.nude.resultset.inmemory.TableRow;
 import gov.usgs.cida.spec.formatting.ReturnType;
 import gov.usgs.cida.spec.out.StreamResponse;
 import gov.usgs.webservices.framework.basic.FormatType;
@@ -58,7 +58,7 @@ public class IdaOverseer extends Overseer {
 	@Override
 	public void dispatch(Writer out) throws SQLException, XMLStreamException, IOException {
 		// run the inputs through the Filter
-		FilteredResultSet params = filterParamsIn.filter(inputs);
+		FilteredResultSet params = filterParamsIn.filter(new MuxResultSet(inputs));
 
 		OverseerRequest req = configureRequest(params, this.httpProvider);
 		if (null != req) {
@@ -69,7 +69,7 @@ public class IdaOverseer extends Overseer {
 			List<ResultSet> outputs = queryConnectors(requestedConnectors);
 
 			// Filter the ResultSets
-			FilteredResultSet results = outFilter.filter(outputs);
+			FilteredResultSet results = outFilter.filter(new MuxResultSet(outputs));
 			// pass the output to the dispatcher
 			StreamResponse outStrm = Dispatcher.buildFormattedResponse(ReturnType.xml, FormatType.XML, new TableResponse(results));
 			StreamResponse.dispatch(outStrm, out);

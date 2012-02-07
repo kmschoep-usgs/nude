@@ -9,6 +9,7 @@ import examples.ida.response.IdaData;
 import gov.usgs.cida.nude.column.Column;
 import gov.usgs.cida.nude.column.ColumnGrouping;
 import gov.usgs.cida.nude.column.DummyColumn;
+import gov.usgs.cida.nude.resultset.inmemory.MuxResultSet;
 import gov.usgs.cida.nude.resultset.inmemory.StringTableResultSet;
 import gov.usgs.cida.nude.resultset.inmemory.TableRow;
 
@@ -82,10 +83,10 @@ public class FilterTest {
 		
 		filter.addFilterStage(gb.buildFilterStage());
 		
-		List<ResultSet> inputs = new ArrayList<ResultSet>();
-		inputs.add(input);
+//		List<ResultSet> inputs = new ArrayList<ResultSet>();
+//		inputs.add(input);
 		
-		ResultSet output = filter.filter(inputs);
+		ResultSet output = filter.filter(input);
 		
 		assertNotNull(output);
 		
@@ -131,7 +132,7 @@ public class FilterTest {
 		inputs.add(input);
 		inputs.add(muxIn);
 		
-		ResultSet output = filter.filter(inputs);
+		ResultSet output = filter.filter(new MuxResultSet(inputs));
 		
 		assertNotNull(output);
 		
