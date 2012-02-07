@@ -70,22 +70,14 @@ public class FilterTest {
 	public void testFilteringResults() throws Exception {
 		ResultSet input = buildInputResultSet();
 		ResultSet exOut = buildExpectedOutput();
-		NudeFilter filter = new NudeFilter();
-		
-		FilterStageBuilder gb = new FilterStageBuilder(inColGroup);
-		
-		gb.addTransform(ClientData.timestamp, new ColumnAlias(IdaData.date_time));
-		gb.addTransform(ClientData.value, new ColumnAlias(IdaData.value));
-		
-		filter.addFilterStage(gb.buildFilterStage());
-		
-		gb = new FilterStageBuilder(outColGroup);
-		
-		filter.addFilterStage(gb.buildFilterStage());
-		
-//		List<ResultSet> inputs = new ArrayList<ResultSet>();
-//		inputs.add(input);
-		
+		NudeFilter filter = new NudeFilterBuilder()
+				.addFilterStage(new FilterStageBuilder(inColGroup)
+					.addTransform(ClientData.timestamp, new ColumnAlias(IdaData.date_time))
+					.addTransform(ClientData.value, new ColumnAlias(IdaData.value))
+					.buildFilterStage())
+				.addFilterStage(new FilterStageBuilder(outColGroup).buildFilterStage())
+				.buildFilter();
+				
 		ResultSet output = filter.filter(input);
 		
 		assertNotNull(output);
@@ -115,18 +107,13 @@ public class FilterTest {
 		ResultSet input = buildInputResultSet();
 		ResultSet muxIn = buildMuxTestResultSet();
 		ResultSet exOut = buildMuxOut();
-		NudeFilter filter = new NudeFilter();
-		
-		FilterStageBuilder gb = new FilterStageBuilder(inColGroup.join(muxCg));
-		
-		gb.addTransform(ClientData.timestamp, new ColumnAlias(IdaData.date_time));
-		gb.addTransform(ClientData.value, new ColumnAlias(IdaData.value));
-		
-		filter.addFilterStage(gb.buildFilterStage());
-		
-		gb = new FilterStageBuilder(this.muxOutCg);
-		
-		filter.addFilterStage(gb.buildFilterStage());
+		NudeFilter filter = new NudeFilterBuilder()
+				.addFilterStage(new FilterStageBuilder(inColGroup.join(muxCg))
+					.addTransform(ClientData.timestamp, new ColumnAlias(IdaData.date_time))
+					.addTransform(ClientData.value, new ColumnAlias(IdaData.value))
+					.buildFilterStage())
+				.addFilterStage(new FilterStageBuilder(this.muxOutCg).buildFilterStage())
+				.buildFilter();
 		
 		List<ResultSet> inputs = new ArrayList<ResultSet>();
 		inputs.add(input);

@@ -9,6 +9,7 @@ import gov.usgs.cida.nude.connector.http.HttpConnector;
 import gov.usgs.cida.nude.filter.FilterStageBuilder;
 import gov.usgs.cida.nude.filter.FilteredResultSet;
 import gov.usgs.cida.nude.filter.NudeFilter;
+import gov.usgs.cida.nude.filter.NudeFilterBuilder;
 import gov.usgs.cida.nude.out.Dispatcher;
 import gov.usgs.cida.nude.out.TableResponse;
 import gov.usgs.cida.nude.overseer.Overseer;
@@ -179,9 +180,11 @@ public class IdaOverseer extends Overseer {
 	public static NudeFilter buildInputFilter() {
 		NudeFilter result = null;
 
-		result = new NudeFilter();
-		FilterStageBuilder gb = new FilterStageBuilder(buildExpectedUserInput());
-		result.addFilterStage(gb.buildFilterStage());
+		result = new NudeFilterBuilder()
+				.addFilterStage(
+					new FilterStageBuilder(buildExpectedUserInput())
+						.buildFilterStage())
+				.buildFilter();
 
 		//TODO add more transforms for configuration
 

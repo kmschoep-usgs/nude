@@ -25,20 +25,18 @@ public class FilterStageBuilder {
 		this.setPrimaryKey(this.inColumns.getPrimaryKey());
 	}
 	
-	public void setPrimaryKey(Column outColumn) {
+	public FilterStageBuilder setPrimaryKey(Column outColumn) {
 		if (this.transforms.containsKey(outColumn)) {
 			this.primaryKey = outColumn;
 		}
+		return this;
 	}
 	
-	public void addTransform(Column outColumn, ColumnTransform transform) {
+	public FilterStageBuilder addTransform(Column outColumn, ColumnTransform transform) {
 		this.transforms.put(outColumn, transform);
 		this.outColumns.add(outColumn);
+		return this;
 	}
-	
-//	public void filter(Column inputColumn) {
-//		this.transforms.remove(inputColumn);
-//	}
 	
 	public FilterStage buildFilterStage() {
 		ColumnGrouping outCols = new ColumnGrouping(this.primaryKey, this.outColumns);

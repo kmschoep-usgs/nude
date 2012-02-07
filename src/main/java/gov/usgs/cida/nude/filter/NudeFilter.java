@@ -1,7 +1,5 @@
 package gov.usgs.cida.nude.filter;
 
-import gov.usgs.cida.nude.resultset.inmemory.MuxResultSet;
-
 import java.sql.ResultSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -14,8 +12,8 @@ public class NudeFilter {
 		this.filterStages = new LinkedList<FilterStage>();
 	}
 	
-	public void addFilterStage(FilterStage stage) {
-		this.filterStages.add(stage);
+	public NudeFilter(List<FilterStage> filterStages) {
+		this.filterStages = filterStages;
 	}
 
 	public FilteredResultSet filter(ResultSet input) {
