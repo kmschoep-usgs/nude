@@ -173,4 +173,18 @@ public class ColumnGrouping implements Iterable<Column> {
 		
 		return result;
 	}
+	
+	public static ColumnGrouping join(Iterable<ColumnGrouping> colGroups) {
+		ColumnGrouping result = null;
+		
+		for (ColumnGrouping cg : colGroups) {
+			if (null == result) {
+				result = cg;
+			} else {
+				result = result.join(cg);
+			}
+		}
+		
+		return result;
+	}
 }

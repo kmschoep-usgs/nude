@@ -70,7 +70,9 @@ public class FilterTest {
 	public void testFilteringResults() throws Exception {
 		ResultSet input = buildInputResultSet();
 		ResultSet exOut = buildExpectedOutput();
-		NudeFilter filter = new NudeFilterBuilder()
+		
+		NudeFilterBuilder nfb = new NudeFilterBuilder(inColGroup);
+		NudeFilter filter = nfb
 				.addFilterStage(new FilterStageBuilder(inColGroup)
 					.addTransform(ClientData.timestamp, new ColumnAlias(IdaData.date_time))
 					.addTransform(ClientData.value, new ColumnAlias(IdaData.value))
@@ -107,7 +109,9 @@ public class FilterTest {
 		ResultSet input = buildInputResultSet();
 		ResultSet muxIn = buildMuxTestResultSet();
 		ResultSet exOut = buildMuxOut();
-		NudeFilter filter = new NudeFilterBuilder()
+		
+		NudeFilterBuilder nfb = new NudeFilterBuilder(inColGroup.join(muxCg));
+		NudeFilter filter = nfb
 				.addFilterStage(new FilterStageBuilder(inColGroup.join(muxCg))
 					.addTransform(ClientData.timestamp, new ColumnAlias(IdaData.date_time))
 					.addTransform(ClientData.value, new ColumnAlias(IdaData.value))

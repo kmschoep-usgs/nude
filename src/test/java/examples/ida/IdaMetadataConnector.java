@@ -1,6 +1,7 @@
 package examples.ida;
 
 import examples.ida.response.IdaMetadata;
+import gov.usgs.cida.nude.column.ColumnGrouping;
 import gov.usgs.cida.nude.connector.http.AbstractHttpConnector;
 import gov.usgs.cida.nude.connector.parser.IParser;
 import gov.usgs.cida.nude.provider.http.HttpProvider;
@@ -30,6 +31,11 @@ public class IdaMetadataConnector extends AbstractHttpConnector {
 		super(httpProvider);
 		
 		this.url = "http://ida.water.usgs.gov/ida/available_records.cfm";
+	}
+
+	@Override
+	public ColumnGrouping getExpectedColumns() {
+		throw new UnsupportedOperationException("Not supported yet.");
 	}
 	
 	public Spec getSpec() {

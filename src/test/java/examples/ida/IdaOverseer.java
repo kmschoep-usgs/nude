@@ -180,9 +180,10 @@ public class IdaOverseer extends Overseer {
 	public static NudeFilter buildInputFilter() {
 		NudeFilter result = null;
 
-		result = new NudeFilterBuilder()
+		NudeFilterBuilder nfb = new NudeFilterBuilder(buildExpectedUserInput());
+		result = nfb
 				.addFilterStage(
-					new FilterStageBuilder(buildExpectedUserInput())
+					new FilterStageBuilder(nfb.getCurrOutCols())
 						.buildFilterStage())
 				.buildFilter();
 

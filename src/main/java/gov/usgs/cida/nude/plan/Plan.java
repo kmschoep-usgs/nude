@@ -2,6 +2,7 @@ package gov.usgs.cida.nude.plan;
 
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -23,7 +24,7 @@ public class Plan implements Iterable<PlanStep> {
 			s = new ArrayList<PlanStep>();
 		}
 		
-		this.steps = s;
+		this.steps = Collections.unmodifiableList(s);
 	}
 
 	@Override

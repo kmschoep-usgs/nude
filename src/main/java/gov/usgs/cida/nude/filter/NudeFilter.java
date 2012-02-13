@@ -1,5 +1,6 @@
 package gov.usgs.cida.nude.filter;
 
+import gov.usgs.cida.nude.column.ColumnGrouping;
 import java.sql.ResultSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -29,5 +30,8 @@ public class NudeFilter {
 		
 		return result;
 	}
-
+	
+	public ColumnGrouping getOutputColumns() {
+		return this.filterStages.get(this.filterStages.size() - 1).getOutputColumns();
+	}
 }

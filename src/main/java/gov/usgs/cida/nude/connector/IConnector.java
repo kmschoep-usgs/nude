@@ -1,5 +1,6 @@
 package gov.usgs.cida.nude.connector;
 
+import gov.usgs.cida.nude.column.ColumnGrouping;
 import gov.usgs.cida.nude.connector.parser.IParser;
 
 import java.sql.ResultSet;
@@ -10,4 +11,5 @@ public interface IConnector {
 	public IParser getParser();
 	public boolean isValidInput();
 	public boolean isReady();
+	public ColumnGrouping getExpectedColumns();
 }

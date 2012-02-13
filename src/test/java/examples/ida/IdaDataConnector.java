@@ -1,5 +1,6 @@
 package examples.ida;
 
+import gov.usgs.cida.nude.column.ColumnGrouping;
 import gov.usgs.cida.nude.connector.http.AbstractHttpConnector;
 import gov.usgs.cida.nude.connector.parser.IParser;
 import gov.usgs.cida.nude.provider.http.HttpProvider;
@@ -22,6 +23,11 @@ public class IdaDataConnector extends AbstractHttpConnector {
 
 	}
 
+	@Override
+	public ColumnGrouping getExpectedColumns() {
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
+	
 	@Override
 	public ResultSet getResultSet() {
 		// TODO Auto-generated method stub
