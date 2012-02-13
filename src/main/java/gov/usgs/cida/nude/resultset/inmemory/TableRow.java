@@ -64,14 +64,16 @@ public class TableRow implements Comparable<TableRow>{
 	public static TableRow buildTableRow(ResultSet rs) throws SQLException {
 		TableRow result = null;
 		
-		ColumnGrouping cg = ColumnGrouping.getColumnGrouping(rs);
-		Map<Column, String> row = new HashMap<Column, String>();
-		for (Column col : cg) {
-			String strVal = rs.getString(col.getName());
-			row.put(col, strVal);
+		if (null != rs) {
+			ColumnGrouping cg = ColumnGrouping.getColumnGrouping(rs);
+			Map<Column, String> row = new HashMap<Column, String>();
+			for (Column col : cg) {
+				String strVal = rs.getString(col.getName());
+				row.put(col, strVal);
+			}
+
+			result = new TableRow(cg, row);
 		}
-		
-		result = new TableRow(cg, row);
 		
 		return result;
 	}
