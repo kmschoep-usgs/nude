@@ -49,4 +49,9 @@ public enum IdaMetadata implements Column {
 		return this.valueType;
 	}
 
+	@Override
+	public boolean isDisplayable() {
+		return true;
+	}
+
 }

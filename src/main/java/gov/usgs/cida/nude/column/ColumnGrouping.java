@@ -125,7 +125,9 @@ public class ColumnGrouping implements Iterable<Column> {
 		
 		List<ColumnMapping> cm = new ArrayList<ColumnMapping>();
 		for (Column col : colGroup) {
-			cm.add(new ColumnMapping(col.getName(), col.getName()));
+			if (col.isDisplayable()) {
+				cm.add(new ColumnMapping(col.getName(), col.getName()));
+			}
 		}
 		
 		result = cm.toArray(new ColumnMapping[0]);
@@ -152,7 +154,7 @@ public class ColumnGrouping implements Iterable<Column> {
 							String schName = md.getSchemaName(i);
 							Class<?> valType = Class.forName(md.getColumnClassName(i));
 							
-							Column col = new SimpleColumn(colName, tabName, schName, valType);
+							Column col = new SimpleColumn(colName, tabName, schName, valType, true);
 							
 							cols.add(col);
 						}

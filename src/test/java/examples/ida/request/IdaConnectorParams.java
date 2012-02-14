@@ -50,4 +50,9 @@ public enum IdaConnectorParams implements Column {
 		return this.valueType;
 	}
 
+	@Override
+	public boolean isDisplayable() {
+		return true;
+	}
+
 }

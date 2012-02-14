@@ -51,4 +51,9 @@ public enum IdaData implements Column {
 	public Class<?> getValueType() {
 		return this.valueType;
 	}
+
+	@Override
+	public boolean isDisplayable() {
+		return true;
+	}
 }

@@ -10,16 +10,22 @@ public class SimpleColumn implements Column {
 	protected final String tableName;
 	protected final String schemaName;
 	protected final Class<?> valueType;
+	protected final boolean isDisplay;
 	
 	public SimpleColumn(String columnName) {
-		this(columnName, null, null, String.class);
+		this(columnName, null, null, String.class, true);
 	}
 	
-	public SimpleColumn(String column, String table, String schema, Class<?> type) {
+	public SimpleColumn(String columnName, boolean isDisplayable) {
+		this(columnName, null, null, String.class, isDisplayable);
+	}
+	
+	public SimpleColumn(String column, String table, String schema, Class<?> type, boolean isDisplayable) {
 		this.columnName = (StringUtils.isNotBlank(column))?column:"";
 		this.tableName = (StringUtils.isNotBlank(table))?table:"";
 		this.schemaName = (StringUtils.isNotBlank(schema))?schema:"";
 		this.valueType = type;
+		this.isDisplay = isDisplayable;
 	}
 	
 	@Override
@@ -68,6 +74,11 @@ public class SimpleColumn implements Column {
 	@Override
 	public Class<?> getValueType() {
 		return this.valueType;
+	}
+
+	@Override
+	public boolean isDisplayable() {
+		return this.isDisplay;
 	}
 
 	@Override

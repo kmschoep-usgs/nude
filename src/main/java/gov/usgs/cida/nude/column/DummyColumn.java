@@ -42,5 +42,10 @@ public enum DummyColumn implements Column {
 	public Class<?> getValueType() {
 		return this.valueType;
 	}
+	
+	@Override
+	public boolean isDisplayable() {
+		return false;
+	}
 
 }
