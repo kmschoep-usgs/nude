@@ -5,9 +5,11 @@ import gov.usgs.cida.nude.resultset.CursorLocation.Location;
 
 import java.sql.SQLException;
 import java.util.Iterator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class IteratorWrappingResultSet extends PeekingResultSet {
-	
+	private static final Logger log = LoggerFactory.getLogger(IteratorWrappingResultSet.class);
 	protected final Iterator<TableRow> it;
 	
 	public IteratorWrappingResultSet(Iterator<TableRow> rows) {
@@ -27,6 +29,7 @@ public class IteratorWrappingResultSet extends PeekingResultSet {
 					this.loc.setLocation(Location.AFTERLAST);
 				}
 			} catch (Exception E) {
+				log.debug(null, E);
 				this.closed = true;
 				this.loc.setLocation(Location.AFTERLAST);
 			}

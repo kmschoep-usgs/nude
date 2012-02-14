@@ -4,12 +4,10 @@
  */
 package gov.usgs.cida.nude.resultset.inmemory;
 
-import gov.usgs.cida.nude.column.CGResultSetMetaData;
-import gov.usgs.cida.nude.column.ColumnGrouping;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import org.slf4j.Logger;
@@ -29,7 +27,7 @@ public class ResultSetCloner {
 	public ResultSetCloner(ResultSet rs) {
 		this.mainRS = rs;
 		
-		this.mainRows = new LinkedList<TableRow>();
+		this.mainRows = new ArrayList<TableRow>();
 	}
 	
 	public ResultSet cloneResultSet() {
@@ -37,17 +35,19 @@ public class ResultSetCloner {
 	}
 	
 	public class ResultSetCloneIterator implements Iterator<TableRow> {
-		protected Iterator<TableRow> it;
+		private int currIndex;
 		
 		public ResultSetCloneIterator() {
 			super();
-			this.it = mainRows.iterator();
+			currIndex = -1;
 		}
 		
 		protected void addNextRow() throws SQLException {
 			TableRow result = null;
 			
-			result = TableRow.buildTableRow(mainRS);
+			if (mainRS.next()) {
+				result = TableRow.buildTableRow(mainRS);
+			}
 			
 			if (null != result) {
 				mainRows.add(result);
@@ -56,21 +56,22 @@ public class ResultSetCloner {
 		
 		@Override
 		public boolean hasNext() {
-			if (!this.it.hasNext()) {
+			if (currIndex + 1 >= mainRows.size()) {
 				try {
 					this.addNextRow();
 				} catch (SQLException ex) {
 					log.debug("Tried to add another row to mainRows", ex);
 				}
 			}
-			return this.it.hasNext();
+			return currIndex + 1 < mainRows.size();
 		}
 
 		@Override
 		public TableRow next() {
 			TableRow result = null;
 			if (this.hasNext()) {
-				result = this.it.next();
+				currIndex = currIndex + 1;
+				result = mainRows.get(currIndex);
 			} else {
 				throw new NoSuchElementException("No More Rows.");
 			}
