@@ -1,6 +1,7 @@
 package gov.usgs.cida.nude.filter;
 
 
+import gov.usgs.cida.nude.filter.transform.ColumnAlias;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;

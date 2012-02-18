@@ -1,5 +1,6 @@
-package gov.usgs.cida.nude.filter;
+package gov.usgs.cida.nude.filter.transform;
 
+import gov.usgs.cida.nude.filter.ColumnTransform;
 import gov.usgs.cida.nude.column.Column;
 import gov.usgs.cida.nude.resultset.inmemory.TableRow;
 

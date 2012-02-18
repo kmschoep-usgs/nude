@@ -80,7 +80,15 @@ public abstract class PeekingResultSet extends StringValImplResultSet {
 	@Override
 	public int findColumn(String columnLabel) throws SQLException {
 		throwIfClosed(this);
-		return this.columns.indexOf(columnLabel);
+		int result = -1;
+		
+		result = this.columns.indexOf(columnLabel);
+		
+		if (0 >= result) {
+			throw new SQLException("No Such Column: " + columnLabel);
+		}
+		
+		return result;
 	}
 
 	@Override

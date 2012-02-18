@@ -1,5 +1,6 @@
 package gov.usgs.cida.nude.filter;
 
+import gov.usgs.cida.nude.filter.transform.ColumnAlias;
 import gov.usgs.cida.nude.column.Column;
 import gov.usgs.cida.nude.column.ColumnGrouping;
 

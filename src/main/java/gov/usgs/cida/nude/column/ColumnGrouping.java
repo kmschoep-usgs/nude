@@ -104,6 +104,11 @@ public class ColumnGrouping implements Iterable<Column> {
 		return this.columns.size();
 	}
 	
+	/**
+	 * 1 indexed
+	 * @param columnName
+	 * @return 
+	 */
 	public int indexOf(String columnName) {
 		int result = -1;
 		
