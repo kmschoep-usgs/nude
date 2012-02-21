@@ -4,6 +4,7 @@
  */
 package gov.usgs.cida.nude.resultset.inmemory;
 
+import gov.usgs.cida.spec.out.Closers;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -31,7 +32,22 @@ public class ResultSetCloner {
 	}
 	
 	public ResultSet cloneResultSet() {
-		return new IteratorWrappingResultSet(new ResultSetCloneIterator());
+		return new ResultSetCloneRS(new ResultSetCloneIterator());
+	}
+	
+	public class ResultSetCloneRS extends IteratorWrappingResultSet {
+
+		public ResultSetCloneRS(Iterator<TableRow> rows) {
+			super(rows);
+		}
+
+		@Override
+		public void close() throws SQLException {
+			super.close();
+			
+			Closers.closeQuietly(mainRS);
+		}
+		
 	}
 	
 	public class ResultSetCloneIterator implements Iterator<TableRow> {
@@ -45,7 +61,7 @@ public class ResultSetCloner {
 		protected void addNextRow() throws SQLException {
 			TableRow result = null;
 			
-			if (mainRS.next()) {
+			if (!mainRS.isClosed() && mainRS.next()) {
 				result = TableRow.buildTableRow(mainRS);
 			}
 			

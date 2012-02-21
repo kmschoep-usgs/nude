@@ -81,7 +81,8 @@ public class HttpResultSet extends ParsingResultSet {
 		try {
 			EntityUtils.consume(this.httpEntity);
 		} catch (IOException e) {
-			throw new SQLException(e);
+			log.error("Error closing HttpResultSet");
+//			throw new SQLException(e);
 		}
 	}
 	
