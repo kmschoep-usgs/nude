@@ -18,9 +18,9 @@ import javax.xml.stream.XMLStreamException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class CGXmlReader extends BasicXMLStreamReader {
+public class TableXmlReader extends BasicXMLStreamReader {
 	private static final Logger log = LoggerFactory
-			.getLogger(CGXmlReader.class);
+			.getLogger(TableXmlReader.class);
 	
 	protected final String docElement;
 	protected final String rowElement;
@@ -31,14 +31,18 @@ public class CGXmlReader extends BasicXMLStreamReader {
 	
 	protected final Stack<String> elementStack = new Stack<String>();
 	
-	public CGXmlReader(ResultSet rset, String docElement, String rowElement, NodeAttribute[] docAttributes, NodeAttribute[] rowAttributes) {
+	public TableXmlReader(ResultSet rset, String docElement, String rowElement, NodeAttribute[] docAttributes, NodeAttribute[] rowAttributes) {
 		this._rset = rset;
 		this.docElement = docElement;
 		this.rowElement = rowElement;
 		this.docAttributes = docAttributes;
 		this.rowAttributes = rowAttributes;
 		
-		this.columnMappings = ColumnGrouping.getColumnMappings(ColumnGrouping.getColumnGrouping(rset));
+		if (null != rset) {
+			this.columnMappings = ColumnGrouping.getColumnMappings(ColumnGrouping.getColumnGrouping(rset));
+		} else {
+			this.columnMappings = new ColumnMapping[0];
+		}
 	}
 	
 	@Override

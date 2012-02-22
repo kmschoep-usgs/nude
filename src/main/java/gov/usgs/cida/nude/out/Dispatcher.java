@@ -1,9 +1,13 @@
 package gov.usgs.cida.nude.out;
 
 import gov.usgs.cida.spec.formatting.ReturnType;
+import gov.usgs.cida.spec.jsl.mapping.ColumnMapping;
+import gov.usgs.cida.spec.jsl.mapping.NodeAttribute;
 import gov.usgs.cida.spec.out.StreamResponse;
 import gov.usgs.webservices.framework.basic.FormatType;
+import gov.usgs.webservices.framework.formatter.DataFlatteningFormatter;
 import gov.usgs.webservices.framework.formatter.XMLPassThroughFormatter;
+import gov.usgs.webservices.framework.transformer.ElementToAttributeTransformer;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -40,61 +44,52 @@ public class Dispatcher {
 		String litResp = null;
 		
 		switch (outputType) {
-//		case CSV: // fall through
-//		case EXCEL: // fall through
-//		case TAB:
+		case CSV: // fall through
+		case EXCEL: // fall through
+		case TAB:
 //			sr.setCacheable(false); // We don't want to cache files.
 //			sr.setFileDownload(true);
-//
-////			// Empty results check.
-////			if (specResponse.rset.isBeforeFirst()) { 
-////				sr.setReader(Services.makeXMLReaderWithEmptyHeaderRow(specResponse.rset,
-////						specResponse.responseSpec, specResponse.fullRowCount));
-////			} else {
-////				sr.setReader(((SpecXMLReader) sr.getReader()).makeEmptyWSSpecStreamReader());
-////			}
-//
-//			{ // Configure the formatter
-//				DataFlatteningFormatter df = new DataFlatteningFormatter(
-//						outputType);
-//				ElementToAttributeTransformer transformer = new ElementToAttributeTransformer();
-//
-//				df.setRowElementName(tableResponse.getRowTag());
-//				// use column map to add content-defined elements
-//				for (ColumnMapping col : tableResponse.getColumns()) {
-//					NodeAttribute[] attributes = col.getAttributes();
-//					if (attributes != null)
-//						for (int attributeIndex = 0; attributeIndex < attributes.length; attributeIndex++) {
-//							NodeAttribute attribute = attributes[attributeIndex];
-//							if (attribute.isContentDefinedElement) {
-//								df.addContentDefinedElement(col
-//										.getXmlElement(attribute.depth),
-//										attribute.name);
-//							}
-//						}
-//
-//					String[] extraXmlToInject = col.getInjectXmlArray();
-//					if (extraXmlToInject != null) {
-//						for (int extraXmlIndex = 1; extraXmlIndex < extraXmlToInject.length; extraXmlIndex += 3) {
-//							String xmlElement = col.getXmlElement(0);
-//							String extraXml = extraXmlToInject[extraXmlIndex];
-//							transformer.addTargetElement(xmlElement, extraXml);
-//							df.addContentDefinedElement(xmlElement, extraXml);
-//						}
-//					}
-//				}
-//				sr.setFormatter(df);
-//				sr.setReader(transformer.transform(sr.getReader()));
-//			}
-//
-//			break;
-//		case RIS: // fall through
-//		case BIBTEX:// fall through
-//			sr.setFormatter(new CitationFormatter(outputType));
-//			if (!sr.getReader().hasNext()) {
-//				log.debug("Writing empty file");
-//			}
-//			break;
+
+			// Empty results check.
+			if (!sr.getReader().hasNext()) {
+				sr.setReader(tableResponse.makeEmptyXMLReader());
+			} else { 
+				sr.setReader(tableResponse.makeXMLReaderWithEmptyHeaderRow());
+			}
+
+			{ // Configure the formatter
+				DataFlatteningFormatter df = new DataFlatteningFormatter(outputType);
+				ElementToAttributeTransformer transformer = new ElementToAttributeTransformer();
+
+				df.setRowElementName(tableResponse.getRowTag());
+				// use column map to add content-defined elements
+				for (ColumnMapping col : tableResponse.getColumns()) {
+					NodeAttribute[] attributes = col.getAttributes();
+					if (attributes != null)
+						for (int attributeIndex = 0; attributeIndex < attributes.length; attributeIndex++) {
+							NodeAttribute attribute = attributes[attributeIndex];
+							if (attribute.isContentDefinedElement) {
+								df.addContentDefinedElement(col
+										.getXmlElement(attribute.depth),
+										attribute.name);
+							}
+						}
+
+					String[] extraXmlToInject = col.getInjectXmlArray();
+					if (extraXmlToInject != null) {
+						for (int extraXmlIndex = 1; extraXmlIndex < extraXmlToInject.length; extraXmlIndex += 3) {
+							String xmlElement = col.getXmlElement(0);
+							String extraXml = extraXmlToInject[extraXmlIndex];
+							transformer.addTargetElement(xmlElement, extraXml);
+							df.addContentDefinedElement(xmlElement, extraXml);
+						}
+					}
+				}
+				sr.setFormatter(df);
+				sr.setReader(transformer.transform(sr.getReader()));
+			}
+
+			break;
 //		case JSON:
 //			sr.setFormatter(Services.getJSONFormatter(specResponse.responseSpec)); // , isJsonP
 //			if (!sr.getReader().hasNext()) {

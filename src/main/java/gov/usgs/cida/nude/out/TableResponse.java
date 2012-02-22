@@ -1,6 +1,10 @@
 package gov.usgs.cida.nude.out;
 
+import gov.usgs.cida.nude.column.ColumnGrouping;
+import gov.usgs.cida.spec.jsl.mapping.ColumnMapping;
 import gov.usgs.cida.spec.jsl.mapping.NodeAttribute;
+import gov.usgs.webservices.framework.basic.Transformer;
+import gov.usgs.webservices.framework.transformer.InsertHeaderRowTransformer;
 
 import java.sql.ResultSet;
 
@@ -21,7 +25,17 @@ public class TableResponse {
 	}
 	
 	public XMLStreamReader makeXMLReader() {
-		return new CGXmlReader(this.rs, this.getDocTag(), this.getRowTag(), new NodeAttribute[] {new NodeAttribute("rowCount", this.getFullRowCount(), 0, false, null)}, null);
+		return new TableXmlReader(this.rs, this.getDocTag(), this.getRowTag(), new NodeAttribute[] {new NodeAttribute("rowCount", this.getFullRowCount(), 0, true, null)}, null);
+	}
+	
+	public XMLStreamReader makeEmptyXMLReader() {
+		return new EmptyTableXmlReader(this.rs, this.getDocTag(), this.getRowTag(), new NodeAttribute[] {new NodeAttribute("rowCount", "0", 0, true, null)}, null);
+	}
+	
+	public XMLStreamReader makeXMLReaderWithEmptyHeaderRow() {
+		XMLStreamReader coreReader = this.makeXMLReader();
+		Transformer transformer = new InsertHeaderRowTransformer(this.getDocTag(), this.getRowTag());
+		return transformer.transform(coreReader, this.makeEmptyXMLReader());
 	}
 
 	public String getDocTag() {
@@ -36,5 +50,7 @@ public class TableResponse {
 		return this.fullRowCount;
 	}
 	
-	
+	public ColumnMapping[] getColumns() {
+		return ColumnGrouping.getColumnMappings(ColumnGrouping.getColumnGrouping(this.rs));
+	}
 }
