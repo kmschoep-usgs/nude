@@ -1,5 +1,6 @@
 package gov.usgs.cida.nude.column;
 
+import com.google.common.base.Objects;
 import gov.usgs.cida.spec.jsl.mapping.ColumnMapping;
 
 import java.sql.ResultSet;
@@ -193,5 +194,12 @@ public class ColumnGrouping implements Iterable<Column> {
 		}
 		
 		return result;
+	}
+
+	@Override
+	public String toString() {
+		return Objects.toStringHelper(this)
+				.add("columns", columns)
+				.toString();
 	}
 }

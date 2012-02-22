@@ -97,7 +97,7 @@ public class SimpleColumn implements Column {
 
 	@Override
 	public int hashCode() {
-		return new HashCodeBuilder(51, 89)
+		return new HashCodeBuilder(53, 89)
 				.append(this.getFullName())
 				.append(this.getValueType())
 				.toHashCode();

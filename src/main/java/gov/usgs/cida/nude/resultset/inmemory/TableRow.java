@@ -1,5 +1,6 @@
 package gov.usgs.cida.nude.resultset.inmemory;
 
+import com.google.common.base.Objects;
 import gov.usgs.cida.nude.column.Column;
 import gov.usgs.cida.nude.column.ColumnGrouping;
 
@@ -76,5 +77,13 @@ public class TableRow implements Comparable<TableRow>{
 		}
 		
 		return result;
+	}
+
+	@Override
+	public String toString() {
+		return Objects.toStringHelper(this)
+				.add("columns", this.columns)
+				.add("row", this.row)
+				.toString();
 	}
 }
