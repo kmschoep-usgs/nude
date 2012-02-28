@@ -4,13 +4,13 @@ import examples.ida.response.IdaMetadata;
 import gov.usgs.cida.nude.column.Column;
 import gov.usgs.cida.nude.column.ColumnGrouping;
 import gov.usgs.cida.nude.connector.http.AbstractHttpParser;
-
 import java.io.BufferedReader;
+
 import java.io.IOException;
+import java.io.Reader;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.EnumMap;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -25,14 +25,16 @@ public class IdaParser extends AbstractHttpParser {
 	protected static final Pattern pat = Pattern.compile("^\\s*<input.* name=\"mindatetime\".* value=\"([^\"]*)\".*\\/>.*<input.* name=\"maxdatetime\".* value=\"([^\"]*)\".*\\/>.*<input.*");
 	
 	@Override
-	public boolean next(BufferedReader in) throws SQLException {
+	public boolean next(Reader in) throws SQLException {
 		this.row.clear();
 		boolean result = false;
+		
+		BufferedReader inBuf = (BufferedReader) in;
 		
 		try {
 			boolean endOfStream = false;
 			while (!result && !endOfStream) {
-				String line = in.readLine();
+				String line = inBuf.readLine();
 				if (null == line) {
 					endOfStream = true;
 				} else {

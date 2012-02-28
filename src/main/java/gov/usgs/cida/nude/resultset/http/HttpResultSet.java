@@ -2,11 +2,7 @@ package gov.usgs.cida.nude.resultset.http;
 
 import gov.usgs.cida.nude.connector.parser.IParser;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -19,7 +15,7 @@ public class HttpResultSet extends ParsingResultSet {
 	private static final Logger log = LoggerFactory.getLogger(HttpResultSet.class);
 	
 	protected final HttpEntity httpEntity;
-	protected final BufferedReader serverResponseReader;
+	protected final Reader serverResponseReader;
 	
 	protected boolean isBeforeFirst = true;
 	protected boolean isFirst = false;
