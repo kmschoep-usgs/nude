@@ -102,4 +102,9 @@ public class SimpleColumn implements Column {
 				.append(this.getValueType())
 				.toHashCode();
 	}
+
+	@Override
+	public String toString() {
+		return this.getFullName();
+	}
 }
