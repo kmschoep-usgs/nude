@@ -41,12 +41,6 @@ public class IdaDataConnector extends AbstractHttpConnector {
 	}
 
 	@Override
-	public boolean isReady() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
 	public boolean isValidInput() {
 		// TODO Auto-generated method stub
 		return false;

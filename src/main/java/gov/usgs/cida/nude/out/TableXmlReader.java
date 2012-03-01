@@ -41,11 +41,7 @@ public class TableXmlReader extends BasicXMLStreamReader {
 		this.docAttributes = docAttributes;
 		this.rowAttributes = rowAttributes;
 		
-		if (null != rset) {
-			this.columnMappings = ColumnGrouping.getColumnMappings(ColumnGrouping.getColumnGrouping(rset));
-		} else {
-			this.columnMappings = new ColumnMapping[0];
-		}
+		this.columnMappings = ColumnGrouping.getColumnMappings(ColumnGrouping.getColumnGrouping(rset));
 	}
 	
 	@Override

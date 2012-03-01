@@ -50,12 +50,12 @@ public class Dispatcher {
 //			sr.setCacheable(false); // We don't want to cache files.
 //			sr.setFileDownload(true);
 
-			// Empty results check.
-			if (!sr.getReader().hasNext()) {
-				sr.setReader(tableResponse.makeEmptyXMLReader());
-			} else { 
-				sr.setReader(tableResponse.makeXMLReader());
-			}
+//			// Empty results check.
+//			if (!sr.getReader().hasNext()) {
+//				sr.setReader(tableResponse.makeEmptyXMLReader());
+//			} else { 
+//				sr.setReader(tableResponse.makeXMLReader());
+//			}
 
 			{ // Configure the formatter
 				DataFlatteningFormatter df = new DataFlatteningFormatter(outputType);

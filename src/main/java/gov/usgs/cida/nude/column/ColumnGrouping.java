@@ -127,16 +127,18 @@ public class ColumnGrouping implements Iterable<Column> {
 	}
 	
 	public static ColumnMapping[] getColumnMappings(ColumnGrouping colGroup) {
-		ColumnMapping[] result = null;
+		ColumnMapping[] result = new ColumnMapping[0];
 		
-		List<ColumnMapping> cm = new ArrayList<ColumnMapping>();
-		for (Column col : colGroup) {
-			if (col.isDisplayable()) {
-				cm.add(new ColumnMapping(col.getName(), col.getName()));
+		if (null != colGroup) {
+			List<ColumnMapping> cm = new ArrayList<ColumnMapping>();
+			for (Column col : colGroup) {
+				if (col.isDisplayable()) {
+					cm.add(new ColumnMapping(col.getName(), col.getName()));
+				}
 			}
+			result = cm.toArray(result);
 		}
 		
-		result = cm.toArray(new ColumnMapping[0]);
 		return result;
 	}
 	
@@ -144,7 +146,7 @@ public class ColumnGrouping implements Iterable<Column> {
 		ColumnGrouping result = null;
 		
 		try {
-			if (null != rset) {
+			if (null != rset && !rset.isClosed()) {
 				ResultSetMetaData md = rset.getMetaData();
 				if (null != md) {
 					if (md.isWrapperFor(CGResultSetMetaData.class)) {

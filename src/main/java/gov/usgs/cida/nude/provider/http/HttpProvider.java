@@ -19,8 +19,8 @@ public class HttpProvider implements IProvider {
 	
 	// Connection pool setup
 	private final static int CONNECTION_TTL = 15 * 60 * 1000;       // 15 minutes, default is infinte
-	private final static int CONNECTIONS_MAX_TOTAL = 256;
-	private final static int CONNECTIONS_MAX_ROUTE = 32;
+	private final static int CONNECTIONS_MAX_TOTAL = 128;
+	private final static int CONNECTIONS_MAX_ROUTE = 16;
 	// Connection timeouts
 	private final static int CLIENT_SOCKET_TIMEOUT = 5 * 60 * 1000; // 5 minutes, default is infinite
 	private final static int CLIENT_CONNECTION_TIMEOUT = 15 * 1000; // 15 seconds, default is infinte
