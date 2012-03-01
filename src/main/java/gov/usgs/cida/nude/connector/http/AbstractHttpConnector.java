@@ -3,6 +3,7 @@ package gov.usgs.cida.nude.connector.http;
 import gov.usgs.cida.nude.column.Column;
 import gov.usgs.cida.nude.provider.http.HttpProvider;
 import gov.usgs.cida.nude.resultset.http.HttpResultSet;
+import gov.usgs.cida.nude.resultset.inmemory.StringTableResultSet;
 import gov.usgs.cida.nude.resultset.inmemory.TableRow;
 
 import java.io.IOException;
@@ -36,8 +37,10 @@ public abstract class AbstractHttpConnector implements HttpConnector {
 	@Override
 	public void addInput(ResultSet in) {
 		this.inputs.add(in);
+		this.fillRequiredInputs(in);
 	}
 	
+	protected abstract void fillRequiredInputs(ResultSet in);
 	protected abstract String getURI();
 	
 	protected static void generateFirefoxHeaders(HttpUriRequest req, String referer) {
@@ -85,16 +88,23 @@ public abstract class AbstractHttpConnector implements HttpConnector {
 		return result;
 	}
 	
-		@Override
+	@Override
 	public ResultSet getResultSet() {
 		ResultSet result = null;
 		
-		try {
-			HttpEntity methodEntity = makeCall();
-			result = new HttpResultSet(methodEntity, this.getParser());
-		} catch (Exception e) {
-			log.error("Could not make call", e);
+		if (this.isValidInput()) {
+			String uri = this.getURI();
+			log.debug("Calling " + uri);
+			try {
+				HttpEntity methodEntity = makeCall();
+				result = new HttpResultSet(methodEntity, this.getParser());
+			} catch (Exception e) {
+				log.error("Could not make call", e);
+			}
+		} else {
+			result = new StringTableResultSet(this.getExpectedColumns());
 		}
+		
 		
 		return result;
 	}

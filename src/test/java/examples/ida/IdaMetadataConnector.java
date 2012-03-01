@@ -126,4 +126,9 @@ public class IdaMetadataConnector extends AbstractHttpConnector {
 		// TODO Auto-generated method stub
 		return false;
 	}
+
+	@Override
+	protected void fillRequiredInputs(ResultSet in) {
+		//TODO
+	}
 }

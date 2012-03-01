@@ -54,7 +54,7 @@ public class Dispatcher {
 			if (!sr.getReader().hasNext()) {
 				sr.setReader(tableResponse.makeEmptyXMLReader());
 			} else { 
-				sr.setReader(tableResponse.makeXMLReaderWithEmptyHeaderRow());
+				sr.setReader(tableResponse.makeXMLReader());
 			}
 
 			{ // Configure the formatter

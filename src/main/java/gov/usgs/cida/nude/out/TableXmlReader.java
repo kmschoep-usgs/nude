@@ -31,6 +31,9 @@ public class TableXmlReader extends BasicXMLStreamReader {
 	
 	protected final Stack<String> elementStack = new Stack<String>();
 	
+	public static final boolean WRITE_EMPTY_TAGS = true;
+	public static final String EMPTY_VALUE = "";
+	
 	public TableXmlReader(ResultSet rset, String docElement, String rowElement, NodeAttribute[] docAttributes, NodeAttribute[] rowAttributes) {
 		this._rset = rset;
 		this.docElement = docElement;
@@ -122,8 +125,8 @@ public class TableXmlReader extends BasicXMLStreamReader {
 		for(int columnMapCounter = 0; columnMapCounter < columnMap.length;columnMapCounter++){
 			ColumnMapping currentCol = columnMap[columnMapCounter];
 			
-			if (!"".equals(currentCol.getXmlElementString()) && null == currentCol.getSpec()) { //Allows us to add columns to look up, but not to output.
-				if(hasValue(rset, currentCol.getColumnName())){
+			if (!"".equals(currentCol.getXmlElementString())) { // && null == currentCol.getSpec() //Allows us to add columns to look up, but not to output.
+				if(WRITE_EMPTY_TAGS || hasValue(rset, currentCol.getColumnName())){
 					closeDanglingElements(currentCol);
 					openXmlElements(currentCol);
 
@@ -133,35 +136,35 @@ public class TableXmlReader extends BasicXMLStreamReader {
 					BasicXMLStreamReader.Attribute[] attributeArray 
 					= getAttributeArray(currentCol, columnMapDepth);
 
-					//Iterative portion: all depends on countColumn!!
-					if (null != currentCol.getCountColumn()) {
-						int linkCount = 0;
-						try {
-							linkCount = rset.getInt(currentCol.getCountColumn());
-						} catch (Exception e) {
-							e.printStackTrace();
-							linkCount = 0;
-						}
-						if (linkCount >= 1) {
-							do {
-								//change the attribute value
-								for(int index = 0; attributeArray != null && attributeArray.length > index; index++) {
-									if (currentCol.getAttributes()[index] != null && currentCol.getAttributes()[index].dynamicValueColumn != null) {
-										attributeArray[index].value = rset.getString(currentCol.getAttributes()[index].dynamicValueColumn);
-									}
-								}
-
-								//write the tag
-								writeBasicTag(rset, xmlElement, columnName, attributeArray);
-								if(currentCol.getInjectXmlAt() != null) {
-									checkForExtraXml(currentCol, xmlElement);
-								}
-
-								linkCount--;
-							} while (linkCount > 0 && rset.next()); //moves it to the next row
-						}
-						closeXmlElements(currentCol);
-					} else {
+//					//Iterative portion: all depends on countColumn!!
+//					if (null != currentCol.getCountColumn()) {
+//						int linkCount = 0;
+//						try {
+//							linkCount = rset.getInt(currentCol.getCountColumn());
+//						} catch (Exception e) {
+//							e.printStackTrace();
+//							linkCount = 0;
+//						}
+//						if (linkCount >= 1) {
+//							do {
+//								//change the attribute value
+//								for(int index = 0; attributeArray != null && attributeArray.length > index; index++) {
+//									if (currentCol.getAttributes()[index] != null && currentCol.getAttributes()[index].dynamicValueColumn != null) {
+//										attributeArray[index].value = rset.getString(currentCol.getAttributes()[index].dynamicValueColumn);
+//									}
+//								}
+//
+//								//write the tag
+//								writeBasicTag(rset, xmlElement, columnName, attributeArray);
+//								if(currentCol.getInjectXmlAt() != null) {
+//									checkForExtraXml(currentCol, xmlElement);
+//								}
+//
+//								linkCount--;
+//							} while (linkCount > 0 && rset.next()); //moves it to the next row
+//						}
+//						closeXmlElements(currentCol);
+//					} else {
 						// normal
 
 						//change the attribute value
@@ -175,15 +178,16 @@ public class TableXmlReader extends BasicXMLStreamReader {
 							checkForExtraXml(currentCol, xmlElement);
 						}
 						closeXmlElements(currentCol);
-					}
+//					}
 				}
-			} else if (null != currentCol.getSpec()) {
-				while (((JoiningResultSet) rset).isSynched(currentCol.getSpec().getColumns()[1].getColumnName())) {
-					readRowAux(rset, currentCol.getSpec().getColumns());
-					closeDanglingElements(currentCol);
-					((JoiningResultSet) rset).next(currentCol.getSpec().getColumns()[1].getColumnName());
-				}
-			}
+			} 
+//			else if (null != currentCol.getSpec()) {
+//				while (((JoiningResultSet) rset).isSynched(currentCol.getSpec().getColumns()[1].getColumnName())) {
+//					readRowAux(rset, currentCol.getSpec().getColumns());
+//					closeDanglingElements(currentCol);
+//					((JoiningResultSet) rset).next(currentCol.getSpec().getColumns()[1].getColumnName());
+//				}
+//			}
 		}
 	}
 
@@ -226,9 +230,13 @@ public class TableXmlReader extends BasicXMLStreamReader {
 	}
 
 	protected void writeBasicTag(ResultSet rset, String tag, String column, Attribute... at) throws SQLException{
-		if(!hasValue(rset, column)) return;
+		String res = null;
+		if(!hasValue(rset, column)) {
+			res = EMPTY_VALUE;
+		} else {
+			res = rset.getString(column);
+		}
 		
-		String res = rset.getString(column);
 		if(at == null){
 			addNonNullBasicTag(tag, res);
 		} else {
@@ -236,15 +244,6 @@ public class TableXmlReader extends BasicXMLStreamReader {
 		}
 	}
 
-	/**
-	 * Tests whether or not the resultset contains a value at the column 
-	 * specified by the passed String parameter
-	 * 
-	 * @param rset
-	 * @param column
-	 * @return true if column contains a value, false if not
-	 * @throws SQLException Exhausted Resultset usually means that your mods aren't coming back with the correct number of links OR they are ordered incorrectly.
-	 */
 	protected boolean hasValue(ResultSet rset, String column) {
 		try {
 			String value = null;

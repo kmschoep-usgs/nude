@@ -57,4 +57,9 @@ public class IdaDataConnector extends AbstractHttpConnector {
 		throw new UnsupportedOperationException("Not supported yet.");
 	}
 
+	@Override
+	protected void fillRequiredInputs(ResultSet in) {
+		//TODO
+	}
+
 }

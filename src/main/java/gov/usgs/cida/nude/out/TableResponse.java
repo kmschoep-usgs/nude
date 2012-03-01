@@ -32,6 +32,11 @@ public class TableResponse {
 		return new EmptyTableXmlReader(this.rs, this.getDocTag(), this.getRowTag(), new NodeAttribute[] {new NodeAttribute("rowCount", "0", 0, true, null)}, null);
 	}
 	
+	/**
+	 * doesn't seem to work with the tablexmlreader. if you need it, fix it.
+	 * @return 
+	 */
+	@Deprecated
 	public XMLStreamReader makeXMLReaderWithEmptyHeaderRow() {
 		XMLStreamReader coreReader = this.makeXMLReader();
 		Transformer transformer = new InsertHeaderRowTransformer(this.getDocTag(), this.getRowTag());
