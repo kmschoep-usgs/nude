@@ -19,6 +19,7 @@ import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpHead;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.protocol.HttpContext;
 import org.slf4j.Logger;
@@ -87,29 +88,68 @@ public abstract class AbstractHttpConnector implements HttpConnector {
 		
 		return result;
 	}
+
+	@Override
+	public boolean isReady() {
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
 	
 	@Override
 	public ResultSet getResultSet() {
 		ResultSet result = null;
-		
-		if (this.isValidInput()) {
-			String uri = this.getURI();
-			log.debug("Calling " + uri);
+
+		String uri = getURI(this);
+		if (null != uri) {
 			try {
-				HttpEntity methodEntity = makeCall();
-				result = new HttpResultSet(methodEntity, this.getParser());
+				int code = makeHeadCall();
+				if (200 == code) {
+					log.debug("Calling " + uri);
+					HttpEntity methodEntity = makeGetCall();
+					result = new HttpResultSet(methodEntity, this.getParser());
+
+				} else {
+					log.error("Code " + code + " for service " + uri);
+				}
 			} catch (Exception e) {
 				log.error("Could not make call", e);
 			}
-		} else {
-			result = new StringTableResultSet(this.getExpectedColumns());
 		}
 		
+		if (null == result) {
+			result = new StringTableResultSet(this.getExpectedColumns());
+		}
 		
 		return result;
 	}
 	
-	public HttpEntity makeCall() throws ClientProtocolException, IOException {
+	/**
+	 * 
+	 * @param con
+	 * @return URI or null if invalid Input
+	 */
+	public static String getURI(AbstractHttpConnector con) {
+		String result = null;
+		
+		if (con.isValidInput()) {
+			result = con.getURI();
+		}
+		
+		return result;
+	}
+	
+	public int makeHeadCall() throws ClientProtocolException, IOException {
+		HttpResponse result = null;
+		
+		HttpClient httpClient = httpProvider.getClient();
+		HttpUriRequest req = new HttpHead(getURI());
+		generateFirefoxHeaders(req, null);
+		
+		result = httpClient.execute(req);
+		
+		return result.getStatusLine().getStatusCode();
+	}
+	
+	public HttpEntity makeGetCall() throws ClientProtocolException, IOException {
 		HttpEntity result = null;
 		
 		HttpClient httpClient = httpProvider.getClient();
