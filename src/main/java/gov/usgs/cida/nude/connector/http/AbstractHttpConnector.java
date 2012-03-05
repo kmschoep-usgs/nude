@@ -11,7 +11,6 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
-import java.util.logging.Level;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpEntity;
@@ -126,9 +125,9 @@ public abstract class AbstractHttpConnector implements HttpConnector {
 
 		String uri = getURI(this);
 		if (null != uri) {
+			log.debug("Trying to get ResultSet: " + uri);
 			try {
 				if (isReady()) {
-					log.debug("Calling " + uri);
 					HttpEntity methodEntity = makeGetCall();
 					result = new HttpResultSet(methodEntity, this.getParser());
 				} else {
@@ -163,30 +162,40 @@ public abstract class AbstractHttpConnector implements HttpConnector {
 
 	protected int makeHeadCall(String uri) throws ClientProtocolException, IOException {
 		int result = -1;
-		HttpResponse resp = null;
-
-		HttpClient httpClient = httpProvider.getClient();
-		HttpUriRequest req = new HttpHead(uri);
-		generateFirefoxHeaders(req, null);
+		if (null != uri) {
+			log.trace("Sending HEAD: " + uri);
+			HttpResponse resp = null;
 		
-		try {
-			resp = httpClient.execute(req);
-			result = resp.getStatusLine().getStatusCode();
-		} finally {
-			req.abort();
+			HttpClient httpClient = httpProvider.getClient();
+			HttpUriRequest req = new HttpHead(uri);
+			generateFirefoxHeaders(req, null);
+
+			try {
+				resp = httpClient.execute(req);
+				result = resp.getStatusLine().getStatusCode();
+			} finally {
+				req.abort();
+			}
 		}
+		
 		
 		return result;
 	}
 
 	public HttpEntity makeGetCall() throws ClientProtocolException, IOException {
 		HttpEntity result = null;
+		String uri = getURI();
+		
+		if (null != uri) {
+			log.trace("Sending GET: " + uri);
+			
+			HttpClient httpClient = httpProvider.getClient();
+			HttpUriRequest req = new HttpGet(uri);
+			generateFirefoxHeaders(req, null);
 
-		HttpClient httpClient = httpProvider.getClient();
-		HttpUriRequest req = new HttpGet(getURI());
-		generateFirefoxHeaders(req, null);
-
-		result = makeCall(httpClient, req, null);
+			result = makeCall(httpClient, req, null);
+		}
+		
 
 		return result;
 	}

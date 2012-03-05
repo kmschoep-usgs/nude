@@ -5,6 +5,8 @@ import gov.usgs.cida.nude.connector.parser.IParser;
 import java.io.*;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.zip.GZIPInputStream;
+import org.apache.http.Header;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.util.EntityUtils;
@@ -48,13 +50,15 @@ public class HttpResultSet extends ParsingResultSet {
 		InputStreamReader reader = null;
 		try {
 			String charset = null;
-			//TODO!
-//			Header contentHeader = this.httpEntity.getContentType();
-//			if (null != contentHeader) {
-//				String contentType = contentHeader.getValue();
-//				int lastSemicolon = contentType.lastIndexOf(";");
-//				int lastCharset = contentType.lastIndexOf("charset");
-//			} 
+
+			Header contentHeader = this.httpEntity.getContentEncoding();
+			if (null != contentHeader) {
+				String encoding = contentHeader.getValue();
+				log.trace("encoding:" + encoding);
+				if ("gzip".equals(encoding)) {
+					in = new GZIPInputStream(in);
+				}
+			}
 			
 			charset = "UTF-8";
 			
