@@ -27,21 +27,27 @@ public class TableXmlReader extends BasicXMLStreamReader {
 	protected final NodeAttribute[] docAttributes;
 	protected final NodeAttribute[] rowAttributes;
 	
+	protected final String emptyValues;
+	
 	protected final ColumnMapping[] columnMappings;
 	
 	protected final Stack<String> elementStack = new Stack<String>();
 	
 	public static final boolean WRITE_EMPTY_TAGS = true;
-	public static final String EMPTY_VALUE = "";
 	
-	public TableXmlReader(ResultSet rset, String docElement, String rowElement, NodeAttribute[] docAttributes, NodeAttribute[] rowAttributes) {
+	public TableXmlReader(ResultSet rset, String docElement, String rowElement, NodeAttribute[] docAttributes, NodeAttribute[] rowAttributes, String emptyValueString, boolean showHiddenColumns) {
 		this._rset = rset;
 		this.docElement = docElement;
 		this.rowElement = rowElement;
 		this.docAttributes = docAttributes;
 		this.rowAttributes = rowAttributes;
 		
-		this.columnMappings = ColumnGrouping.getColumnMappings(ColumnGrouping.getColumnGrouping(rset));
+		if (null == emptyValueString) {
+			emptyValueString = "";
+		}
+		this.emptyValues = emptyValueString;
+		
+		this.columnMappings = ColumnGrouping.getColumnMappings(ColumnGrouping.getColumnGrouping(rset), showHiddenColumns);
 	}
 	
 	@Override
@@ -228,7 +234,7 @@ public class TableXmlReader extends BasicXMLStreamReader {
 	protected void writeBasicTag(ResultSet rset, String tag, String column, Attribute... at) throws SQLException{
 		String res = null;
 		if(!hasValue(rset, column)) {
-			res = EMPTY_VALUE;
+			res = this.emptyValues;
 		} else {
 			res = rset.getString(column);
 		}

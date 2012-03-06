@@ -18,11 +18,21 @@ public class TableResponse {
 	protected final String rowTag;
 	protected final String fullRowCount;
 	
+	protected final String emptyValues;
+	protected final boolean showHiddenColumns;
+	
 	public TableResponse(ResultSet rset) {
+		this(rset, null, false);
+	}
+	
+	public TableResponse(ResultSet rset, String emptyValueString, boolean showHiddenColumns) {
 		this.rs = rset;
 		this.docTag = "success";
 		this.rowTag = "data";
 		this.fullRowCount = "-1";
+		
+		this.emptyValues = emptyValueString;
+		this.showHiddenColumns = showHiddenColumns;
 	}
 	
 	public XMLStreamReader makeXMLReader() {
@@ -30,7 +40,7 @@ public class TableResponse {
 		
 		try {
 			if (null != this.rs && !this.rs.isClosed()) {
-				result = new TableXmlReader(this.rs, this.getDocTag(), this.getRowTag(), new NodeAttribute[] {new NodeAttribute("rowCount", this.getFullRowCount(), 0, true, null)}, null);
+				result = new TableXmlReader(this.rs, this.getDocTag(), this.getRowTag(), new NodeAttribute[] {new NodeAttribute("rowCount", this.getFullRowCount(), 0, true, null)}, null, this.emptyValues, this.showHiddenColumns);
 				if (!result.hasNext()) {
 					result = new EmptyTableXmlReader(this.rs, this.getDocTag(), this.getRowTag(), new NodeAttribute[] {new NodeAttribute("rowCount", "0", 0, true, null)}, null);
 				}
@@ -55,6 +65,6 @@ public class TableResponse {
 	}
 	
 	public ColumnMapping[] getColumns() {
-		return ColumnGrouping.getColumnMappings(ColumnGrouping.getColumnGrouping(this.rs));
+		return ColumnGrouping.getColumnMappings(ColumnGrouping.getColumnGrouping(this.rs), this.showHiddenColumns);
 	}
 }

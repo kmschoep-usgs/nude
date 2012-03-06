@@ -126,13 +126,13 @@ public class ColumnGrouping implements Iterable<Column> {
 		return this.columns.iterator();
 	}
 	
-	public static ColumnMapping[] getColumnMappings(ColumnGrouping colGroup) {
+	public static ColumnMapping[] getColumnMappings(ColumnGrouping colGroup, boolean mapHiddenColumns) {
 		ColumnMapping[] result = new ColumnMapping[0];
 		
 		if (null != colGroup) {
 			List<ColumnMapping> cm = new ArrayList<ColumnMapping>();
 			for (Column col : colGroup) {
-				if (col.isDisplayable()) {
+				if (col.isDisplayable() || mapHiddenColumns) {
 					cm.add(new ColumnMapping(col.getName(), col.getName()));
 				}
 			}

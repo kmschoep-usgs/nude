@@ -13,7 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
+ * @deprecated !!! probably shouldn't use this.  this doesn't really work.
  * @author dmsibley
  */
 public class EmptyTableXmlReader extends TableXmlReader {
@@ -22,7 +22,7 @@ public class EmptyTableXmlReader extends TableXmlReader {
 	private ColumnMapping[] colMap;
 
 	public EmptyTableXmlReader(ResultSet rset, String docElement, String rowElement, NodeAttribute[] docAttributes, NodeAttribute[] rowAttributes) {
-		super(rset, docElement, rowElement, docAttributes, rowAttributes);
+		super(rset, docElement, rowElement, docAttributes, rowAttributes, null, false);
 //		MockResultSet rs = new MockResultSet();
 //		rs.setColumnNames("one", "two");
 //		rs.addRow("1", "2");
@@ -33,7 +33,7 @@ public class EmptyTableXmlReader extends TableXmlReader {
 //			log.error("Something went wrong creating EmptyTableXmlReader", e);
 //		}
 		
-		this.colMap = ColumnGrouping.getColumnMappings(ColumnGrouping.getColumnGrouping(rset));
+		this.colMap = ColumnGrouping.getColumnMappings(ColumnGrouping.getColumnGrouping(rset), false);
 	}
 
 	@Override
