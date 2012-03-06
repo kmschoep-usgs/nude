@@ -1,9 +1,7 @@
 package gov.usgs.cida.nude.provider.http;
 
 import gov.usgs.cida.nude.provider.IProvider;
-
 import java.util.concurrent.TimeUnit;
-
 import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.SchemeRegistryFactory;
