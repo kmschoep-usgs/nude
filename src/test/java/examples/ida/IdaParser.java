@@ -17,12 +17,18 @@ import java.util.regex.Pattern;
 public class IdaParser extends AbstractHttpParser {
 	
 	protected IdaMetadata[] columns = IdaMetadata.values();
-	
-	protected ColumnGrouping colGroup = new ColumnGrouping((Column) IdaMetadata.MINDATETIME, Arrays.asList((Column[]) IdaMetadata.values()));
-	
+		
 	protected EnumMap<IdaMetadata, String> row = new EnumMap<IdaMetadata, String>(IdaMetadata.class);
 	
 	protected static final Pattern pat = Pattern.compile("^\\s*<input.* name=\"mindatetime\".* value=\"([^\"]*)\".*\\/>.*<input.* name=\"maxdatetime\".* value=\"([^\"]*)\".*\\/>.*<input.*");
+
+	public IdaParser() {
+		this(new ColumnGrouping((Column) IdaMetadata.MINDATETIME, Arrays.asList((Column[]) IdaMetadata.values())));
+	}
+	
+	public IdaParser(ColumnGrouping cg) {
+		super(cg);
+	}
 	
 	@Override
 	public boolean next(Reader in) throws SQLException {
@@ -62,11 +68,6 @@ public class IdaParser extends AbstractHttpParser {
 			throw new SQLException("Invalid Column");
 		}
 		return result;
-	}
-
-	@Override
-	public ColumnGrouping getAvailableColumns() {
-		return this.colGroup;
 	}
 
 }
