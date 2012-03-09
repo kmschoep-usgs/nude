@@ -4,14 +4,13 @@ import static org.junit.Assert.assertEquals;
 import examples.ida.IdaMetadataConnector;
 import examples.ida.request.MetadataRequest;
 import gov.usgs.cida.nude.column.ColumnGrouping;
+import gov.usgs.cida.nude.out.Closers;
 import gov.usgs.cida.nude.out.Dispatcher;
+import gov.usgs.cida.nude.out.StreamResponse;
 import gov.usgs.cida.nude.out.TableResponse;
 import gov.usgs.cida.nude.provider.http.HttpProvider;
 import gov.usgs.cida.nude.resultset.inmemory.StringTableResultSet;
 import gov.usgs.cida.nude.resultset.inmemory.TableRow;
-import gov.usgs.cida.spec.formatting.ReturnType;
-import gov.usgs.cida.spec.out.Closers;
-import gov.usgs.cida.spec.out.StreamResponse;
 import gov.usgs.webservices.framework.basic.FormatType;
 
 import java.io.StringWriter;
@@ -68,7 +67,7 @@ public class IdaConnectorTest {
 			rset = ida.getResultSet();
 			
 			TableResponse resp = new TableResponse(rset);
-			StreamResponse outStrm = Dispatcher.buildFormattedResponse(ReturnType.xml, FormatType.XML, resp);
+			StreamResponse outStrm = Dispatcher.buildFormattedResponse(FormatType.XML, resp);
 			StreamResponse.dispatch(outStrm, sw);
 		} finally {
 			Closers.closeQuietly(sw);

@@ -6,9 +6,7 @@
 	<packaging>jar</packaging>
 	<name>NUDE</name>
 	<description>
-		Natural Uniform Data Export Framework
-		
-		Transparent Webservice Aggregator
+		Natural Uniform Data Extraction (and Export) Framework
 	</description>
 
 	<inceptionYear>2011</inceptionYear>
@@ -103,6 +101,13 @@
 
 	<dependencies>
 		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>2.5</version>
+			<type>jar</type>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
 			<groupId>gov.usgs.cida</groupId>
 			<artifactId>swsf-mocks</artifactId>
 			<version>0.3</version>
@@ -132,13 +137,6 @@
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>4.8.2</version>
-			<type>jar</type>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>gov.usgs.cida</groupId>
-			<artifactId>spec-streaming</artifactId>
-			<version>0.0.1</version>
 			<type>jar</type>
 			<scope>compile</scope>
 		</dependency>

@@ -1,9 +1,8 @@
 package gov.usgs.cida.nude.out;
 
 import gov.usgs.cida.nude.column.ColumnGrouping;
-import gov.usgs.cida.spec.jsl.mapping.ColumnMapping;
-import gov.usgs.cida.spec.jsl.mapping.NodeAttribute;
-import gov.usgs.cida.spec.resultset.JoiningResultSet;
+import gov.usgs.cida.nude.out.mapping.ColumnToXmlMapping;
+import gov.usgs.cida.nude.out.mapping.XmlNodeAttribute;
 import gov.usgs.webservices.framework.reader.BasicTagEvent;
 import gov.usgs.webservices.framework.reader.BasicXMLStreamReader;
 
@@ -24,18 +23,18 @@ public class TableXmlReader extends BasicXMLStreamReader {
 	
 	protected final String docElement;
 	protected final String rowElement;
-	protected final NodeAttribute[] docAttributes;
-	protected final NodeAttribute[] rowAttributes;
+	protected final XmlNodeAttribute[] docAttributes;
+	protected final XmlNodeAttribute[] rowAttributes;
 	
 	protected final String emptyValues;
 	
-	protected final ColumnMapping[] columnMappings;
+	protected final ColumnToXmlMapping[] columnMappings;
 	
 	protected final Stack<String> elementStack = new Stack<String>();
 	
 	public static final boolean WRITE_EMPTY_TAGS = true;
 	
-	public TableXmlReader(ResultSet rset, String docElement, String rowElement, NodeAttribute[] docAttributes, NodeAttribute[] rowAttributes, String emptyValueString, boolean showHiddenColumns) {
+	public TableXmlReader(ResultSet rset, String docElement, String rowElement, XmlNodeAttribute[] docAttributes, XmlNodeAttribute[] rowAttributes, String emptyValueString, boolean showHiddenColumns) {
 		this._rset = rset;
 		this.docElement = docElement;
 		this.rowElement = rowElement;
@@ -47,7 +46,7 @@ public class TableXmlReader extends BasicXMLStreamReader {
 		}
 		this.emptyValues = emptyValueString;
 		
-		this.columnMappings = ColumnGrouping.getColumnMappings(ColumnGrouping.getColumnGrouping(rset), showHiddenColumns);
+		this.columnMappings = ColumnToXmlMapping.getColumnMappings(ColumnGrouping.getColumnGrouping(rset), showHiddenColumns);
 	}
 	
 	@Override
@@ -79,12 +78,12 @@ public class TableXmlReader extends BasicXMLStreamReader {
 		BasicTagEvent tagEvent = new BasicTagEvent(START_ELEMENT, tagName);
 		if (tagName.equals(getDocElement()) && getDocAttributes() != null) {
 			for (int attribCount = 0; attribCount < getDocAttributes().length; attribCount++){
-				NodeAttribute attribute = getDocAttributes()[attribCount];
+				XmlNodeAttribute attribute = getDocAttributes()[attribCount];
 				tagEvent.addAttribute(attribute.name, attribute.value);
 			}
 		} else if (tagName.equals(getRowElement()) && getRowAttributes() != null) {
 			for (int attribCount = 0; attribCount < getRowAttributes().length; attribCount++){
-				NodeAttribute attribute = getDocAttributes()[attribCount];
+				XmlNodeAttribute attribute = getDocAttributes()[attribCount];
 				tagEvent.addAttribute(attribute.name, attribute.value);
 			}
 		}
@@ -98,11 +97,11 @@ public class TableXmlReader extends BasicXMLStreamReader {
 	 * @param depth
 	 * @return
 	 */
-	protected BasicXMLStreamReader.Attribute[] getAttributeArray(ColumnMapping columnMap, int depth){
+	protected BasicXMLStreamReader.Attribute[] getAttributeArray(ColumnToXmlMapping columnMap, int depth){
 		if(columnMap.getAttribute(depth) == null) return null;
 		List<BasicXMLStreamReader.Attribute> attributes = new ArrayList<BasicXMLStreamReader.Attribute>();
 		
-		for (NodeAttribute attribute : columnMap.getAttribute(depth)){
+		for (XmlNodeAttribute attribute : columnMap.getAttribute(depth)){
 			attributes.add(new BasicXMLStreamReader.Attribute(attribute.name, attribute.value));
 		}
 		
@@ -112,20 +111,10 @@ public class TableXmlReader extends BasicXMLStreamReader {
 
 	@Override
 	protected void readRow(final ResultSet rset) throws SQLException {
-		ColumnMapping[] columnMap = this.columnMappings;
+		ColumnToXmlMapping[] columnMap = this.columnMappings;
 		
-		readRowAux(rset, columnMap);
-		
-		//close any dangling elements left behind
-		while(getElementStack().size() > 0) {
-			addCloseTag(getElementStack().pop());
-		}
-	}
-
-	protected void readRowAux(final ResultSet rset, ColumnMapping[] columnMap)
-			throws SQLException {
 		for(int columnMapCounter = 0; columnMapCounter < columnMap.length;columnMapCounter++){
-			ColumnMapping currentCol = columnMap[columnMapCounter];
+			ColumnToXmlMapping currentCol = columnMap[columnMapCounter];
 			
 			if (!"".equals(currentCol.getXmlElementString())) { // && null == currentCol.getSpec() //Allows us to add columns to look up, but not to output.
 				if(WRITE_EMPTY_TAGS || hasValue(rset, currentCol.getColumnName())){
@@ -138,62 +127,28 @@ public class TableXmlReader extends BasicXMLStreamReader {
 					BasicXMLStreamReader.Attribute[] attributeArray 
 					= getAttributeArray(currentCol, columnMapDepth);
 
-//					//Iterative portion: all depends on countColumn!!
-//					if (null != currentCol.getCountColumn()) {
-//						int linkCount = 0;
-//						try {
-//							linkCount = rset.getInt(currentCol.getCountColumn());
-//						} catch (Exception e) {
-//							e.printStackTrace();
-//							linkCount = 0;
-//						}
-//						if (linkCount >= 1) {
-//							do {
-//								//change the attribute value
-//								for(int index = 0; attributeArray != null && attributeArray.length > index; index++) {
-//									if (currentCol.getAttributes()[index] != null && currentCol.getAttributes()[index].dynamicValueColumn != null) {
-//										attributeArray[index].value = rset.getString(currentCol.getAttributes()[index].dynamicValueColumn);
-//									}
-//								}
-//
-//								//write the tag
-//								writeBasicTag(rset, xmlElement, columnName, attributeArray);
-//								if(currentCol.getInjectXmlAt() != null) {
-//									checkForExtraXml(currentCol, xmlElement);
-//								}
-//
-//								linkCount--;
-//							} while (linkCount > 0 && rset.next()); //moves it to the next row
-//						}
-//						closeXmlElements(currentCol);
-//					} else {
-						// normal
-
-						//change the attribute value
-						for(int index = 0; attributeArray != null && attributeArray.length > index; index++) {
-							if (currentCol.getAttributes()[index] != null && currentCol.getAttributes()[index].dynamicValueColumn != null) {
-								attributeArray[index].value = rset.getString(currentCol.getAttributes()[index].dynamicValueColumn);
-							}
+					//change the attribute value
+					for(int index = 0; attributeArray != null && attributeArray.length > index; index++) {
+						if (currentCol.getAttributes()[index] != null && currentCol.getAttributes()[index].dynamicValueColumn != null) {
+							attributeArray[index].value = rset.getString(currentCol.getAttributes()[index].dynamicValueColumn);
 						}
-						writeBasicTag(rset, xmlElement, columnName, attributeArray);
-						if(currentCol.getInjectXmlAt() != null) {
-							checkForExtraXml(currentCol, xmlElement);
-						}
-						closeXmlElements(currentCol);
-//					}
+					}
+					writeBasicTag(rset, xmlElement, columnName, attributeArray);
+					if(currentCol.getInjectXmlAt() != null) {
+						checkForExtraXml(currentCol, xmlElement);
+					}
+					closeXmlElements(currentCol);
 				}
 			} 
-//			else if (null != currentCol.getSpec()) {
-//				while (((JoiningResultSet) rset).isSynched(currentCol.getSpec().getColumns()[1].getColumnName())) {
-//					readRowAux(rset, currentCol.getSpec().getColumns());
-//					closeDanglingElements(currentCol);
-//					((JoiningResultSet) rset).next(currentCol.getSpec().getColumns()[1].getColumnName());
-//				}
-//			}
+		}
+		
+		//close any dangling elements left behind
+		while(getElementStack().size() > 0) {
+			addCloseTag(getElementStack().pop());
 		}
 	}
 
-	protected void openXmlElements(ColumnMapping currentCol) {
+	protected void openXmlElements(ColumnToXmlMapping currentCol) {
 	  for(int columnDepthCount = 0; columnDepthCount < currentCol.getDepth() - 1; columnDepthCount++){
 	  	if(columnDepthCount >= getElementStack().size()){
 	  		String xmlElement 	= currentCol.getXmlElement(columnDepthCount);	  		
@@ -204,7 +159,7 @@ public class TableXmlReader extends BasicXMLStreamReader {
 	  }
 	}
 
-	protected void closeXmlElements(ColumnMapping currentCol) {
+	protected void closeXmlElements(ColumnToXmlMapping currentCol) {
 	  for(int columnDepthCount = currentCol.getDepth() - 2; columnDepthCount > currentCol.getGroupBase(); columnDepthCount--){
 	  	addCloseTag(currentCol.getXmlElement(columnDepthCount));
 	  	String popped = getElementStack().pop();
@@ -212,7 +167,7 @@ public class TableXmlReader extends BasicXMLStreamReader {
 	  }
 	}
 
-	protected void checkForExtraXml(ColumnMapping currentCol, String popped) {
+	protected void checkForExtraXml(ColumnToXmlMapping currentCol, String popped) {
 	  for(int injectIndex = 0; injectIndex < currentCol.getInjectXmlAt().length; injectIndex=injectIndex+3){
 	  	if(popped.equals(currentCol.getInjectXmlAt()[injectIndex+2])) { 
 	  		addNonNullBasicTag(currentCol.getInjectXmlAt()[injectIndex+1], currentCol.getInjectXmlAt()[injectIndex]);
@@ -220,7 +175,7 @@ public class TableXmlReader extends BasicXMLStreamReader {
 	  }
   }
 
-	protected void closeDanglingElements(ColumnMapping currentCol) {
+	protected void closeDanglingElements(ColumnToXmlMapping currentCol) {
 		while (getElementStack().size() > currentCol.getGroupBase() + 1
 				|| (currentCol.getDepth() > getElementStack().size()
 						&& getElementStack().size() > 0 
@@ -285,11 +240,11 @@ public class TableXmlReader extends BasicXMLStreamReader {
 		return this.docElement;
 	}
 
-	public NodeAttribute[] getDocAttributes() {
+	public XmlNodeAttribute[] getDocAttributes() {
 		return this.docAttributes;
 	}
 
-	public NodeAttribute[] getRowAttributes() {
+	public XmlNodeAttribute[] getRowAttributes() {
 		return this.rowAttributes;
 	}
 	

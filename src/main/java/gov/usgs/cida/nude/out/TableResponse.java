@@ -1,8 +1,8 @@
 package gov.usgs.cida.nude.out;
 
 import gov.usgs.cida.nude.column.ColumnGrouping;
-import gov.usgs.cida.spec.jsl.mapping.ColumnMapping;
-import gov.usgs.cida.spec.jsl.mapping.NodeAttribute;
+import gov.usgs.cida.nude.out.mapping.ColumnToXmlMapping;
+import gov.usgs.cida.nude.out.mapping.XmlNodeAttribute;
 
 import java.sql.ResultSet;
 
@@ -36,14 +36,11 @@ public class TableResponse {
 	}
 	
 	public XMLStreamReader makeXMLReader() {
-		XMLStreamReader result = new EmptyTableXmlReader(null, this.getDocTag(), this.getRowTag(), new NodeAttribute[] {new NodeAttribute("rowCount", "0", 0, true, null)}, null);
+		XMLStreamReader result = null;
 		
 		try {
 			if (null != this.rs && !this.rs.isClosed()) {
-				result = new TableXmlReader(this.rs, this.getDocTag(), this.getRowTag(), new NodeAttribute[] {new NodeAttribute("rowCount", this.getFullRowCount(), 0, true, null)}, null, this.emptyValues, this.showHiddenColumns);
-				if (!result.hasNext()) {
-					result = new EmptyTableXmlReader(this.rs, this.getDocTag(), this.getRowTag(), new NodeAttribute[] {new NodeAttribute("rowCount", "0", 0, true, null)}, null);
-				}
+				result = new TableXmlReader(this.rs, this.getDocTag(), this.getRowTag(), new XmlNodeAttribute[] {new XmlNodeAttribute("rowCount", this.getFullRowCount(), 0, true, null)}, null, this.emptyValues, this.showHiddenColumns);
 			}
 		} catch (Exception ex) {
 			log.error("Could not make TableXmlReader", ex);
@@ -64,7 +61,7 @@ public class TableResponse {
 		return this.fullRowCount;
 	}
 	
-	public ColumnMapping[] getColumns() {
-		return ColumnGrouping.getColumnMappings(ColumnGrouping.getColumnGrouping(this.rs), this.showHiddenColumns);
+	public ColumnToXmlMapping[] getColumns() {
+		return ColumnToXmlMapping.getColumnMappings(ColumnGrouping.getColumnGrouping(this.rs), this.showHiddenColumns);
 	}
 }

@@ -1,9 +1,7 @@
 package gov.usgs.cida.nude.out;
 
-import gov.usgs.cida.spec.formatting.ReturnType;
-import gov.usgs.cida.spec.jsl.mapping.ColumnMapping;
-import gov.usgs.cida.spec.jsl.mapping.NodeAttribute;
-import gov.usgs.cida.spec.out.StreamResponse;
+import gov.usgs.cida.nude.out.mapping.ColumnToXmlMapping;
+import gov.usgs.cida.nude.out.mapping.XmlNodeAttribute;
 import gov.usgs.webservices.framework.basic.FormatType;
 import gov.usgs.webservices.framework.formatter.DataFlatteningFormatter;
 import gov.usgs.webservices.framework.formatter.XMLPassThroughFormatter;
@@ -22,7 +20,6 @@ public class Dispatcher {
 	
 	/**
 	 * Returns a reader and a formatter ready to be dispatched.
-	 * @param returnType
 	 * @param outputType
 	 * @param isJsonP
 	 * @param rssBaseUrl
@@ -34,7 +31,6 @@ public class Dispatcher {
 	 * @throws InvalidServiceException
 	 */
 	public static StreamResponse buildFormattedResponse(
-			ReturnType returnType,
 			FormatType outputType, 
 			TableResponse tableResponse) throws SQLException, XMLStreamException, IOException {
 		
@@ -63,11 +59,11 @@ public class Dispatcher {
 
 				df.setRowElementName(tableResponse.getRowTag());
 				// use column map to add content-defined elements
-				for (ColumnMapping col : tableResponse.getColumns()) {
-					NodeAttribute[] attributes = col.getAttributes();
+				for (ColumnToXmlMapping col : tableResponse.getColumns()) {
+					XmlNodeAttribute[] attributes = col.getAttributes();
 					if (attributes != null)
 						for (int attributeIndex = 0; attributeIndex < attributes.length; attributeIndex++) {
-							NodeAttribute attribute = attributes[attributeIndex];
+							XmlNodeAttribute attribute = attributes[attributeIndex];
 							if (attribute.isContentDefinedElement) {
 								df.addContentDefinedElement(col
 										.getXmlElement(attribute.depth),

@@ -2,7 +2,7 @@ package gov.usgs.cida.nude.connector.http;
 
 import gov.usgs.cida.nude.column.ColumnGrouping;
 import gov.usgs.cida.nude.resultset.inmemory.TableRow;
-import gov.usgs.cida.spec.jsl.SpecValue;
+import gov.usgs.cida.nude.resultset.inmemory.TypedValue;
 
 import java.sql.SQLException;
 
@@ -25,10 +25,10 @@ public abstract class AbstractHttpParser implements HttpParser {
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T> SpecValue<T> getValue(Class<T> type, int columnIndex)
+	public <T> TypedValue<T> getValue(Class<T> type, int columnIndex)
 			throws SQLException {
 		if (String.class.equals(type)) {
-			return new SpecValue<T>((T) getValue(columnIndex - 1));
+			return new TypedValue<T>((T) getValue(columnIndex - 1));
 		} else {
 			throw new SQLException("Operation not supported");
 		}

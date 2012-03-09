@@ -1,8 +1,7 @@
 package gov.usgs.cida.nude.column;
 
 import com.google.common.base.Objects;
-import gov.usgs.cida.spec.jsl.mapping.ColumnMapping;
-
+import gov.usgs.cida.nude.out.mapping.ColumnToXmlMapping;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -14,7 +13,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -124,22 +122,6 @@ public class ColumnGrouping implements Iterable<Column> {
 	@Override
 	public Iterator<Column> iterator() {
 		return this.columns.iterator();
-	}
-	
-	public static ColumnMapping[] getColumnMappings(ColumnGrouping colGroup, boolean mapHiddenColumns) {
-		ColumnMapping[] result = new ColumnMapping[0];
-		
-		if (null != colGroup) {
-			List<ColumnMapping> cm = new ArrayList<ColumnMapping>();
-			for (Column col : colGroup) {
-				if (col.isDisplayable() || mapHiddenColumns) {
-					cm.add(new ColumnMapping(col.getName(), col.getName()));
-				}
-			}
-			result = cm.toArray(result);
-		}
-		
-		return result;
 	}
 	
 	public static ColumnGrouping getColumnGrouping(ResultSet rset) {

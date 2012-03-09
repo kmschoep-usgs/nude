@@ -4,7 +4,7 @@
  */
 package gov.usgs.cida.nude.resultset.inmemory;
 
-import gov.usgs.cida.spec.out.Closers;
+import gov.usgs.cida.nude.out.Closers;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
