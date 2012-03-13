@@ -1,7 +1,6 @@
 package gov.usgs.cida.nude.column;
 
 import com.google.common.base.Objects;
-import gov.usgs.cida.nude.out.mapping.ColumnToXmlMapping;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;

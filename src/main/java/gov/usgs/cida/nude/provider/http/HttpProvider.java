@@ -26,11 +26,11 @@ public class HttpProvider implements IProvider {
 
 	private static final Logger log = LoggerFactory.getLogger(HttpProvider.class);
 	// Connection pool setup
-	private final static int CONNECTION_TTL = 15 * 60 * 1000;       // 15 minutes, default is infinte
+	private final static int CONNECTION_TTL = 30 * 60 * 1000;       // 30 minutes, default is infinte
 	private final static int CONNECTIONS_MAX_TOTAL = 128;
 	private final static int CONNECTIONS_MAX_ROUTE = 16;
 	// Connection timeouts
-	private final static int CLIENT_SOCKET_TIMEOUT = 1 * 60 * 1000; // 5 minutes, default is infinite
+	private final static int CLIENT_SOCKET_TIMEOUT = 5 * 60 * 1000; // 5 minutes, default is infinite
 	private final static int CLIENT_CONNECTION_TIMEOUT = 15 * 1000; // 15 seconds, default is infinte
 	// Cache setup
 	private final static boolean CACHING_ENABLED = true;
@@ -73,11 +73,15 @@ public class HttpProvider implements IProvider {
 	 * @return
 	 */
 	public HttpClient getClient() {
+		return this.getClient(CLIENT_SOCKET_TIMEOUT);
+	}
+	
+	public HttpClient getClient(int timeoutMillis) {
 		HttpClient result = null;
 
 		if (null != clientConnectionManager) {
 			HttpParams httpParams = new BasicHttpParams();
-			HttpConnectionParams.setSoTimeout(httpParams, CLIENT_SOCKET_TIMEOUT);
+			HttpConnectionParams.setSoTimeout(httpParams, timeoutMillis);
 			HttpConnectionParams.setConnectionTimeout(httpParams, CLIENT_CONNECTION_TIMEOUT);
 
 			result = new DefaultHttpClient(clientConnectionManager, httpParams);
