@@ -44,8 +44,7 @@ public class FilteredResultSet extends PeekingResultSet {
 	
 	@Override
 	protected void addNextRow() throws SQLException {
-		boolean hasNext = in.next();
-		if (hasNext) {
+		if (!in.isClosed() && in.next()) {
 			this.nextRows.add(buildRow());
 		}
 	}
