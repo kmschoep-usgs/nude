@@ -30,11 +30,13 @@ public class TableRow implements Comparable<TableRow>{
 		if (null == colGroup) {
 			throw new RuntimeException("ColumnGroup cannot be null");
 		}
-		if (null == row) {
-			row = new HashMap<Column, String>();
+		Map<Column, String> modRow = new HashMap<Column, String>();
+		
+		if (null != row) {
+			modRow.putAll(row);
 		}
 		
-		this.row = Collections.unmodifiableMap(row);
+		this.row = Collections.unmodifiableMap(modRow);
 		this.columns = colGroup;
 	}
 	
