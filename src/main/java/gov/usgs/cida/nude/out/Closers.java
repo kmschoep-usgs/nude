@@ -2,7 +2,6 @@ package gov.usgs.cida.nude.out;
 
 import java.io.Closeable;
 import java.sql.ResultSet;
-
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

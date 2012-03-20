@@ -5,6 +5,7 @@
 
 package gov.usgs.cida.nude.provider.sql;
 
+import gov.usgs.cida.nude.out.Closers;
 import gov.usgs.cida.nude.provider.IProvider;
 import gov.usgs.cida.nude.resultset.inmemory.TypedValue;
 import java.sql.*;
@@ -34,7 +35,17 @@ public class SQLProvider implements IProvider {
 	public ResultSet getResults(ParameterizedString query) {
 		ResultSet result = null;
 		
-		
+		if (null != query) {
+			Connection con = null;
+			try {
+				con = getConnection("java:comp/env/jdbc/enddat");
+				result = getQueryResults(query, con);
+			} catch (Exception e) {
+				log.error("Cannot get requests for query: " + query.toEvaluatedString(), e);
+				Closers.closeQuietly(result);
+				closeConnection(con);
+			}
+		}
 		
 		return result;
 	}
@@ -232,7 +243,11 @@ public class SQLProvider implements IProvider {
 		
 		List<TypedValue> values = sql.getValues();
 		for (int i = 0; i < values.size(); i++) {
-			result.setString(i+1, values.get(i).toString());
+			TypedValue val = values.get(i);
+			if (null == val) {
+				val = new TypedValue(null);
+			}
+			result.setString(i+1, val.toString());
 		}
 		
 		return result;

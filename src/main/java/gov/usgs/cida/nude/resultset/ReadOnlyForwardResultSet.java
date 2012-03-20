@@ -19,7 +19,7 @@ import java.sql.Timestamp;
 public abstract class ReadOnlyForwardResultSet implements ResultSet {
 
 	public static void throwIfClosed(ResultSet rs) throws SQLException {
-		if (rs.isClosed()) {
+		if (null == rs || rs.isClosed()) {
 			throw new SQLException("Closed ResultSet");
 		}
 	}

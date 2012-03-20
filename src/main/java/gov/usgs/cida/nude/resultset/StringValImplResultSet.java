@@ -229,7 +229,6 @@ public abstract class StringValImplResultSet extends IndexImplResultSet {
 	@Override
 	public Statement getStatement() throws SQLException {
 		throwIfClosed(this);
-		throwNotSupported();
 		return null;
 	}
 

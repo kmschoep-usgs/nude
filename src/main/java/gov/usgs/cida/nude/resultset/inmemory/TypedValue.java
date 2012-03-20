@@ -13,6 +13,12 @@ public class TypedValue<T> {
 
 	@Override
 	public String toString() {
-		return this.value.toString();
+		String result = "";
+		
+		if (null != this.value) {
+			result = this.value.toString();
+		}
+		
+		return result;
 	}
 }

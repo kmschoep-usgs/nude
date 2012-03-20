@@ -8,10 +8,18 @@ import java.util.List;
 public class ParameterizedString {
 	private StringBuffer clause;
 	private List<TypedValue> values;
+	private String valKey;
 	
 	public ParameterizedString() {
 		this.clause = new StringBuffer();
 		this.values = new ArrayList<TypedValue>(); 
+		this.valKey = "?";
+	}
+	
+	public ParameterizedString(String valKey) {
+		this.clause = new StringBuffer();
+		this.values = new ArrayList<TypedValue>(); 
+		this.valKey = valKey;
 	}
 	
 	//Getters
@@ -33,6 +41,10 @@ public class ParameterizedString {
 	
 
 	//Add methods
+	public void addParam(TypedValue value) {
+		this.clause.append(valKey);
+		this.values.add(value);
+	}
 	public void addValue(TypedValue value) {
 		this.values.add(value);
 	}
@@ -49,9 +61,17 @@ public class ParameterizedString {
 		}
 	}
 	
-	//Overrides
 	@Override
 	public String toString() {
 		return this.clause.toString();
+	}
+	public String toEvaluatedString() {
+		String result = this.clause.toString();
+		
+		for (TypedValue val : this.values) {
+			result = result.replaceFirst(this.valKey, val.toString());
+		}
+		
+		return result;
 	}
 }

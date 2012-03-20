@@ -337,7 +337,6 @@ public class StringTableResultSet extends IndexImplResultSet implements Iterable
 	@Override
 	public Statement getStatement() throws SQLException {
 		throwIfClosed(this);
-		throwNotSupported();
 		return null;
 	}
 
