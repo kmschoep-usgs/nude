@@ -49,10 +49,8 @@ public class ActorProvider implements IProvider {
 		try {
 			log.trace("Creating ActorSystem");
 			
-			Config conf = ConfigFactory.parseString("akka.actor.default-dispatcher {"
-					+ "executor = \"thread-pool-executor\""
-					+ "}");
-			result = ActorSystem.create("nude", ConfigFactory.load(conf));
+			Config conf = ConfigFactory.load();
+			result = ActorSystem.create("nude", conf.getConfig("nude").withFallback(conf));
 			if (null != result) {
 				int numSys = numSystemsRunning.incrementAndGet();
 				log.info("Created ActorSystem " + result.hashCode()  + ". Currently Running: " + numSys);

@@ -36,7 +36,7 @@ public class ConnectorPlanStep implements PlanStep {
 	private final List<IConnector> connectors;
 	private final ActorSystem sys;
 	
-	private static final int MAX_RUNNING_CONNECTORS = 128;
+	private static final int MAX_RUNNING_CONNECTORS = 256;
 	private static final Duration CONNECTOR_TIMEOUT = Duration.create(6, TimeUnit.MINUTES);
 
 	public ConnectorPlanStep(Map<Provider, IProvider> providers, List<IConnector> connectors) {

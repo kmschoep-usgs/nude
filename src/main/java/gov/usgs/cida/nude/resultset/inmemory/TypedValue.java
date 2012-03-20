@@ -10,4 +10,9 @@ public class TypedValue<T> {
 	public T getValue() {
 		return this.value;
 	}
+
+	@Override
+	public String toString() {
+		return this.value.toString();
+	}
 }
