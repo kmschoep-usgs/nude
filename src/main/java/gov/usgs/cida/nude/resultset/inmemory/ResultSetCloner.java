@@ -1,21 +1,15 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package gov.usgs.cida.nude.resultset.inmemory;
 
 import gov.usgs.cida.nude.out.Closers;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
+ * [UNIT-TESTABLE]
  * @author dmsibley
  */
 public class ResultSetCloner {
@@ -23,16 +17,54 @@ public class ResultSetCloner {
 	
 	protected final ResultSet mainRS;
 	
-	protected List<TableRow> mainRows;
+	protected final List<ResultSetCloneIterator> its;
+	protected AtomicInteger gottenClones;
 	
-	public ResultSetCloner(ResultSet rs) {
+	public ResultSetCloner(ResultSet rs, int numClones) {
 		this.mainRS = rs;
 		
-		this.mainRows = new ArrayList<TableRow>();
+		this.its = new ArrayList<ResultSetCloneIterator>();
+		
+		for (int i = 0; i < numClones; i++) {
+			this.its.add(new ResultSetCloneIterator());
+		}
+		
+		this.gottenClones = new AtomicInteger(-1);
 	}
 	
 	public ResultSet cloneResultSet() {
-		return new ResultSetCloneRS(new ResultSetCloneIterator());
+		ResultSet result = null;
+		int cloneIndex = gottenClones.incrementAndGet();
+		
+		if (cloneIndex < this.its.size()) {
+			result = new ResultSetCloneRS(its.get(cloneIndex));
+		}
+		
+		return result;
+	}
+	
+//	public List<ResultSet> getClones() {
+//		List<ResultSet> result = new ArrayList<ResultSet>();
+//		
+//		for (ResultSetCloneIterator it : its) {
+//			result.add(new ResultSetCloneRS(it));
+//		}
+//		
+//		return result;
+//	}
+	
+	protected void addNextRow() throws SQLException {
+		TableRow result = null;
+
+		if (!mainRS.isClosed() && mainRS.next()) {
+			result = TableRow.buildTableRow(mainRS);
+		}
+
+		if (null != result) {
+			for (ResultSetCloneIterator it : its) {
+				it.buff.add(result);
+			}
+		}
 	}
 	
 	public class ResultSetCloneRS extends IteratorWrappingResultSet {
@@ -51,43 +83,30 @@ public class ResultSetCloner {
 	}
 	
 	public class ResultSetCloneIterator implements Iterator<TableRow> {
-		private int currIndex;
+		protected final List<TableRow> buff;
 		
 		public ResultSetCloneIterator() {
 			super();
-			currIndex = -1;
-		}
-		
-		protected void addNextRow() throws SQLException {
-			TableRow result = null;
-			
-			if (!mainRS.isClosed() && mainRS.next()) {
-				result = TableRow.buildTableRow(mainRS);
-			}
-			
-			if (null != result) {
-				mainRows.add(result);
-			}
+			buff = Collections.synchronizedList(new LinkedList<TableRow>());
 		}
 		
 		@Override
 		public boolean hasNext() {
-			if (currIndex + 1 >= mainRows.size()) {
+			if (buff.isEmpty()) { //currIndex + 1 >= mainRows.size()
 				try {
-					this.addNextRow();
+					addNextRow();
 				} catch (SQLException ex) {
 					log.debug("Tried to add another row to mainRows", ex);
 				}
 			}
-			return currIndex + 1 < mainRows.size();
+			return !buff.isEmpty(); //currIndex + 1 < mainRows.size()
 		}
 
 		@Override
 		public TableRow next() {
 			TableRow result = null;
 			if (this.hasNext()) {
-				currIndex = currIndex + 1;
-				result = mainRows.get(currIndex);
+				result = buff.remove(0);
 			} else {
 				throw new NoSuchElementException("No More Rows.");
 			}

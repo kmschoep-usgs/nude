@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 
 public interface IConnector {
 	public void addInput(ResultSet in);
+	public String getStatement();
 	public ResultSet getResultSet();
 	public IParser getParser();
 	public boolean isValidInput();

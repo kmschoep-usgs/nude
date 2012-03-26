@@ -38,12 +38,21 @@ public abstract class AbstractHttpConnector implements HttpConnector {
 
 	@Override
 	public void addInput(ResultSet in) {
-		this.inputs.add(in);
-		this.fillRequiredInputs(in);
+		if (null != in) {
+			this.inputs.add(in);
+			this.fillRequiredInputs(in);
+		} else {
+			log.error("Input ResultSet was null!");
+		}
 	}
 
 	protected abstract void fillRequiredInputs(ResultSet in);
 
+	@Override
+	public String getStatement() {
+		return getURI(this);
+	}
+	
 	protected abstract String getURI();
 
 	protected static void generateFirefoxHeaders(HttpUriRequest req, String referer) {
