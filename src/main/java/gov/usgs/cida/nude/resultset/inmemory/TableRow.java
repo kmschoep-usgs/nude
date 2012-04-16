@@ -11,8 +11,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class TableRow implements Comparable<TableRow>{
+	private static final Logger log = LoggerFactory.getLogger(TableRow.class);
 	protected final Map<Column, String> row;
 	protected final ColumnGrouping columns;
 	
@@ -57,11 +60,20 @@ public class TableRow implements Comparable<TableRow>{
 	}
 
 	/**
-	 * Compares the values of the primary keys. (Values are compared as Strings)
+	 * Compares the values of the primary keys. (Values are compared as Longs)
 	 */
 	@Override
 	public int compareTo(TableRow o) {
-		return this.getValue(this.getColumns().getPrimaryKey()).compareTo(o.getValue(this.getColumns().getPrimaryKey()));
+		int result = -1;
+		
+		try {
+			result = new Long(this.getValue(this.getColumns().getPrimaryKey())).compareTo(new Long(o.getValue(this.getColumns().getPrimaryKey())));
+		} catch (NumberFormatException e) {
+			log.info("Could not compare primary keys as Longs: " + e.getMessage());
+			result = this.getValue(this.getColumns().getPrimaryKey()).compareTo(o.getValue(this.getColumns().getPrimaryKey()));
+		}
+		
+		return result;
 	}
 	
 	public static TableRow buildTableRow(ResultSet rs) throws SQLException {

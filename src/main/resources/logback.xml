@@ -5,6 +5,7 @@
 		</encoder>
 	</appender>
 	<logger name="org.apache.http" level="INFO"/>
+	<logger name="org.apache.http.impl.conn.tsccm" level="DEBUG"/>
 	<root level="INFO">
 		<appender-ref ref="stdout" />
 	</root>
