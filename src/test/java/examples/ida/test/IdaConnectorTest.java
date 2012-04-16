@@ -82,7 +82,7 @@ public class IdaConnectorTest {
 		sbEx.append(			"1986-10-01 00:15:00.0");
 		sbEx.append(		"</MINDATETIME>");
 		sbEx.append(		"<MAXDATETIME>");
-		sbEx.append(			"2010-09-30 23:45:00.0");
+		sbEx.append(			"2007-09-30 00:00:00.0");
 		sbEx.append(		"</MAXDATETIME>");
 		sbEx.append(	"</data>");
 		sbEx.append("</success>");
