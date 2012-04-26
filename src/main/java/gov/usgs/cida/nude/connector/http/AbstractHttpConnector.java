@@ -115,6 +115,8 @@ public abstract class AbstractHttpConnector implements HttpConnector {
 				result = true;
 			} else {
 				log.debug("Code " + code + " for service " + uri);
+				//Close Expired Connections here, possibly fix
+				//The non-reusable connection leak
 			}
 
 		} catch (Exception e) {
@@ -134,7 +136,7 @@ public abstract class AbstractHttpConnector implements HttpConnector {
 
 		String uri = getURI(this);
 		if (null != uri) {
-			log.debug("Trying to get ResultSet: " + uri);
+			log.info("Trying to get ResultSet: " + uri);
 			try {
 				if (isReady()) {
 					HttpEntity methodEntity = makeGetCall();
