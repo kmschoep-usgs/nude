@@ -109,21 +109,8 @@
 		</dependency>
 		<dependency>
 			<groupId>gov.usgs.cida</groupId>
-			<artifactId>swsf-mocks</artifactId>
-			<version>0.3</version>
-			<type>jar</type>
-			<scope>compile</scope>
-			<exclusions>
-				<exclusion>
-					<artifactId>log4j</artifactId>
-					<groupId>log4j</groupId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>gov.usgs.cida</groupId>
 			<artifactId>swsf-transforms</artifactId>
-			<version>0.3</version>
+			<version>0.6</version>
 			<type>jar</type>
 			<scope>compile</scope>
 			<exclusions>

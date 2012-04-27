@@ -11,7 +11,7 @@ import gov.usgs.cida.nude.out.TableResponse;
 import gov.usgs.cida.nude.provider.http.HttpProvider;
 import gov.usgs.cida.nude.resultset.inmemory.StringTableResultSet;
 import gov.usgs.cida.nude.resultset.inmemory.TableRow;
-import gov.usgs.webservices.framework.basic.FormatType;
+import gov.usgs.webservices.framework.basic.MimeType;
 
 import java.io.StringWriter;
 import java.sql.ResultSet;
@@ -67,7 +67,7 @@ public class IdaConnectorTest {
 			rset = ida.getResultSet();
 			
 			TableResponse resp = new TableResponse(rset);
-			StreamResponse outStrm = Dispatcher.buildFormattedResponse(FormatType.XML, resp);
+			StreamResponse outStrm = Dispatcher.buildFormattedResponse(MimeType.XML, resp);
 			StreamResponse.dispatch(outStrm, sw);
 		} finally {
 			Closers.closeQuietly(sw);
@@ -82,7 +82,7 @@ public class IdaConnectorTest {
 		sbEx.append(			"1986-10-01 00:15:00.0");
 		sbEx.append(		"</MINDATETIME>");
 		sbEx.append(		"<MAXDATETIME>");
-		sbEx.append(			"2007-09-30 00:00:00.0");
+		sbEx.append(			"2007-09-30 23:45:00.0");
 		sbEx.append(		"</MAXDATETIME>");
 		sbEx.append(	"</data>");
 		sbEx.append("</success>");

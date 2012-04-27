@@ -1,6 +1,6 @@
 package gov.usgs.cida.nude.out;
 
-import gov.usgs.webservices.framework.basic.FormatType;
+import gov.usgs.webservices.framework.basic.MimeType;
 import gov.usgs.webservices.framework.formatter.IFormatter;
 
 import java.io.IOException;
@@ -12,7 +12,7 @@ public class StreamResponse {
 	public IFormatter formatter;
 	public XMLStreamReader reader;
 	
-	public FormatType outputType;
+	public MimeType outputType;
 	public boolean isCacheable = true;
 	public boolean isFileDownload = false;
 	
@@ -22,7 +22,7 @@ public class StreamResponse {
 		this.formatter = null;
 		this.reader = null;
 		
-		this.outputType = FormatType.XML;
+		this.outputType = MimeType.XML;
 		this.isCacheable = true;
 		this.isFileDownload = false;
 		
@@ -33,7 +33,7 @@ public class StreamResponse {
 		this.formatter = formatter;
 		this.reader = reader;
 		
-		this.outputType = FormatType.XML;
+		this.outputType = MimeType.XML;
 		this.isCacheable = true;
 		this.isFileDownload = false;
 		
@@ -72,11 +72,11 @@ public class StreamResponse {
 		this.isFileDownload = isFileDownload;
 	}
 	
-	public FormatType getOutputType() {
+	public MimeType getOutputType() {
 		return this.outputType;
 	}
 
-	public void setOutputType(FormatType outputType) {
+	public void setOutputType(MimeType outputType) {
 		this.outputType = outputType;
 	}
 	

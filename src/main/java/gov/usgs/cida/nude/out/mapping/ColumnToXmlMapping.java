@@ -54,15 +54,10 @@ public class ColumnToXmlMapping {
 		this.orderByParam 		= orderByParam;
 		this.isOrderDesc 		= isOrderDesc;
 		this.xmlElementString 	= (null == elementName)?"":elementName;
-		String[] elementsArray 	= getXmlElementString().split("/");
-		this.depth 				= elementsArray.length;
+		this.depth 				= 1;
 		this.attributes 		= attributes;
 		this.aliasName 			= aliasName;
-		int gBase 				= -1;
-		if(groupBase!=null) 
-			for(int elementsArrIndex = 0; elementsArrIndex < elementsArray.length; elementsArrIndex++)
-				if(elementsArray[elementsArrIndex].equals(groupBase)) gBase = elementsArrIndex;		
-		this.groupBase = gBase;
+		this.groupBase			= -1;
 
 		this.injectXmlAt = injectXmlAt;
 
@@ -78,8 +73,7 @@ public class ColumnToXmlMapping {
 	}
 
 	public String getXmlElement(int depthParam){
-		String[] elements = getXmlElementString().split("/");
-		return elements[depthParam];
+		return getXmlElementString();
 	}
 
 	public ArrayList<XmlNodeAttribute> getAttribute(int depthParam){

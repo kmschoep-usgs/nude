@@ -2,16 +2,13 @@ package gov.usgs.cida.nude.out;
 
 import gov.usgs.cida.nude.out.mapping.ColumnToXmlMapping;
 import gov.usgs.cida.nude.out.mapping.XmlNodeAttribute;
-import gov.usgs.webservices.framework.basic.FormatType;
-import gov.usgs.webservices.framework.formatter.DataFlatteningFormatter;
+import gov.usgs.webservices.framework.basic.MimeType;
+import gov.usgs.webservices.framework.formatter.NudeDataFlatteningFormatter;
 import gov.usgs.webservices.framework.formatter.XMLPassThroughFormatter;
 import gov.usgs.webservices.framework.transformer.ElementToAttributeTransformer;
-
 import java.io.IOException;
 import java.sql.SQLException;
-
 import javax.xml.stream.XMLStreamException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,17 +18,14 @@ public class Dispatcher {
 	/**
 	 * Returns a reader and a formatter ready to be dispatched.
 	 * @param outputType
-	 * @param isJsonP
-	 * @param rssBaseUrl
-	 * @param specResponse
+	 * @param tableResponse 
 	 * @return non-null StreamResponse
 	 * @throws SQLException
 	 * @throws XMLStreamException
 	 * @throws IOException
-	 * @throws InvalidServiceException
 	 */
 	public static StreamResponse buildFormattedResponse(
-			FormatType outputType, 
+			MimeType outputType, 
 			TableResponse tableResponse) throws SQLException, XMLStreamException, IOException {
 		
 		StreamResponse sr = new StreamResponse();
@@ -43,50 +37,32 @@ public class Dispatcher {
 		case CSV: // fall through
 		case EXCEL: // fall through
 		case TAB:
-//			sr.setCacheable(false); // We don't want to cache files.
-//			sr.setFileDownload(true);
 
-//			// Empty results check.
-//			if (!sr.getReader().hasNext()) {
-//				sr.setReader(tableResponse.makeEmptyXMLReader());
-//			} else { 
-//				sr.setReader(tableResponse.makeXMLReader());
-//			}
+			// Configure the formatter
+			NudeDataFlatteningFormatter df = new NudeDataFlatteningFormatter(outputType, false);
+			ElementToAttributeTransformer transformer = new ElementToAttributeTransformer();
 
-			{ // Configure the formatter
-				DataFlatteningFormatter df = new DataFlatteningFormatter(outputType);
-				ElementToAttributeTransformer transformer = new ElementToAttributeTransformer();
-
-				df.setRowElementName(tableResponse.getRowTag());
-				// use column map to add content-defined elements
-				for (ColumnToXmlMapping col : tableResponse.getColumns()) {
-					XmlNodeAttribute[] attributes = col.getAttributes();
-					if (attributes != null)
-						for (int attributeIndex = 0; attributeIndex < attributes.length; attributeIndex++) {
-							XmlNodeAttribute attribute = attributes[attributeIndex];
-							if (attribute.isContentDefinedElement) {
-								df.addContentDefinedElement(col
-										.getXmlElement(attribute.depth),
-										attribute.name);
-							}
-						}
-
-					String[] extraXmlToInject = col.getInjectXmlArray();
-					if (extraXmlToInject != null) {
-						for (int extraXmlIndex = 1; extraXmlIndex < extraXmlToInject.length; extraXmlIndex += 3) {
-							String xmlElement = col.getXmlElement(0);
-							String extraXml = extraXmlToInject[extraXmlIndex];
-							transformer.addTargetElement(xmlElement, extraXml);
-							df.addContentDefinedElement(xmlElement, extraXml);
+			df.setRowElementName(tableResponse.getRowTag());
+			// use column map to add content-defined elements
+			for (ColumnToXmlMapping col : tableResponse.getColumns()) {
+				XmlNodeAttribute[] attributes = col.getAttributes();
+				if (attributes != null) {
+					for (int attributeIndex = 0; attributeIndex < attributes.length; attributeIndex++) {
+						XmlNodeAttribute attribute = attributes[attributeIndex];
+						if (attribute.isContentDefinedElement) {
+							df.addContentDefinedElement(col
+									.getXmlElementString(),
+									attribute.name);
 						}
 					}
 				}
-				sr.setFormatter(df);
-				sr.setReader(transformer.transform(sr.getReader()));
 			}
+			sr.setFormatter(df);
+			sr.setReader(transformer.transform(sr.getReader()));
+			
 
 			break;
-//		case JSON:
+//		case JSON: //TODO
 //			sr.setFormatter(Services.getJSONFormatter(specResponse.responseSpec)); // , isJsonP
 //			if (!sr.getReader().hasNext()) {
 //				litResp = Services.getJSONEmptyResult(specResponse.responseSpec, specResponse.fullRowCount); // , isJsonP
