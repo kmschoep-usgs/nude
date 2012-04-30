@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,6 +60,23 @@ public class TableRow implements Comparable<TableRow>{
 		return this.row;
 	}
 
+	/**
+	 * Checks to see whether all non-key rows are empty
+	 * @return 
+	 */
+	public boolean isEmpty() {
+		boolean result = true;
+		for (Entry<Column, String> ent : this.row.entrySet()) {
+			if (!this.columns.getPrimaryKey().equals(ent.getKey())) {
+				if (!StringUtils.isEmpty(ent.getValue())) {
+					result = false;
+					break;
+				}
+			}
+		}
+		return result;
+	}
+	
 	/**
 	 * Compares the values of the primary keys. (Values are compared as Longs)
 	 */
