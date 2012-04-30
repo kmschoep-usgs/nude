@@ -3,6 +3,7 @@ package gov.usgs.cida.nude.out;
 import gov.usgs.cida.nude.out.mapping.ColumnToXmlMapping;
 import gov.usgs.cida.nude.out.mapping.XmlNodeAttribute;
 import gov.usgs.webservices.framework.basic.MimeType;
+import gov.usgs.webservices.framework.formatter.JSONFormatter;
 import gov.usgs.webservices.framework.formatter.NudeDataFlatteningFormatter;
 import gov.usgs.webservices.framework.formatter.XMLPassThroughFormatter;
 import gov.usgs.webservices.framework.transformer.ElementToAttributeTransformer;
@@ -62,13 +63,15 @@ public class Dispatcher {
 			
 
 			break;
-//		case JSON: //TODO
-//			sr.setFormatter(Services.getJSONFormatter(specResponse.responseSpec)); // , isJsonP
-//			if (!sr.getReader().hasNext()) {
-//				litResp = Services.getJSONEmptyResult(specResponse.responseSpec, specResponse.fullRowCount); // , isJsonP
-//				log.debug("Writing JSON empty result:" + litResp);
-//			}
-//			break;
+		case JSON:
+			JSONFormatter json = new JSONFormatter();
+			json.identifyRepeatedTagElement(tableResponse.getDocTag(), tableResponse.getRowTag());
+			sr.setFormatter(json);
+			if (!sr.getReader().hasNext()) {
+				litResp = "{" + tableResponse.getDocTag() + ": {\"@rowCount\": \"0\", \"" + tableResponse.getRowTag() + "\":[]}}";
+				log.debug("Writing JSON empty result:" + litResp);
+			}
+			break;
 		case XML:
 		default:
 			sr.setFormatter(new XMLPassThroughFormatter());
