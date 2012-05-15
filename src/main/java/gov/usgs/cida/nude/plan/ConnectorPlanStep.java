@@ -5,11 +5,8 @@ import akka.actor.ActorSystem;
 import akka.actor.Props;
 import akka.actor.UntypedActor;
 import akka.dispatch.Await;
-import akka.dispatch.DefaultPromise;
-import akka.dispatch.ExecutionContexts;
 import akka.dispatch.Future;
 import akka.dispatch.Futures;
-import akka.dispatch.KeptPromise;
 import akka.dispatch.Mapper;
 import akka.jsr166y.ThreadLocalRandom;
 import akka.pattern.Patterns;
@@ -29,7 +26,6 @@ import gov.usgs.cida.nude.provider.Provider;
 import gov.usgs.cida.nude.provider.actor.ActorProvider;
 import gov.usgs.cida.nude.resultset.inmemory.MuxResultSet;
 import gov.usgs.cida.nude.resultset.inmemory.ResultSetCloner;
-import java.lang.String;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -134,7 +130,6 @@ public class ConnectorPlanStep implements PlanStep {
 				ResultSet result = connector.getResultSet();
 				
 				getSender().tell(result, null);
-				getContext().stop(getSelf());
 			} else {
 				unknownMessage(arg0);
 			}

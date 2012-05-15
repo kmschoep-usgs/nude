@@ -18,6 +18,13 @@ public class ActorProvider implements IProvider {
 	private static final Logger log = LoggerFactory.getLogger(ActorProvider.class);
 
 	protected ActorSystem actorSystem = null;
+
+	public ActorProvider() {
+	}
+	
+	public ActorProvider(ActorSystem existingActorSystem) {
+		this.actorSystem = existingActorSystem;
+	}
 	
 	@Override
 	public void init() {
@@ -86,5 +93,9 @@ public class ActorProvider implements IProvider {
 		} catch (Exception e) {
 			log.error("Exception while destroying ActorSystem!", e);
 		}
+	}
+	
+	public static void unknownMessage(Object msg) {
+		throw new IllegalArgumentException("Unknown message [" + msg + "]");
 	}
 }
