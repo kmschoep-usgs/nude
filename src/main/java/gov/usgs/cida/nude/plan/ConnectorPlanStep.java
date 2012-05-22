@@ -57,8 +57,7 @@ public class ConnectorPlanStep implements PlanStep {
 		ResultSet result = null;
 		log.trace("Starting ConnectorPlanStep");
 		
-		ActorRef runner = this.sys.actorOf(new Props(ConnectorRunner.class)
-				.withRouter(new RoundRobinRouter(MAX_RUNNING_CONNECTORS)));
+		ActorRef runner = this.sys.actorOf(new Props(ConnectorBuffer.class));
 		
 		List<Future<ResultSet>> responses = new ArrayList<Future<ResultSet>>();
 		
@@ -116,16 +115,38 @@ public class ConnectorPlanStep implements PlanStep {
 		return result;
 	}
 	
+	public static class ConnectorBuffer extends UntypedActor {
+
+		private final ActorRef runner;
+		
+		public ConnectorBuffer() {
+			this.runner = this.getContext().actorOf(new Props(ConnectorRunner.class)
+				.withRouter(new RoundRobinRouter(MAX_RUNNING_CONNECTORS)));
+		}
+		
+		@Override
+		public void onReceive(final Object arg0) throws Exception {
+			long randSleepTime = ThreadLocalRandom.current().nextLong();
+			randSleepTime = (Math.abs(randSleepTime) % (1000 /* milliseconds */)) * 10 /* to seconds */;
+//			Thread.sleep(randSleepTime);
+			
+			final ActorRef sender = getSender();
+			getContext().system().scheduler().scheduleOnce(Duration.create(randSleepTime, TimeUnit.MILLISECONDS), new Runnable() {
+				@Override
+				public void run() {
+					runner.tell(arg0, sender);
+				}
+			});
+		}
+		
+	}
+	
 	public static class ConnectorRunner extends UntypedActor {
 
 		@Override
 		public void onReceive(Object arg0) throws Exception {
 			if (arg0 instanceof IConnector) {
 				IConnector connector = (IConnector) arg0;
-				
-				long randSleepTime = ThreadLocalRandom.current().nextLong();
-				randSleepTime = Math.abs(randSleepTime) % 500;
-				Thread.sleep(randSleepTime);
 				
 				ResultSet result = connector.getResultSet();
 				

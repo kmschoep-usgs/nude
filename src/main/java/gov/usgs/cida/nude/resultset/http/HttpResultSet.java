@@ -114,7 +114,14 @@ public class HttpResultSet extends ParsingResultSet {
 	@Override
 	public boolean next() throws SQLException {
 		throwIfClosed(this);
-		boolean result = this.parser.next(this.serverResponseReader);
+		boolean result = false;
+		
+		try {
+			result = this.parser.next(this.serverResponseReader);
+		} catch (Exception e) {
+			log.error("Parser threw Exception, assuming stream is damaged and ending ResultSet.", e);
+			result = false;
+		}
 		
 		if (result) {
 			if (this.isBeforeFirst) {

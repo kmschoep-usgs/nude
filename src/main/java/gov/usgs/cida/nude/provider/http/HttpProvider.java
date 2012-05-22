@@ -27,11 +27,11 @@ public class HttpProvider implements IProvider {
 	private static final Logger log = LoggerFactory.getLogger(HttpProvider.class);
 	// Connection pool setup
 	private final static int CONNECTION_TTL = 30 * 60 * 1000;       // 30 minutes, default is infinte
-	private final static int CONNECTIONS_MAX_TOTAL = 128;
-	private final static int CONNECTIONS_MAX_ROUTE = 16;
+	private final static int CONNECTIONS_MAX_TOTAL = 256;
+	private final static int CONNECTIONS_MAX_ROUTE = 32;
 	// Connection timeouts
-	private final static int CLIENT_SOCKET_TIMEOUT = 5 * 60 * 1000; // 5 minutes, default is infinite
-	private final static int CLIENT_CONNECTION_TIMEOUT = 15 * 1000; // 15 seconds, default is infinte
+	private final static int CLIENT_SOCKET_TIMEOUT = 10 * 60 * 1000; // 10 minutes, default is infinite
+	private final static int CLIENT_CONNECTION_TIMEOUT = 3 * 60 * 1000; // 3 minute, default is infinte
 	// Cache setup
 	private final static boolean CACHING_ENABLED = true;
 	private final static int CACHING_MAX_ENTRIES = 2048;
