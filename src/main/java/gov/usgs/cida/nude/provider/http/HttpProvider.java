@@ -8,6 +8,7 @@ import org.apache.http.Header;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.cache.HttpCacheEntry;
 import org.apache.http.client.cache.HttpCacheStorage;
+import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.client.cache.BasicHttpCacheStorage;
 import org.apache.http.impl.client.cache.CacheConfig;
@@ -101,6 +102,20 @@ public class HttpProvider implements IProvider {
 		log.info("Destroyed HTTP client connection manager " + code);
 	}
 
+	public static void generateFirefoxHeaders(HttpUriRequest req, String referer) {
+		req.addHeader("User-Agent", "Mozilla/5.0 (X11; Linux x86_64; rv:5.0) Gecko/20100101 Firefox/5.0");
+		req.addHeader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
+		req.addHeader("Accept-Language", "en-us,en;q=0.5");
+		req.addHeader("Accept-Encoding", "gzip, deflate");
+		req.addHeader("Accept-Charset", "ISO-8859-1,utf-8;q=0.7,*;q=0.7");
+		req.addHeader("Connection", "keep-alive");
+		if (null != referer) {
+			req.addHeader("Referer", referer);
+		}
+		req.addHeader("Pragma", "no-cache");
+		req.addHeader("Cache-Control", "no-cache");
+	}
+	
 	public static class HttpProviderCacheStorage extends BasicHttpCacheStorage {
 
 		public HttpProviderCacheStorage(CacheConfig cacheConfig) {

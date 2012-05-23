@@ -20,7 +20,6 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpHead;
-import org.apache.http.client.methods.HttpOptions;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.protocol.HttpContext;
 import org.slf4j.Logger;
@@ -55,20 +54,6 @@ public abstract class AbstractHttpConnector implements HttpConnector {
 	}
 	
 	protected abstract String getURI();
-
-	protected static void generateFirefoxHeaders(HttpUriRequest req, String referer) {
-		req.addHeader("User-Agent", "Mozilla/5.0 (X11; Linux x86_64; rv:5.0) Gecko/20100101 Firefox/5.0");
-		req.addHeader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
-		req.addHeader("Accept-Language", "en-us,en;q=0.5");
-		req.addHeader("Accept-Encoding", "gzip, deflate");
-		req.addHeader("Accept-Charset", "ISO-8859-1,utf-8;q=0.7,*;q=0.7");
-		req.addHeader("Connection", "keep-alive");
-		if (null != referer) {
-			req.addHeader("Referer", referer);
-		}
-		req.addHeader("Pragma", "no-cache");
-		req.addHeader("Cache-Control", "no-cache");
-	}
 
 	//TODO change this to ResultSet instead of Iterable<TableRow>
 	protected static String generateGetParams(Iterable<TableRow> params) {
@@ -180,7 +165,7 @@ public abstract class AbstractHttpConnector implements HttpConnector {
 		
 			HttpClient httpClient = httpProvider.getClient();
 			HttpUriRequest req = new HttpHead(uri);
-			generateFirefoxHeaders(req, null);
+			HttpProvider.generateFirefoxHeaders(req, null);
 
 			try {
 				resp = httpClient.execute(req);
@@ -203,7 +188,7 @@ public abstract class AbstractHttpConnector implements HttpConnector {
 			
 			HttpClient httpClient = httpProvider.getClient();
 			HttpUriRequest req = new HttpGet(uri);
-			generateFirefoxHeaders(req, null);
+			HttpProvider.generateFirefoxHeaders(req, null);
 
 			result = makeCall(httpClient, req, null);
 		}

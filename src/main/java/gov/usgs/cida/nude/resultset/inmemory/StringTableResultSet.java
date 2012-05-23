@@ -31,6 +31,10 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 
+/**
+ * Good lord.  Freakin unit test this!!!
+ * @author dmsibley
+ */
 public class StringTableResultSet extends IndexImplResultSet implements Iterable<TableRow>, ResultSet {
 	
 	protected boolean isClosed = false;
@@ -86,7 +90,7 @@ public class StringTableResultSet extends IndexImplResultSet implements Iterable
 	public boolean next() throws SQLException {
 		throwIfClosed(this);
 		boolean result = false;
-		if (this.rows != null && !this.isAfterLast()) {
+		if (this.rows != null && 0 < this.rows.size() && !this.isAfterLast()) {
 			
 			if (this.isFirst()) {
 				this.currLoc.setLocation(Location.MIDDLE);
@@ -97,7 +101,7 @@ public class StringTableResultSet extends IndexImplResultSet implements Iterable
 				}
 			}
 			
-			if (this.it.hasNext()) {
+			if (this.it != null && this.it.hasNext()) {
 				this.currRow = this.it.next();
 				if (!this.it.hasNext()) {
 					this.currLoc.setLocation(Location.LAST);
@@ -107,6 +111,8 @@ public class StringTableResultSet extends IndexImplResultSet implements Iterable
 				this.currLoc.setLocation(Location.AFTERLAST);
 			}
 			
+		} else if ((this.rows == null || 0 >= this.rows.size()) && !this.isAfterLast()) {
+			this.currLoc.setLocation(Location.AFTERLAST);
 		}
 		return result;
 	}
