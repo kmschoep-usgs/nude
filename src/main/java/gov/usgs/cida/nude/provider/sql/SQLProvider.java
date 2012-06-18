@@ -1,8 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package gov.usgs.cida.nude.provider.sql;
 
 import gov.usgs.cida.nude.out.Closers;
@@ -24,21 +19,38 @@ import org.slf4j.LoggerFactory;
  */
 public class SQLProvider implements IProvider {
 	private static final Logger log = LoggerFactory.getLogger(SQLProvider.class);
-	
-	
+	protected String jndiName = null;
+
+	public SQLProvider(String jndiName) {
+		if (null == jndiName) {
+			log.error("No JNDI name specified!");
+		} else {
+			log.trace("JNDI Name: " + jndiName);
+			this.jndiName = jndiName;
+		}
+	}
 	
 	@Override
 	public void init() {
-		//TODO
+		log.trace("Initializing SQLProvider " + this.hashCode());
+		
+		log.trace("Initialized SQLProvider " + this.hashCode());
 	}
 	
+	/**
+	 * Gets a ResultSet for the query.  If it succeeds, you are responsible
+	 * for getting the Statement and Connection through the ResultSet and closing
+	 * them when you are done.
+	 * @param query
+	 * @return 
+	 */
 	public ResultSet getResults(ParameterizedString query) {
 		ResultSet result = null;
 		
 		if (null != query) {
 			Connection con = null;
 			try {
-				con = getConnection("java:comp/env/jdbc/enddat");
+				con = getConnection(this.jndiName);
 				result = getQueryResults(query, con);
 			} catch (Exception e) {
 				log.error("Cannot get requests for query: " + query.toEvaluatedString(), e);
@@ -52,14 +64,16 @@ public class SQLProvider implements IProvider {
 	
 	@Override
 	public void destroy() {
-		//TODO
+		log.trace("Destroying SQLProvider " + this.hashCode());
+		
+		log.trace("Destroyed SQLProvider " + this.hashCode());
 	}
 	
 	
 	private static AtomicInteger connectionCount = new AtomicInteger(0);
 	/**
 	 * This variable tells us how many cycles (getConnection called -> closeConnection called)
-	 * are still in process.  Hopefully this will be a more accurate view than connectionCount.
+	 * are still in process.  This will show us if there's a 1:1 ratio of getConnection vs closeConnection
 	 */
 	private static AtomicInteger unfinishedConCycles = new AtomicInteger(0);
 	
@@ -78,7 +92,10 @@ public class SQLProvider implements IProvider {
 			if (null != dataSource) {
 				connection = getJNDIConnection(dataSource);
 			}
-			if (null == connection) connection = getJDBCConnection();
+			if (null == connection) {
+				log.trace("Could not find JNDI hook. Trying simple JDBC connection.");
+				connection = getJDBCConnection();
+			}
 		} finally {
 			if (null != connection) {
 				connectionNumber = connection.hashCode();
@@ -98,7 +115,6 @@ public class SQLProvider implements IProvider {
 	 */
 	private static Connection getJDBCConnection() throws SQLException, ClassNotFoundException {
 		Connection connection = null;
-		log.trace("Could not find JNDI hook. Trying simple JDBC connection.");
 		String dbuser 	= System.getProperty("dbuser");
 		String dbpass 	= System.getProperty("dbpass");
 		String url 		= System.getProperty("dburl");
@@ -148,8 +164,8 @@ public class SQLProvider implements IProvider {
 	 */
 	public static void closeConnection(Connection con) {
 		int connectionNumber = -1;
-		if (null != con) {
-			try {
+		try {
+			if (null != con) {
 				connectionNumber = con.hashCode();
 				if (con.isClosed()) {
 					log.error("Connection " + connectionNumber + " is already closed!!");
@@ -158,14 +174,15 @@ public class SQLProvider implements IProvider {
 				con.close(); 
 				int conCount = connectionCount.decrementAndGet();
 				log.trace("Closed Connection. Total:" + conCount);
-			} catch (Exception e) {
-				log.error("Could not close Connection object: " + e.getMessage());
-			} finally {
-				int conCycles = unfinishedConCycles.decrementAndGet();
-				log.debug("Connection Cycle finished:" + connectionNumber + ", Total Unfinished:" + conCycles);
+			
+			} else {
+				log.trace("closeConnection called on null object");
 			}
-		} else {
-			log.trace("closeConnection called on null object");
+		} catch (Exception e) {
+			log.error("Could not close Connection object: " + e.getMessage());
+		} finally {
+			int conCycles = unfinishedConCycles.decrementAndGet();
+			log.debug("Connection Cycle finished:" + connectionNumber + ", Total Unfinished:" + conCycles);
 		}
 	}
 

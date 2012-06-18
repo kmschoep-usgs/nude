@@ -21,4 +21,14 @@ public class TypedValue<T> {
 		
 		return result;
 	}
+
+	/**
+	 * TODO
+	 * @param obj
+	 * @return 
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		return super.equals(obj);
+	}
 }

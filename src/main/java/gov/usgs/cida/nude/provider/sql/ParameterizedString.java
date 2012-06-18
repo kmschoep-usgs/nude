@@ -40,26 +40,96 @@ public class ParameterizedString {
 	}
 	
 
-	//Add methods
+	//Append methods
+	public ParameterizedString append(String clause) {
+		this.clause.append(clause);
+		return this;
+	}
+	/**
+	 * Appends a value keyword ('?' is default) to the clause and adds the value to be set.
+	 * @param value 
+	 */
+	public ParameterizedString append(TypedValue value) {
+		this.clause.append(valKey);
+		this.values.add(value);
+		return this;
+	}
+	/**
+	 * Appends a comma-space-separated list of value keywords ('?' is default) to the clause and adds the values to be set.
+	 * @param value 
+	 */
+	public ParameterizedString append(List<TypedValue> values) {
+		if (null != values) {
+			StringBuffer str = new StringBuffer();
+			for (TypedValue val : values) {
+				if (str.length() > 0) {
+					str.append(", ");
+				}
+				str.append("?");
+			}
+			this.clause.append(str.toString());
+			this.values.addAll(values);
+		}
+		return this;
+	}
+	public ParameterizedString append(ParameterizedString sql) {
+		if (null != sql) {
+			this.clause.append(sql.getClause());
+			this.addValues(sql.getValues());
+		}
+		return this;
+	}
+	
+	/**
+	 * 
+	 * @param value
+	 * @deprecated use {@code append} instead
+	 */
+	@Deprecated
 	public void addParam(TypedValue value) {
 		this.clause.append(valKey);
 		this.values.add(value);
 	}
+	/**
+	 * 
+	 * @param value
+	 * @deprecated use {@code append} instead
+	 */
+	@Deprecated
 	public void addValue(TypedValue value) {
 		this.values.add(value);
 	}
+	/**
+	 * 
+	 * @param values
+	 * @deprecated use {@code append} instead
+	 */
+	@Deprecated
 	public void addValues(List<TypedValue> values) {
 		this.values.addAll(values);
 	}
+	/**
+	 * 
+	 * @param clause
+	 * @deprecated use {@code append} instead
+	 */
+	@Deprecated
 	public void addClause(String clause) {
 		this.clause.append(clause);
 	}
+	/**
+	 * 
+	 * @param sql
+	 * @deprecated use {@code append} instead
+	 */
+	@Deprecated
 	public void addSQL(ParameterizedString sql) {
 		if (null != sql) {
 			this.clause.append(sql.getClause());
 			this.addValues(sql.getValues());
 		}
 	}
+	
 	
 	@Override
 	public String toString() {

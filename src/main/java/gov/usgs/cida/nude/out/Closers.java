@@ -21,4 +21,52 @@ public class Closers {
 			log.trace("Exception thrown while closing ResultSet", e);
 		}
 	}
+	
+//	// TODO, see if this is something we want
+//	public static void closeQuietly(ResultSet rs) {
+//		try {
+//			if (null != rs) {
+//				Statement stmt = null;
+//				Connection con = null;
+//				try {
+//					stmt = rs.getStatement();
+//				} catch (SQLException ex) {
+//					log.trace("couldn't get statement", ex);
+//				}
+//				if (null != stmt) {
+//					try {
+//						con = stmt.getConnection();
+//					} catch (SQLException ex) {
+//						log.trace("couldn't get connection", ex);
+//					}
+//				}
+//				
+//				try {
+//					rs.close();
+//				} catch (Exception e) {
+//					log.trace("Exception thrown while closing ResultSet", e);
+//				}
+//				
+//				if (null != stmt) {
+//					try {
+//						stmt.close();
+//					} catch (Exception e) {
+//						log.trace("Exception thrown while closing ResultSet", e);
+//					}
+//				}
+//				
+//				if (null != con) {
+//					try {
+//						SQLProvider.closeConnection(con);
+//					} catch (Exception e) {
+//						log.trace("Exception thrown while closing ResultSet", e);
+//					}
+//				}
+//			} else {
+//				log.trace("null ResultSet to close");
+//			}
+//		} catch (Exception e) {
+//			log.trace("Exception thrown while closing ResultSet", e);
+//		}
+//	}
 }
