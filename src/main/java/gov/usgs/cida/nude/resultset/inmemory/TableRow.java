@@ -12,6 +12,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,10 +28,6 @@ public class TableRow implements Comparable<TableRow>{
 		this.row.put(primaryKey, value);
 	}
 	
-	public TableRow(ColumnGrouping colGroup) {
-		this(colGroup, null);
-	}
-	
 	public TableRow(ColumnGrouping colGroup, Map<Column, String> row) {
 		if (null == colGroup) {
 			throw new RuntimeException("ColumnGroup cannot be null");
@@ -37,7 +35,13 @@ public class TableRow implements Comparable<TableRow>{
 		Map<Column, String> modRow = new HashMap<Column, String>();
 		
 		if (null != row) {
-			modRow.putAll(row);
+			if (row.keySet().containsAll(colGroup.getColumns())) {
+				modRow.putAll(row);
+			} else {
+				for (Column col : colGroup.getColumns()) {
+					modRow.put(col, row.get(col));
+				}
+			}
 		}
 		
 		this.row = Collections.unmodifiableMap(modRow);
@@ -77,6 +81,20 @@ public class TableRow implements Comparable<TableRow>{
 		return result;
 	}
 	
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null) { return false; }
+		if (obj == this) { return true; }
+		if (obj instanceof TableRow) {
+			TableRow rhs = (TableRow) obj;
+			return new EqualsBuilder()
+					.append(this.getColumns(), rhs.getColumns())
+					.append(this.getMap(), rhs.getMap())
+					.isEquals();
+		}
+		return false;
+	}
+	
 	/**
 	 * Compares the values of the primary keys. (Values are compared as Longs)
 	 */
@@ -92,6 +110,14 @@ public class TableRow implements Comparable<TableRow>{
 		}
 		
 		return result;
+	}
+
+	@Override
+	public int hashCode() {
+		return new HashCodeBuilder(2153, 421)
+				.append(columns)
+				.append(row)
+				.toHashCode();
 	}
 	
 	public static TableRow buildTableRow(ResultSet rs) throws SQLException {

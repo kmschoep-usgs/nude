@@ -12,6 +12,8 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -184,5 +186,27 @@ public class ColumnGrouping implements Iterable<Column> {
 		return Objects.toStringHelper(this)
 				.add("columns", columns)
 				.toString();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null) { return false; }
+		if (obj == this) { return true; }
+		if (obj instanceof ColumnGrouping) {
+			ColumnGrouping rhs = (ColumnGrouping) obj;
+			return new EqualsBuilder()
+					.append(this.getPrimaryKey(), rhs.getPrimaryKey())
+					.append(this.getColumns(), rhs.getColumns())
+					.isEquals();
+		}
+		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		return new HashCodeBuilder(4483, 619)
+				.append(this.getPrimaryKey())
+				.append(this.getColumns())
+				.toHashCode();
 	}
 }
