@@ -1,13 +1,11 @@
 package gov.usgs.cida.nude.resultset.http;
 
 import gov.usgs.cida.nude.connector.parser.IParser;
-
 import java.io.*;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.zip.GZIPInputStream;
 import org.apache.http.Header;
-
 import org.apache.http.HttpEntity;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
@@ -81,8 +79,7 @@ public class HttpResultSet extends ParsingResultSet {
 		try {
 			EntityUtils.consume(this.httpEntity);
 		} catch (IOException e) {
-			log.error("Error closing HttpResultSet");
-//			throw new SQLException(e);
+			log.error("Error closing HttpResultSet", e);
 		}
 	}
 	
