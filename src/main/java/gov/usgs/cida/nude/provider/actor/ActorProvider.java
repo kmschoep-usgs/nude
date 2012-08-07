@@ -78,7 +78,7 @@ public class ActorProvider implements IProvider {
 	public static void killActorSystem(ActorSystem actorSystem, Duration timeout) {
 		Duration inTime = timeout;
 		if (null == inTime) {
-			inTime = Duration.create(10, TimeUnit.SECONDS);
+			inTime = Duration.create(30, TimeUnit.SECONDS);
 		}
 		
 		try {
