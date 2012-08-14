@@ -5,6 +5,7 @@ import gov.usgs.cida.nude.out.mapping.ColumnToXmlMapping;
 import gov.usgs.cida.nude.out.mapping.XmlNodeAttribute;
 
 import java.sql.ResultSet;
+import java.util.Arrays;
 
 import javax.xml.stream.XMLStreamReader;
 import org.slf4j.Logger;
@@ -17,15 +18,20 @@ public class TableResponse {
 	protected final String docTag;
 	protected final String rowTag;
 	protected final String fullRowCount;
+	protected final ColumnToXmlMapping[] columnMappings;
 	
 	protected final String emptyValues;
 	protected final boolean showHiddenColumns;
 	
 	public TableResponse(ResultSet rset) {
-		this(rset, null, false);
+		this(rset, null, null, false);
 	}
 	
 	public TableResponse(ResultSet rset, String emptyValueString, boolean showHiddenColumns) {
+		this(rset, emptyValueString, null, showHiddenColumns);
+	}
+	
+	public TableResponse(ResultSet rset, String emptyValueString, ColumnToXmlMapping[] outColumnMapping, boolean showHiddenColumns) {
 		this.rs = rset;
 		this.docTag = "success";
 		this.rowTag = "data";
@@ -33,6 +39,15 @@ public class TableResponse {
 		
 		this.emptyValues = emptyValueString;
 		this.showHiddenColumns = showHiddenColumns;
+		
+		ColumnToXmlMapping[] cm = new ColumnToXmlMapping[0];
+		if (null == outColumnMapping || 1 > outColumnMapping.length) {
+			cm = ColumnToXmlMapping.getColumnMappings(ColumnGrouping.getColumnGrouping(this.rs), this.showHiddenColumns);
+		} else {
+			cm = Arrays.copyOf(outColumnMapping, outColumnMapping.length);
+		}
+		
+		columnMappings = cm;
 	}
 	
 	public XMLStreamReader makeXMLReader() {
@@ -62,6 +77,6 @@ public class TableResponse {
 	}
 	
 	public ColumnToXmlMapping[] getColumns() {
-		return ColumnToXmlMapping.getColumnMappings(ColumnGrouping.getColumnGrouping(this.rs), this.showHiddenColumns);
+		return Arrays.copyOf(this.columnMappings, this.columnMappings.length);
 	}
 }
