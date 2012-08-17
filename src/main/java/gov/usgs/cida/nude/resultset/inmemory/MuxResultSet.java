@@ -3,6 +3,7 @@ package gov.usgs.cida.nude.resultset.inmemory;
 import gov.usgs.cida.nude.column.CGResultSetMetaData;
 import gov.usgs.cida.nude.column.Column;
 import gov.usgs.cida.nude.column.ColumnGrouping;
+import gov.usgs.cida.nude.out.Closers;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -58,7 +59,14 @@ public class MuxResultSet extends PeekingResultSet {
 			TableRow tr = rsTr.getValue();
 			
 			if (null == tr) { //Build next row
-				if (!rs.isClosed() && rs.next()) {
+				boolean isClosed = false;
+				try {
+					isClosed = rs.isClosed();
+				} catch (AbstractMethodError t) {
+					log.trace("Cannot tell if ResultSet is closed.");
+				}
+				
+				if (!isClosed && rs.next()) {
 					tr = buildRow(rs);
 					rsTr.setValue(tr);
 				}
@@ -114,7 +122,7 @@ public class MuxResultSet extends PeekingResultSet {
 		this.closed = true;
 		for (ResultSet rs : this.rsetRows.keySet()) {
 			try {
-				rs.close();
+				Closers.closeQuietly(rs);
 			} catch (Exception e) {
 				log.error("Exception closing muxed ResultSet", e);
 			}

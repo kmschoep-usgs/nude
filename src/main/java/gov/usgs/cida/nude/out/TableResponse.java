@@ -54,8 +54,16 @@ public class TableResponse {
 		XMLStreamReader result = null;
 		
 		try {
-			if (null != this.rs && !this.rs.isClosed()) {
-				result = new TableXmlReader(this.rs, this.getDocTag(), this.getRowTag(), new XmlNodeAttribute[] {new XmlNodeAttribute("rowCount", this.getFullRowCount(), 0, true, null)}, null, this.emptyValues, this.showHiddenColumns);
+			if (null != this.rs) {
+				boolean isClosed = false;
+				try {
+					isClosed = this.rs.isClosed();
+				} catch (AbstractMethodError t) {
+					log.trace("Cannot tell if ResultSet is closed.");
+				}
+				if (!isClosed) {
+					result = new TableXmlReader(this.rs, this.columnMappings, this.getDocTag(), this.getRowTag(), new XmlNodeAttribute[] {new XmlNodeAttribute("rowCount", this.getFullRowCount(), 0, true, null)}, null, this.emptyValues, this.showHiddenColumns);
+				}
 			}
 		} catch (Exception ex) {
 			log.error("Could not make TableXmlReader", ex);

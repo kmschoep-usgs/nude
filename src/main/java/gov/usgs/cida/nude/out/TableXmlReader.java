@@ -34,6 +34,21 @@ public class TableXmlReader extends BasicXMLStreamReader {
 	
 	public static final boolean WRITE_EMPTY_TAGS = true;
 	
+	public TableXmlReader(ResultSet rset, ColumnToXmlMapping[] colMap, String docElement, String rowElement, XmlNodeAttribute[] docAttributes, XmlNodeAttribute[] rowAttributes, String emptyValueString, boolean showHiddenColumns) {
+		this._rset = rset;
+		this.docElement = docElement;
+		this.rowElement = rowElement;
+		this.docAttributes = docAttributes;
+		this.rowAttributes = rowAttributes;
+		
+		if (null == emptyValueString) {
+			emptyValueString = "";
+		}
+		this.emptyValues = emptyValueString;
+		
+		this.columnMappings = colMap;
+	}
+	
 	public TableXmlReader(ResultSet rset, String docElement, String rowElement, XmlNodeAttribute[] docAttributes, XmlNodeAttribute[] rowAttributes, String emptyValueString, boolean showHiddenColumns) {
 		this._rset = rset;
 		this.docElement = docElement;
@@ -109,6 +124,44 @@ public class TableXmlReader extends BasicXMLStreamReader {
 		return null;
 	}
 
+	/**
+	 * Overrides BasicXMLStreamReader so we don't close the ResultSet.
+	 * That's not the job of the XmlReader.
+	 * @throws XMLStreamException 
+	 */
+	@Override
+	public void readNext() throws XMLStreamException {
+		// This default implementation assumes a Resultset is the source for the
+		// streaming and that it is processed row by row.
+		try {
+			if (_rset != null) {
+				if (_rset.next()) {
+					if (_rset.isFirst()) {
+						documentStartAction();
+					}
+					rowStartAction();
+
+					readRow(_rset);
+
+					rowEndAction();
+				} else {
+					// Document has started and there is no more next row, so it
+					// must be the end of the document.
+					if (isStarted) {
+						documentEndAction();
+					}
+
+//					ResultSet resultSet = _rset;
+					_rset = null;
+//					resultSet.close();
+				}
+			}
+		} catch (SQLException e) {
+			log.debug("Exception Occurred", e);
+			throw new XMLStreamException(e);
+		}
+	}
+	
 	@Override
 	protected void readRow(final ResultSet rset) throws SQLException {
 		ColumnToXmlMapping[] columnMap = this.columnMappings;

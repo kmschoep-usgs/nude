@@ -15,11 +15,21 @@ import java.sql.SQLException;
 import java.sql.SQLXML;
 import java.sql.Time;
 import java.sql.Timestamp;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class ReadOnlyForwardResultSet implements ResultSet {
+	private static final Logger log = LoggerFactory.getLogger(ReadOnlyForwardResultSet.class);
 
 	public static void throwIfClosed(ResultSet rs) throws SQLException {
-		if (null == rs || rs.isClosed()) {
+		boolean isClosed = false;
+		try {
+			isClosed = rs.isClosed();
+		} catch (AbstractMethodError t) {
+			log.trace("Cannot tell if ResultSet is closed.");
+		}
+		
+		if (null == rs || isClosed) {
 			throw new SQLException("Closed ResultSet");
 		}
 	}

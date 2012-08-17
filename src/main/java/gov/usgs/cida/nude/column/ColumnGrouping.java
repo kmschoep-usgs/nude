@@ -129,10 +129,21 @@ public class ColumnGrouping implements Iterable<Column> {
 		ColumnGrouping result = null;
 		
 		try {
-			if (null != rset && !rset.isClosed()) {
+			if (null != rset) {
 				ResultSetMetaData md = rset.getMetaData();
 				if (null != md) {
-					if (md.isWrapperFor(CGResultSetMetaData.class)) {
+					boolean isWrapperFor = false;
+					try {
+						isWrapperFor = md.isWrapperFor(CGResultSetMetaData.class);
+					} catch (SQLException e) {
+						log.trace("Cannot check WrapperFor: " + e.getMessage());
+					} catch (AbstractMethodError e) {
+						log.trace("Cannot check WrapperFor: " + e.getMessage());
+					} catch (Exception e) {
+						log.error("Cannot check WrapperFor", e);
+					}
+					
+					if (isWrapperFor) {
 						CGResultSetMetaData cgmd = md.unwrap(CGResultSetMetaData.class);
 						result = cgmd.getColumnGrouping();
 					} else {
@@ -162,6 +173,8 @@ public class ColumnGrouping implements Iterable<Column> {
 			log.error("Exception caught when getting ColumnGrouping from ResultSet", e);
 		} catch (ClassNotFoundException e) {
 			log.error("Exception caught when deciphering valueType of Column", e);
+		} catch (Exception e) {
+			log.error("Weird Exception?", e);
 		}
 		
 		return result;

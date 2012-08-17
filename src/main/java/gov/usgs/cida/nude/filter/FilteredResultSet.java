@@ -2,6 +2,7 @@ package gov.usgs.cida.nude.filter;
 
 import gov.usgs.cida.nude.column.CGResultSetMetaData;
 import gov.usgs.cida.nude.column.Column;
+import gov.usgs.cida.nude.out.Closers;
 import gov.usgs.cida.nude.resultset.inmemory.PeekingResultSet;
 import gov.usgs.cida.nude.resultset.inmemory.TableRow;
 
@@ -9,8 +10,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class FilteredResultSet extends PeekingResultSet {
+	private static final Logger log = LoggerFactory.getLogger(FilteredResultSet.class);
 	
 	protected final FilterStage filterStage;
 	protected final ResultSet in;
@@ -18,6 +22,9 @@ public class FilteredResultSet extends PeekingResultSet {
 	public FilteredResultSet(ResultSet input, FilterStage transform) {
 		try {
 			this.closed = input.isClosed();
+		} catch (AbstractMethodError t) {
+			log.trace("we're filtering a 1.4 version of ResultSet", t);
+			this.closed = false;
 		} catch (SQLException e) {
 			this.closed = true;
 		}
@@ -44,7 +51,7 @@ public class FilteredResultSet extends PeekingResultSet {
 	
 	@Override
 	protected void addNextRow() throws SQLException {
-		if (!in.isClosed() && in.next()) {
+		if (in.next()) {
 			this.nextRows.add(buildRow());
 		}
 	}
@@ -52,7 +59,7 @@ public class FilteredResultSet extends PeekingResultSet {
 	@Override
 	public void close() throws SQLException {
 		try {
-			in.close();
+			Closers.closeQuietly(in);
 		} finally {
 			this.closed = true;
 		}

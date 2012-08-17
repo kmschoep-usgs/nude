@@ -23,7 +23,13 @@ public class HttpResultSet extends ParsingResultSet {
 	protected boolean isAfterLast = false;
 
 	public static void throwIfClosed(ResultSet rs) throws SQLException {
-		if (rs.isClosed()) {
+		boolean isClosed = false;
+		try {
+			isClosed = rs.isClosed();
+		} catch (AbstractMethodError t) {
+			log.trace("Cannot tell if ResultSet is closed.");
+		}
+		if (isClosed) {
 			throw new SQLException("Closed ResultSet");
 		}
 	}

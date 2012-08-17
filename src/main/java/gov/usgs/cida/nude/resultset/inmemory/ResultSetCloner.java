@@ -56,7 +56,21 @@ public class ResultSetCloner {
 	protected void addNextRow() throws SQLException {
 		TableRow result = null;
 
-		if (!mainRS.isClosed() && mainRS.next()) {
+		boolean isClosed = false;
+		try {
+			isClosed = mainRS.isClosed();
+		} catch (AbstractMethodError t) {
+			log.trace("Cannot tell if ResultSet is closed.");
+		}
+		
+		boolean isNext = false;
+		try {
+			isNext = mainRS.next();
+		} catch (SQLException e) {
+			log.trace("couldn't get next", e);
+		}
+		
+		if (!isClosed && isNext) {
 			result = TableRow.buildTableRow(mainRS);
 		}
 

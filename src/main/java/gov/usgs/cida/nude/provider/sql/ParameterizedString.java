@@ -10,12 +10,19 @@ public class ParameterizedString {
 	private List<TypedValue> values;
 	private String valKey;
 	
+	/**
+	 * Creates a new ParameterizedString that uses "?" as the default value replacement
+	 */
 	public ParameterizedString() {
 		this.clause = new StringBuffer();
 		this.values = new ArrayList<TypedValue>(); 
 		this.valKey = "?";
 	}
 	
+	/**
+	 * Creates a new ParameterizedString that uses valKey as the value replacement
+	 * @param valKey 
+	 */
 	public ParameterizedString(String valKey) {
 		this.clause = new StringBuffer();
 		this.values = new ArrayList<TypedValue>(); 
@@ -46,7 +53,7 @@ public class ParameterizedString {
 		return this;
 	}
 	/**
-	 * Appends a value keyword ('?' is default) to the clause and adds the value to be set.
+	 * Appends a value keyword to the clause and adds the value to be set.
 	 * @param value 
 	 */
 	public ParameterizedString append(TypedValue value) {
@@ -55,7 +62,7 @@ public class ParameterizedString {
 		return this;
 	}
 	/**
-	 * Appends a comma-space-separated list of value keywords ('?' is default) to the clause and adds the values to be set.
+	 * Appends a comma-space-separated list of value keywords to the clause and adds the values to be set.
 	 * @param value 
 	 */
 	public ParameterizedString append(List<TypedValue> values) {
