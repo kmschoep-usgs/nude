@@ -51,6 +51,12 @@ public class ConnectorPlanStep implements PlanStep {
 		this.sys = ((ActorProvider) providers.get(Provider.ACTOR)).getSystem();
 		this.connectors = connectors;
 	}
+
+	@Override
+	public ColumnGrouping getExpectedColumns() {
+		//No freakin idea.
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
 	
 	@Override
 	public ResultSet runStep(ResultSet input) {

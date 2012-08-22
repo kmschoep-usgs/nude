@@ -4,11 +4,13 @@
  */
 package gov.usgs.cida.nude.plan;
 
+import gov.usgs.cida.nude.column.ColumnGrouping;
 import gov.usgs.cida.nude.resultset.inmemory.IteratorWrappingResultSet;
 import gov.usgs.cida.nude.resultset.inmemory.MuxResultSet;
 import gov.usgs.cida.nude.resultset.inmemory.TableRow;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -18,9 +20,16 @@ import java.util.List;
 public class ConfigPlanStep implements PlanStep {
 
 	private Iterable<TableRow> config;
+	private ColumnGrouping cg;
 	
 	public ConfigPlanStep(Iterable<TableRow> config) {
 		this.config = config;
+		
+		List<ColumnGrouping> colGroups = new ArrayList<ColumnGrouping>();
+		for (TableRow row : config) {
+			colGroups.add(row.getColumns());
+		}
+		this.cg = ColumnGrouping.join(colGroups);
 	}
 	
 	@Override
@@ -39,5 +48,9 @@ public class ConfigPlanStep implements PlanStep {
 		
 		return result;
 	}
-	
+
+	@Override
+	public ColumnGrouping getExpectedColumns() {
+		return this.cg;
+	}
 }

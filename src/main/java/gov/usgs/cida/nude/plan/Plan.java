@@ -1,5 +1,6 @@
 package gov.usgs.cida.nude.plan;
 
+import gov.usgs.cida.nude.column.ColumnGrouping;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -27,6 +28,10 @@ public class Plan implements Iterable<PlanStep> {
 		this.steps = Collections.unmodifiableList(s);
 	}
 
+	public ColumnGrouping getExpectedColumns() {
+		return this.steps.get(this.steps.size() - 1).getExpectedColumns();
+	}
+	
 	@Override
 	public Iterator<PlanStep> iterator() {
 		return this.steps.iterator();

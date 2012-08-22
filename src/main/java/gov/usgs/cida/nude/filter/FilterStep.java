@@ -1,5 +1,6 @@
 package gov.usgs.cida.nude.filter;
 
+import gov.usgs.cida.nude.column.ColumnGrouping;
 import gov.usgs.cida.nude.plan.PlanStep;
 import java.sql.ResultSet;
 
@@ -17,6 +18,11 @@ public class FilterStep implements PlanStep {
 	@Override
 	public ResultSet runStep(ResultSet input) {
 		return this.filter.filter(input);
+	}
+
+	@Override
+	public ColumnGrouping getExpectedColumns() {
+		return this.filter.getOutputColumns();
 	}
 	
 }
