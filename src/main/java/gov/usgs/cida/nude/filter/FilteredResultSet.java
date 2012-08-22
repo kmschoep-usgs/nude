@@ -23,7 +23,7 @@ public class FilteredResultSet extends PeekingResultSet {
 		try {
 			this.closed = input.isClosed();
 		} catch (AbstractMethodError t) {
-			log.trace("we're filtering a 1.4 version of ResultSet", t);
+			log.trace("we're filtering a 1.4 version of ResultSet");
 			this.closed = false;
 		} catch (SQLException e) {
 			this.closed = true;
