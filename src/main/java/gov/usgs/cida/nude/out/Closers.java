@@ -60,7 +60,11 @@ public class Closers {
 				
 				if (null != con) {
 					try {
-						SQLProvider.closeConnection(con);
+						if (!con.isClosed()) {
+							SQLProvider.closeConnection(con);
+						} else {
+							log.trace("Connection already closed!");
+						}
 					} catch (Exception e) {
 						log.trace("Exception thrown while closing ResultSet", e);
 					}
