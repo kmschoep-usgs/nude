@@ -8,6 +8,7 @@ package gov.usgs.cida.nude.filter.transform;
 import gov.usgs.cida.nude.column.Column;
 import gov.usgs.cida.nude.filter.ColumnTransform;
 import gov.usgs.cida.nude.resultset.inmemory.TableRow;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import org.slf4j.Logger;
@@ -22,8 +23,16 @@ public class MuxByNotNullTransform implements ColumnTransform {
 	
 	private final List<Column> columns;
 
-	public MuxByNotNullTransform(List<Column> columns) {
-		this.columns = Collections.unmodifiableList(columns);
+	public MuxByNotNullTransform(Iterable<Column> columns) {
+		List<Column> cols = new ArrayList<Column>();
+		
+		if (null != columns) {
+			for (Column col : columns) {
+				cols.add(col);
+			}
+		}
+		
+		this.columns = Collections.unmodifiableList(cols);
 	}
 
 	@Override
