@@ -16,11 +16,7 @@ import gov.usgs.webservices.framework.basic.MimeType;
 import java.io.StringWriter;
 import java.sql.ResultSet;
 
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 
 public class IdaConnectorTest {
 	
@@ -44,7 +40,7 @@ public class IdaConnectorTest {
 	public void tearDown() throws Exception {
 	}
 	
-//	@Ignore
+	@Ignore
 	@Test
 	public void testFormatsResponse() throws Exception {
 		String expected = null;

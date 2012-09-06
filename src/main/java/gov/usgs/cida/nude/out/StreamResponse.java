@@ -93,8 +93,8 @@ public class StreamResponse {
 			out.write(in.getLiteralResponse());
 			out.flush();
 		} else if (null != in.getReader() && null != in.getFormatter()) {
-			in.getFormatter().dispatch(in.getReader(), out);
+			in.getFormatter().dispatch(in.getReader(), new TimeFlushingWriter(out));
 		}
 	}
-	
+
 }
