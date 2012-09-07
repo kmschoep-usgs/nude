@@ -21,7 +21,7 @@ import org.slf4j.LoggerFactory;
 public class MuxByNotNullTransform implements ColumnTransform {
 	private static final Logger log = LoggerFactory.getLogger(MuxByNotNullTransform.class);
 	
-	private final List<Column> columns;
+	protected final List<Column> columns;
 
 	public MuxByNotNullTransform(Iterable<Column> columns) {
 		List<Column> cols = new ArrayList<Column>();

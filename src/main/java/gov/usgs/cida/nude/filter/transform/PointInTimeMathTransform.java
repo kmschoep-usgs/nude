@@ -17,10 +17,10 @@ import org.slf4j.LoggerFactory;
 public class PointInTimeMathTransform implements ColumnTransform {
 	private static final Logger log = LoggerFactory.getLogger(PointInTimeMathTransform.class);
 	
-	private final Column col;
-	private final Column timeCol;
-	private final MathFunction func;
-	private final List<BigDecimal> funcParams;
+	protected final Column col;
+	protected final Column timeCol;
+	protected final MathFunction func;
+	protected final List<BigDecimal> funcParams;
 
 	public PointInTimeMathTransform(Column timeCol, Column col, MathFunction func, List<BigDecimal> funcParams) {
 		this.col = col;

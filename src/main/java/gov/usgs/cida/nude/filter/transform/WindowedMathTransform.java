@@ -18,14 +18,14 @@ import org.slf4j.LoggerFactory;
 public class WindowedMathTransform implements ColumnTransform {
 	private static final Logger log = LoggerFactory.getLogger(WindowedMathTransform.class);
 	
-	private Column col;
-	private Column timeCol;
-	private MathFunction func;
-	private Period duration;
-	private LinkedList<DateTime> times;
-	private LinkedList<BigDecimal> vals;
+	protected final Column col;
+	protected final Column timeCol;
+	protected final MathFunction func;
+	protected final Period duration;
+	protected LinkedList<DateTime> times;
+	protected LinkedList<BigDecimal> vals;
 	
-	private boolean started;
+	protected boolean started;
 	
 	public WindowedMathTransform(Column time, Column val, MathFunction func, Period duration) {
 		this.times = new LinkedList<DateTime>();
