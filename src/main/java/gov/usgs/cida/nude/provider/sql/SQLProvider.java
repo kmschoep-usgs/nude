@@ -37,6 +37,10 @@ public class SQLProvider implements IProvider {
 		log.trace("Initialized SQLProvider " + this.hashCode());
 	}
 	
+	public Connection getConnection() throws SQLException, NamingException, ClassNotFoundException {
+		return getConnection(this.jndiName);
+	}
+	
 	/**
 	 * Gets a ResultSet for the query.  If it succeeds, you are responsible
 	 * for getting the Statement and Connection through the ResultSet and closing
@@ -50,7 +54,7 @@ public class SQLProvider implements IProvider {
 		if (null != query) {
 			Connection con = null;
 			try {
-				con = getConnection(this.jndiName);
+				con = this.getConnection();
 				result = getQueryResults(query, con);
 			} catch (Exception e) {
 				log.error("Cannot get requests for query: " + query.toEvaluatedString(), e);
