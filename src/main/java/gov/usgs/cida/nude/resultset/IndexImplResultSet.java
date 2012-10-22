@@ -12,6 +12,7 @@ import java.sql.NClob;
 import java.sql.Ref;
 import java.sql.RowId;
 import java.sql.SQLException;
+import java.sql.SQLFeatureNotSupportedException;
 import java.sql.SQLXML;
 import java.sql.Time;
 import java.sql.Timestamp;
@@ -225,5 +226,17 @@ public abstract class IndexImplResultSet extends ReadOnlyForwardResultSet {
 		throwIfClosed(this);
 		return this.getURL(this.findColumn(columnLabel));
 	}
-	
+
+	/**
+	 * No overrides annotation for 1.6 compatibility.
+	 * @param <T>
+	 * @param columnLabel
+	 * @param type
+	 * @return
+	 * @throws SQLException 
+	 */
+	public <T> T getObject(String columnLabel, Class<T> type) throws SQLException {
+		throwIfClosed(this);
+		throw new SQLFeatureNotSupportedException("Not supported in 1.6 Library.");
+	}
 }

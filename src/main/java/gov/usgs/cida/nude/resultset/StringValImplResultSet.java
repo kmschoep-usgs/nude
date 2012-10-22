@@ -14,6 +14,7 @@ import java.sql.NClob;
 import java.sql.Ref;
 import java.sql.RowId;
 import java.sql.SQLException;
+import java.sql.SQLFeatureNotSupportedException;
 import java.sql.SQLWarning;
 import java.sql.SQLXML;
 import java.sql.Statement;
@@ -157,6 +158,19 @@ public abstract class StringValImplResultSet extends IndexImplResultSet {
 		throwIfClosed(this);
 		throwNotSupported();
 		return null;
+	}
+
+	/**
+	 * No Overrides annotation for 1.6 compatibility.
+	 * @param <T>
+	 * @param columnIndex
+	 * @param type
+	 * @return
+	 * @throws SQLException 
+	 */
+	public <T> T getObject(int columnIndex, Class<T> type) throws SQLException {
+		throwIfClosed(this);
+		throw new SQLFeatureNotSupportedException("Not supported in 1.6 Library.");
 	}
 
 	@Override

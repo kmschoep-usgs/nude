@@ -66,6 +66,31 @@ public class SQLProvider implements IProvider {
 		return result;
 	}
 	
+		/**
+	 * Gets a ResultSet for the query.  If it succeeds, you are responsible
+	 * for getting the Statement and Connection through the ResultSet and closing
+	 * them when you are done.
+	 * @param query
+	 * @return 
+	 */
+	public ResultSet getResults(String query) {
+		ResultSet result = null;
+		
+		if (null != query) {
+			Connection con = null;
+			try {
+				con = this.getConnection();
+				result = getQueryResults(query, con);
+			} catch (Exception e) {
+				log.error("Cannot get requests for query: " + query, e);
+				Closers.closeQuietly(result);
+				closeConnection(con);
+			}
+		}
+		
+		return result;
+	}
+	
 	@Override
 	public void destroy() {
 		log.trace("Destroying SQLProvider " + this.hashCode());
