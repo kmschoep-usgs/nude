@@ -11,9 +11,8 @@
 	<name>nude-akka</name>
 	<dependencies>
 		<dependency>
-			<groupId>${parent.groupId}</groupId>
+			<groupId>${project.groupId}</groupId>
 			<artifactId>nude</artifactId>
-			<version>${parent.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
