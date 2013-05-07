@@ -68,7 +68,7 @@ public class Dispatcher {
 			json.identifyRepeatedTagElement(tableResponse.getDocTag(), tableResponse.getRowTag());
 			sr.setFormatter(json);
 			if (!sr.getReader().hasNext()) {
-				litResp = "{" + tableResponse.getDocTag() + ": {\"@rowCount\": \"0\", \"" + tableResponse.getRowTag() + "\":[]}}";
+				litResp = "{\"" + tableResponse.getDocTag() + "\": {\"@rowCount\": \"0\", \"" + tableResponse.getRowTag() + "\":[]}}";
 				log.debug("Writing JSON empty result:" + litResp);
 			}
 			break;
