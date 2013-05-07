@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>gov.usgs.cida.nude</groupId>
 	<artifactId>nude-parent</artifactId>
-	<version>1.1.5</version>
+	<version>1.1.6-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>nude-parent</name>
 	<modules>
@@ -64,7 +64,7 @@
 	</properties>
 
 	<scm>
-		<developerConnection>scm:svn:https://cida-svn.er.usgs.gov/repos/bms/nude/tags/nude-parent-1.1.5</developerConnection>
+		<developerConnection>scm:svn:https://cida-svn.er.usgs.gov/repos/bms/nude/trunk</developerConnection>
 	</scm>
 
 
