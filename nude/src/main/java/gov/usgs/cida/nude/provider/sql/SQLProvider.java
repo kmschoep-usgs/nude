@@ -3,8 +3,12 @@ package gov.usgs.cida.nude.provider.sql;
 import gov.usgs.cida.nude.out.Closers;
 import gov.usgs.cida.nude.provider.IProvider;
 import gov.usgs.cida.nude.resultset.inmemory.TypedValue;
+import java.lang.ref.WeakReference;
 import java.sql.*;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.WeakHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -20,6 +24,8 @@ import org.slf4j.LoggerFactory;
 public class SQLProvider implements IProvider {
 	private static final Logger log = LoggerFactory.getLogger(SQLProvider.class);
 	protected String jndiName = null;
+	protected static Map<UUID, WeakReference<Connection>> requestToConnectionMap = new WeakHashMap<UUID, WeakReference<Connection>>();
+	protected static Map<Integer, WeakReference<UUID>> hashToRequestMap = new WeakHashMap<Integer, WeakReference<UUID>>();
 
 	public SQLProvider(String jndiName) {
 		if (null == jndiName) {
@@ -37,8 +43,13 @@ public class SQLProvider implements IProvider {
 		log.trace("Initialized SQLProvider " + this.hashCode());
 	}
 	
-	public Connection getConnection() throws SQLException, NamingException, ClassNotFoundException {
-		return getConnection(this.jndiName);
+	public Connection getConnection(UUID requestId) throws SQLException, NamingException, ClassNotFoundException {
+		Connection result = null;
+		
+		Connection con = getConnection(requestId, this.jndiName);
+		result = con;
+		
+		return result;
 	}
 	
 	/**
@@ -48,13 +59,13 @@ public class SQLProvider implements IProvider {
 	 * @param query
 	 * @return 
 	 */
-	public ResultSet getResults(ParameterizedString query) {
+	public ResultSet getResults(UUID requestId, ParameterizedString query) {
 		ResultSet result = null;
 		
 		if (null != query) {
 			Connection con = null;
 			try {
-				con = this.getConnection();
+				con = this.getConnection(requestId);
 				result = getQueryResults(query, con);
 			} catch (Exception e) {
 				log.error("Cannot get requests for query: " + query.toEvaluatedString(), e);
@@ -66,20 +77,20 @@ public class SQLProvider implements IProvider {
 		return result;
 	}
 	
-		/**
+	/**
 	 * Gets a ResultSet for the query.  If it succeeds, you are responsible
 	 * for getting the Statement and Connection through the ResultSet and closing
 	 * them when you are done.
 	 * @param query
 	 * @return 
 	 */
-	public ResultSet getResults(String query) {
+	public ResultSet getResults(UUID requestId, String query) {
 		ResultSet result = null;
 		
 		if (null != query) {
 			Connection con = null;
 			try {
-				con = this.getConnection();
+				con = this.getConnection(requestId);
 				result = getQueryResults(query, con);
 			} catch (Exception e) {
 				log.error("Cannot get requests for query: " + query, e);
@@ -114,7 +125,7 @@ public class SQLProvider implements IProvider {
 	 * @throws ClassNotFoundException
 	 * @throws NamingException
 	 */
-	public static Connection getConnection(String dataSource) throws SQLException, NamingException, ClassNotFoundException {
+	public static Connection getConnection(UUID requestId, String dataSource) throws SQLException, NamingException, ClassNotFoundException {
 		int connectionNumber = -1;
 		Connection connection = null;
 		try {
@@ -124,6 +135,14 @@ public class SQLProvider implements IProvider {
 			if (null == connection) {
 				log.trace("Could not find JNDI hook. Trying simple JDBC connection.");
 				connection = getJDBCConnection();
+			}
+			if (null != connection) {
+				if (null != requestId) {
+					requestToConnectionMap.put(requestId, new WeakReference<Connection>(connection));
+					hashToRequestMap.put(new Integer(connection.hashCode()), new WeakReference<UUID>(requestId));
+				} else {
+					log.debug("no requestId specified");
+				}
 			}
 		} finally {
 			if (null != connection) {
@@ -186,7 +205,16 @@ public class SQLProvider implements IProvider {
 		}		
 		return connection;
 	}
-
+	
+	public static void closeConnection(UUID requestId) {
+		WeakReference<Connection> con = requestToConnectionMap.get(requestId);
+		if (null != con) {
+			closeConnection(con.get());
+		} else {
+			log.trace("Cannot close, no connection for " + requestId);
+		}
+	}
+	
 	/**
 	 * Closes a java.sql.Connection object 
 	 * @param con java.sql.Connection that needs closing
@@ -203,7 +231,14 @@ public class SQLProvider implements IProvider {
 				con.close(); 
 				int conCount = connectionCount.decrementAndGet();
 				log.trace("Closed Connection. Total:" + conCount);
-			
+				
+				WeakReference<UUID> reqId = hashToRequestMap.remove(new Integer(connectionNumber));
+				if (null != reqId) {
+					requestToConnectionMap.remove(reqId.get());
+				} else {
+					log.debug("We don't have a UUID for this? " + connectionNumber);
+				}
+				
 			} else {
 				log.trace("closeConnection called on null object");
 			}
