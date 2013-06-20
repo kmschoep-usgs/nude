@@ -41,7 +41,13 @@ public class FilteredResultSet extends PeekingResultSet {
 		Map<Column, String> row = new HashMap<Column, String>();
 		
 		for (Column col : this.filterStage.inColumns) {
-			row.put(col, this.in.getString(col.getName()));
+			try {
+				row.put(col, this.in.getString(col.getName()));
+			} catch (SQLException e) {
+				throw e;
+			} catch (Exception e) {
+				log.debug("Non SQL exception thrown by getString for col " + col.getName() + ": " + e.getMessage());
+			}
 		}
 		
 		result = new TableRow(this.filterStage.inColumns, row);
