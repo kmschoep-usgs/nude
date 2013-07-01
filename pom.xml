@@ -59,8 +59,6 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<cida.maven.url>http://internal.cida.usgs.gov/maven</cida.maven.url>
-		<cida.svn.url>https://cida-svn.er.usgs.gov/repos/bms</cida.svn.url>
 	</properties>
 
 	<scm>
@@ -72,20 +70,20 @@
 		<repository>
 			<id>cida-releases</id>
 			<name>CIDA Releases</name>
-			<url>${cida.maven.url}/content/repositories/cida-releases/</url>
+			<url>http://internal.cida.usgs.gov/maven/content/repositories/cida-releases/</url>
 		</repository>
 		<snapshotRepository>
 			<id>cida-snapshots</id>
 			<name>CIDA Snapshots</name>
-			<url>${cida.maven.url}/content/repositories/cida-snapshots/</url>
+			<url>http://internal.cida.usgs.gov/maven/content/repositories/cida-snapshots/</url>
 		</snapshotRepository>
 	</distributionManagement>
 
 	<repositories>
 		<repository>
 			<id>nexus</id>
-			<name>CIDA Nexus</name>
-			<url>${cida.maven.url}/content/groups/public/</url>
+			<name>CIDA Public Nexus</name>
+			<url>http://cida.usgs.gov/maven/cida-public</url>
 		</repository>
 		<repository>
 			<id>akka.repository</id>
@@ -98,7 +96,7 @@
 		<pluginRepository>
 			<id>plugin-nexus</id>
 			<name>CIDA Plugin repo</name>
-			<url>${cida.maven.url}/content/groups/public/</url>
+			<url>http://cida.usgs.gov/maven/cida-public</url>
 		</pluginRepository>
 	</pluginRepositories>
 
@@ -118,7 +116,7 @@
 			<dependency>
 				<groupId>gov.usgs.cida</groupId>
 				<artifactId>swsf-transforms</artifactId>
-				<version>0.11</version>
+				<version>0.16</version>
 				<type>jar</type>
 				<exclusions>
 					<exclusion>
@@ -237,7 +235,7 @@
 				<artifactId>maven-release-plugin</artifactId>
 				<version>2.3.2</version>
 				<configuration>
-					<tagBase>${cida.svn.url}/nude/tags</tagBase>
+					<tagBase>https://cida-svn.er.usgs.gov/repos/bms/nude/tags</tagBase>
 				</configuration>
 			</plugin>
 		</plugins>
