@@ -20,10 +20,12 @@
 	<licenses>
 		<license>
 			<name>Public Domain</name>
-			<url>http://en.wikipedia.org/wiki/Public_domain_software</url>
-			<comments>All work of the US Government enter into the Public Domain within
-				the United States.  Whether that work is public domain outside of
-				the United States depends on various factors.
+			<url>http://www.usgs.gov/visual-id/credit_usgs.html#copyright</url>
+			<comments>
+				This software is in the public domain because it contains materials
+                that originally came from the United States Geological Survey, an agency of
+                the United States Department of Interior. For more information, see the official
+                USGS copyright policy at http://www.usgs.gov/visual-id/credit_usgs.html#copyright
 			</comments>
 		</license>
 	</licenses>
@@ -68,14 +70,14 @@
 
 	<distributionManagement>
 		<repository>
-			<id>cida-releases</id>
-			<name>CIDA Releases</name>
-			<url>http://internal.cida.usgs.gov/maven/content/repositories/cida-releases/</url>
+			<id>cida-public-releases</id>
+			<name>CIDA Public Releases</name>
+			<url>http://internal.cida.usgs.gov/maven/content/repositories/cida-public-releases/</url>
 		</repository>
 		<snapshotRepository>
-			<id>cida-snapshots</id>
-			<name>CIDA Snapshots</name>
-			<url>http://internal.cida.usgs.gov/maven/content/repositories/cida-snapshots/</url>
+			<id>cida-public-snapshots</id>
+			<name>CIDA Public Snapshots</name>
+			<url>http://internal.cida.usgs.gov/maven/content/repositories/cida-public-snapshots/</url>
 		</snapshotRepository>
 	</distributionManagement>
 
@@ -229,13 +231,6 @@
 					<source>1.6</source>
 					<target>1.6</target>
 					<encoding>${project.build.sourceEncoding}</encoding>
-				</configuration>
-			</plugin>
-			<plugin>
-				<artifactId>maven-release-plugin</artifactId>
-				<version>2.3.2</version>
-				<configuration>
-					<tagBase>https://cida-svn.er.usgs.gov/repos/bms/nude/tags</tagBase>
 				</configuration>
 			</plugin>
 		</plugins>
