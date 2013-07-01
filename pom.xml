@@ -64,7 +64,9 @@
 	</properties>
 
 	<scm>
-		<developerConnection>scm:svn:https://cida-svn.er.usgs.gov/repos/bms/nude/trunk</developerConnection>
+		<connection>scm:git:https://github.com/USGS-CIDA/nude.git</connection>
+		<developerConnection>scm:git:ssh://git@github.com/USGS-CIDA/nude.git</developerConnection>
+		<url>https://github.com/USGS-CIDA/nude</url>
 	</scm>
 
 
