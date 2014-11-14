@@ -1,7 +1,7 @@
 package gov.usgs.cida.nude;
 
-import static gov.usgs.cida.nude.ResultSetUtils.checkEqualRows;
-import static gov.usgs.cida.nude.ResultSetUtils.createTableRows;
+import static gov.usgs.cida.nude.resultset.ResultSetUtils.checkEqualRows;
+import static gov.usgs.cida.nude.resultset.ResultSetUtils.createTableRows;
 import gov.usgs.cida.nude.column.Column;
 import gov.usgs.cida.nude.column.ColumnGrouping;
 import gov.usgs.cida.nude.column.SimpleColumn;
