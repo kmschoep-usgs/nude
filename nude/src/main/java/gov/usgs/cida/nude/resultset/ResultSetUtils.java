@@ -1,4 +1,4 @@
-package gov.usgs.cida.nude;
+package gov.usgs.cida.nude.resultset;
 
 import gov.usgs.cida.nude.column.Column;
 import gov.usgs.cida.nude.column.ColumnGrouping;
