@@ -1,6 +1,7 @@
 package gov.usgs.cida.nude.column;
 
 import com.google.common.base.Objects;
+import java.io.Serializable;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -17,9 +18,12 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ColumnGrouping implements Iterable<Column> {
-	private static final Logger log = LoggerFactory
-			.getLogger(ColumnGrouping.class);
+public class ColumnGrouping implements Iterable<Column>, Serializable {
+	
+	private static final long serialVersionUID = 8712154386370666521L;
+	
+	private static final Logger log = LoggerFactory.getLogger(ColumnGrouping.class);
+	
 	protected final Column primaryKeyColumn;
 	protected final Map<String, Integer> colToIndex;
 	protected final List<Column> columns;

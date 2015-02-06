@@ -3,6 +3,7 @@ package gov.usgs.cida.nude.resultset.inmemory;
 import com.google.common.base.Objects;
 import gov.usgs.cida.nude.column.Column;
 import gov.usgs.cida.nude.column.ColumnGrouping;
+import java.io.Serializable;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -17,8 +18,12 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class TableRow implements Comparable<TableRow>{
+public class TableRow implements Comparable<TableRow>, Serializable {
+	
+	private static final long serialVersionUID = -4005364945642342712L;
+	
 	private static final Logger log = LoggerFactory.getLogger(TableRow.class);
+
 	protected final Map<Column, String> row;
 	protected final ColumnGrouping columns;
 	
