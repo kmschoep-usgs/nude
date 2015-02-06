@@ -1,10 +1,13 @@
 package gov.usgs.cida.nude.column;
 
 
+import java.io.Serializable;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 
-public class CGResultSetMetaData implements ResultSetMetaData {
+public class CGResultSetMetaData implements ResultSetMetaData, Serializable {
+	
+	private static final long serialVersionUID = 6937014806038105408L;
 	
 	protected final ColumnGrouping cg;
 	
