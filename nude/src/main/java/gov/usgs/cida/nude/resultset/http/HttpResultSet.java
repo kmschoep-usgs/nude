@@ -5,6 +5,8 @@ import java.io.*;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.zip.GZIPInputStream;
+
+import org.apache.commons.lang3.CharEncoding;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.util.EntityUtils;
@@ -53,8 +55,6 @@ public class HttpResultSet extends ParsingResultSet {
 		
 		InputStreamReader reader = null;
 		try {
-			String charset = null;
-
 			Header contentHeader = this.httpEntity.getContentEncoding();
 			if (null != contentHeader) {
 				String encoding = contentHeader.getValue();
@@ -64,13 +64,7 @@ public class HttpResultSet extends ParsingResultSet {
 				}
 			}
 			
-			charset = "UTF-8";
-			
-			if (null != charset) {
-				reader = new InputStreamReader(in, charset);
-//			} else {
-//				reader = new InputStreamReader(in);
-			}
+			reader = new InputStreamReader(in, CharEncoding.UTF_8);
 		} catch (Exception e) {
 			log.error("Error decoding response", e);
 		}

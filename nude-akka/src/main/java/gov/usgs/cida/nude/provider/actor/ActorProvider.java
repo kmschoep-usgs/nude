@@ -1,7 +1,7 @@
 package gov.usgs.cida.nude.provider.actor;
 
 import akka.actor.ActorSystem;
-import akka.util.Duration;
+import scala.concurrent.duration.Duration;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import gov.usgs.cida.nude.provider.IProvider;

@@ -1,18 +1,15 @@
 package gov.usgs.cida.nude.time;
 
+import java.sql.ResultSet;
+
 import gov.usgs.cida.nude.column.ColumnGrouping;
 import gov.usgs.cida.nude.plan.PlanStep;
-import java.sql.ResultSet;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author dmsibley
  */
 public class TimeFilteringPlanStep implements PlanStep {
-	private static final Logger log = LoggerFactory.getLogger(TimeFilteringPlanStep.class);
-
 	protected final ColumnGrouping colGroup;
 	protected final DateRange timeRange;
 
@@ -36,4 +33,5 @@ public class TimeFilteringPlanStep implements PlanStep {
 	public ColumnGrouping getExpectedColumns() {
 		return this.colGroup;
 	}
+
 }

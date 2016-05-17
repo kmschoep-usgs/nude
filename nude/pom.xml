@@ -17,7 +17,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>javax.servlet</groupId>
-			<artifactId>servlet-api</artifactId>
+			<artifactId>javax.servlet-api</artifactId>
 			<type>jar</type>
 			<scope>provided</scope>
 		</dependency>
@@ -81,8 +81,8 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>commons-lang</groupId>
-			<artifactId>commons-lang</artifactId>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
 			<type>jar</type>
 			<scope>compile</scope>
 		</dependency>

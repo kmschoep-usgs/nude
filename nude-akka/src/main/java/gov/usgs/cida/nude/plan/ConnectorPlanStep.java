@@ -1,20 +1,28 @@
 package gov.usgs.cida.nude.plan;
 
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import  java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.TimeUnit;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
+
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
 import akka.actor.Props;
 import akka.actor.UntypedActor;
-import akka.dispatch.Await;
-import akka.dispatch.Future;
 import akka.dispatch.Futures;
 import akka.dispatch.Mapper;
-import akka.jsr166y.ThreadLocalRandom;
 import akka.pattern.Patterns;
-import akka.routing.RoundRobinRouter;
-import akka.util.Duration;
+import akka.routing.RoundRobinPool;
 import akka.util.Timeout;
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.Multimap;
 import gov.usgs.cida.nude.column.Column;
 import gov.usgs.cida.nude.column.ColumnGrouping;
 import gov.usgs.cida.nude.connector.IConnector;
@@ -26,14 +34,10 @@ import gov.usgs.cida.nude.provider.Provider;
 import gov.usgs.cida.nude.provider.actor.ActorProvider;
 import gov.usgs.cida.nude.resultset.inmemory.MuxResultSet;
 import gov.usgs.cida.nude.resultset.inmemory.ResultSetCloner;
-import java.sql.ResultSet;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import scala.concurrent.Await;
+import scala.concurrent.Future;
+import scala.concurrent.duration.Duration;
+import scala.concurrent.duration.FiniteDuration;
 
 /**
  * [UNIT-TESTABLE]?
@@ -45,7 +49,7 @@ public class ConnectorPlanStep implements PlanStep {
 	private final ActorSystem sys;
 	
 	private static final int MAX_RUNNING_CONNECTORS = 256;
-	private static final Duration CONNECTOR_TIMEOUT = Duration.create(6, TimeUnit.MINUTES);
+	private static final FiniteDuration CONNECTOR_TIMEOUT = Duration.create(6, TimeUnit.MINUTES);
 
 	public ConnectorPlanStep(Map<Provider, IProvider> providers, List<IConnector> connectors) {
 		this.sys = ((ActorProvider) providers.get(Provider.ACTOR)).getSystem();
@@ -63,7 +67,7 @@ public class ConnectorPlanStep implements PlanStep {
 		ResultSet result = null;
 		log.trace("Starting ConnectorPlanStep");
 		
-		ActorRef runner = this.sys.actorOf(new Props(ConnectorBuffer.class));
+		ActorRef runner = this.sys.actorOf(Props.create(ConnectorBuffer.class));
 		
 		List<Future<ResultSet>> responses = new ArrayList<Future<ResultSet>>();
 		
@@ -92,9 +96,9 @@ public class ConnectorPlanStep implements PlanStep {
 						public ResultSet apply(Object t1) {
 							return (ResultSet) t1;
 						}
-					});
+					}, sys.dispatcher());
 				} else {
-					respRS = respRS.map(new ExpandResultsMapper(connector.getExpectedColumns()));
+					respRS = respRS.map(new ExpandResultsMapper(connector.getExpectedColumns()), sys.dispatcher());
 				}
 			}
 			responses.add(respRS);
@@ -107,7 +111,7 @@ public class ConnectorPlanStep implements PlanStep {
 			public ResultSet apply(Iterable<ResultSet> arg0) {
 				return new MuxResultSet(arg0);
 			}
-		});
+		}, sys.dispatcher());
 		
 		log.trace("Starting Wait");
 		try {
@@ -126,8 +130,8 @@ public class ConnectorPlanStep implements PlanStep {
 		private final ActorRef runner;
 		
 		public ConnectorBuffer() {
-			this.runner = this.getContext().actorOf(new Props(ConnectorRunner.class)
-				.withRouter(new RoundRobinRouter(MAX_RUNNING_CONNECTORS)));
+			this.runner = this.getContext().actorOf(Props.create(ConnectorRunner.class)
+				.withRouter(new RoundRobinPool(MAX_RUNNING_CONNECTORS)));
 		}
 		
 		@Override
@@ -142,7 +146,7 @@ public class ConnectorPlanStep implements PlanStep {
 				public void run() {
 					runner.tell(arg0, sender);
 				}
-			});
+			}, getContext().system().dispatcher());
 		}
 		
 	}
