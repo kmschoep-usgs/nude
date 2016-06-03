@@ -4,16 +4,12 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author dmsibley
  */
 public class ColumnGroupingBuilder {
-	private static final Logger log = LoggerFactory.getLogger(ColumnGroupingBuilder.class);
-
 	private Set<Column> checkCol;
 	private List<Column> cols;
 	private Column primaryKey;

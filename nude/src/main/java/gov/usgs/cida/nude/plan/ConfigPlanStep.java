@@ -4,14 +4,14 @@
  */
 package gov.usgs.cida.nude.plan;
 
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
+
 import gov.usgs.cida.nude.column.ColumnGrouping;
 import gov.usgs.cida.nude.resultset.inmemory.IteratorWrappingResultSet;
 import gov.usgs.cida.nude.resultset.inmemory.MuxResultSet;
 import gov.usgs.cida.nude.resultset.inmemory.TableRow;
-import java.sql.ResultSet;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 /**
  * [UNIT-TESTABLE]
@@ -31,21 +31,21 @@ public class ConfigPlanStep implements PlanStep {
 		}
 		this.cg = ColumnGrouping.join(colGroups);
 	}
-	
+
 	@Override
 	public ResultSet runStep(ResultSet input) {
 		ResultSet result = null;
-		
+
 		result = new IteratorWrappingResultSet(config.iterator());
-		
+
 		if (null != input) {
 			List<ResultSet> mux = new ArrayList<ResultSet>();
 			mux.add(input);
 			mux.add(result);
-			
+
 			result = new MuxResultSet(mux);
 		}
-		
+
 		return result;
 	}
 
@@ -53,4 +53,5 @@ public class ConfigPlanStep implements PlanStep {
 	public ColumnGrouping getExpectedColumns() {
 		return this.cg;
 	}
+
 }

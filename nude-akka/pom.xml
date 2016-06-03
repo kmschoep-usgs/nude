@@ -20,17 +20,17 @@
 		</dependency>
 		<dependency>
 			<groupId>com.typesafe.akka</groupId>
-			<artifactId>akka-actor</artifactId>
+			<artifactId>akka-actor_2.11</artifactId>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.typesafe.akka</groupId>
-			<artifactId>akka-slf4j</artifactId>
+			<artifactId>akka-slf4j_2.11</artifactId>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.typesafe.akka</groupId>
-			<artifactId>akka-testkit</artifactId>
+			<artifactId>akka-testkit_2.11</artifactId>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>

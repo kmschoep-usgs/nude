@@ -18,8 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class TableXmlReader extends BasicXMLStreamReader {
-	private static final Logger log = LoggerFactory
-			.getLogger(TableXmlReader.class);
+	private static final Logger log = LoggerFactory.getLogger(TableXmlReader.class);
 	
 	protected final String docElement;
 	protected final String rowElement;
