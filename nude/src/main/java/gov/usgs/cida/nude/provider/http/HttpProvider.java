@@ -1,27 +1,26 @@
 package gov.usgs.cida.nude.provider.http;
 
-import gov.usgs.cida.nude.provider.IProvider;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
+
 import org.apache.http.Header;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.cache.HttpCacheEntry;
 import org.apache.http.client.cache.HttpCacheStorage;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.client.cache.BasicHttpCacheStorage;
 import org.apache.http.impl.client.cache.CacheConfig;
-import org.apache.http.impl.client.cache.CachingHttpClient;
-import org.apache.http.impl.conn.SchemeRegistryFactory;
-import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
+import org.apache.http.impl.client.cache.CachingHttpClients;
+import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.message.BasicHeader;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.HttpConnectionParams;
-import org.apache.http.params.HttpParams;
 import org.apache.http.protocol.HTTP;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import gov.usgs.cida.nude.provider.IProvider;
 
 public class HttpProvider implements IProvider {
 
@@ -41,30 +40,38 @@ public class HttpProvider implements IProvider {
 	private final static long CACHIN_HEURITIC_DEFAULT_LIFETIME_SECONDS = 300;  // 5 minutes
 	protected HttpCacheStorage cacheStorage;
 	protected CacheConfig cacheConfig;
-	protected ThreadSafeClientConnManager clientConnectionManager = null;
+	protected PoolingHttpClientConnectionManager clientConnectionManager = null;
+	protected IdleConnectionMonitorThread staleMonitor;
 
 	@Override
-	public void init() {
+	public void init() throws InterruptedException {
 		if (null != clientConnectionManager) {
 			throw new IllegalStateException("Init ran on previously set up instance!");
 		}
 
 		// Initialize connection manager, this is thread-safe.  if we use this
 		// with any HttpClient instance it becomes thread-safe.
-		clientConnectionManager = new ThreadSafeClientConnManager(SchemeRegistryFactory.createDefault(), CONNECTION_TTL, TimeUnit.MILLISECONDS);
+		clientConnectionManager = new PoolingHttpClientConnectionManager(CONNECTION_TTL, TimeUnit.MILLISECONDS);;
 		clientConnectionManager.setMaxTotal(CONNECTIONS_MAX_TOTAL);
 		clientConnectionManager.setDefaultMaxPerRoute(CONNECTIONS_MAX_ROUTE);
+		clientConnectionManager.setValidateAfterInactivity(CLIENT_CONNECTION_TIMEOUT);
 		log.info("Created HTTP client connection manager " + clientConnectionManager.hashCode() + ": maximum connections total = " + clientConnectionManager.getMaxTotal() + ", maximum connections per route = " + clientConnectionManager.getDefaultMaxPerRoute());
 
 		if (CACHING_ENABLED) {
-			cacheConfig = new CacheConfig();
-			cacheConfig.setMaxCacheEntries(CACHING_MAX_ENTRIES);
-			cacheConfig.setMaxObjectSizeBytes(CACHING_MAX_RESPONSE_SIZE);
-			cacheConfig.setHeuristicCachingEnabled(CACHING_HEURISTIC_ENABLED);
-			cacheConfig.setHeuristicDefaultLifetime(CACHIN_HEURITIC_DEFAULT_LIFETIME_SECONDS);
-			cacheConfig.setSharedCache(true);  // won't cache authorized responses
+			cacheConfig = CacheConfig.custom()
+					.setMaxCacheEntries(CACHING_MAX_ENTRIES)
+					.setMaxObjectSize(CACHING_MAX_RESPONSE_SIZE)
+					.setHeuristicCachingEnabled(CACHING_HEURISTIC_ENABLED)
+					.setHeuristicDefaultLifetime(CACHIN_HEURITIC_DEFAULT_LIFETIME_SECONDS)
+					.setSharedCache(true)
+					.build();
+			// won't cache authorized responses
 			cacheStorage = new HttpProviderCacheStorage(cacheConfig);
 		}
+
+		staleMonitor = new IdleConnectionMonitorThread(clientConnectionManager, CLIENT_CONNECTION_TIMEOUT);
+		staleMonitor.start();
+		staleMonitor.join(1000);
 	}
 
 	/**
@@ -73,21 +80,31 @@ public class HttpProvider implements IProvider {
 	 *
 	 * @return
 	 */
-	public HttpClient getClient() {
+	public CloseableHttpClient getClient() {
 		return this.getClient(CLIENT_SOCKET_TIMEOUT);
 	}
-	
-	public HttpClient getClient(int timeoutMillis) {
-		HttpClient result = null;
+
+	public CloseableHttpClient getClient(int timeoutMillis) {
+		CloseableHttpClient result = null;
 
 		if (null != clientConnectionManager) {
-			HttpParams httpParams = new BasicHttpParams();
-			HttpConnectionParams.setSoTimeout(httpParams, timeoutMillis);
-			HttpConnectionParams.setConnectionTimeout(httpParams, CLIENT_CONNECTION_TIMEOUT);
+			RequestConfig config = RequestConfig.custom()
+					.setConnectTimeout(CLIENT_CONNECTION_TIMEOUT)
+					.setSocketTimeout(timeoutMillis)
+					.build();
 
-			result = new DefaultHttpClient(clientConnectionManager, httpParams);
 			if (CACHING_ENABLED) {
-				result = new CachingHttpClient(result, cacheStorage, cacheConfig);
+				result = CachingHttpClients.custom()
+						.setHttpCacheStorage(cacheStorage)
+						.setCacheConfig(cacheConfig)
+						.setConnectionManager(clientConnectionManager)
+						.setDefaultRequestConfig(config).build();
+			} else {
+				result = HttpClients.custom()
+						.setConnectionManager(clientConnectionManager)
+						.setDefaultRequestConfig(config)
+						.disableAutomaticRetries()
+						.build();
 			}
 		}
 
@@ -99,6 +116,7 @@ public class HttpProvider implements IProvider {
 		int code = clientConnectionManager.hashCode();
 		clientConnectionManager.shutdown();
 		clientConnectionManager = null;
+		staleMonitor.shutdown();
 		log.info("Destroyed HTTP client connection manager " + code);
 	}
 

@@ -18,10 +18,13 @@ import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpHead;
 import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.protocol.HttpContext;
+import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -119,19 +122,26 @@ public abstract class AbstractHttpConnector implements HttpConnector {
 	@Override
 	public ResultSet getResultSet() {
 		ResultSet result = null;
+		HttpEntity methodEntity = null;
 
 		String uri = getURI(this);
 		if (null != uri) {
 			log.info("Trying to get ResultSet: " + uri);
 			try {
 				if (isReady()) {
-					HttpEntity methodEntity = makeGetCall();
+					methodEntity = makeGetCall();
 					result = new HttpResultSet(methodEntity, this.getParser());
 				} else {
 					log.error("Source not ready: " + uri);
 				}
 			} catch (Exception e) {
 				log.error("Could not make call", e);
+			} finally {
+				try {
+					EntityUtils.consume(methodEntity);
+				} catch (Exception e) {
+					log.error("trouble closing the response stream", e);
+				}
 			}
 		}
 
@@ -161,9 +171,9 @@ public abstract class AbstractHttpConnector implements HttpConnector {
 		int result = -1;
 		if (null != uri) {
 			log.trace("Sending HEAD: " + uri);
-			HttpResponse resp = null;
-		
-			HttpClient httpClient = httpProvider.getClient();
+			CloseableHttpResponse resp = null;
+
+			CloseableHttpClient httpClient = httpProvider.getClient();
 			HttpUriRequest req = new HttpHead(uri);
 			HttpProvider.generateFirefoxHeaders(req, null);
 
@@ -172,6 +182,13 @@ public abstract class AbstractHttpConnector implements HttpConnector {
 				result = resp.getStatusLine().getStatusCode();
 			} finally {
 				req.abort();
+				try {
+					if (null != resp) {
+						resp.close();
+					}
+				} catch (IOException e1) {
+					log.error("Trouble closing head response", e1);
+				}
 			}
 		}
 		
@@ -186,7 +203,7 @@ public abstract class AbstractHttpConnector implements HttpConnector {
 		if (null != uri) {
 			log.trace("Sending GET: " + uri);
 			
-			HttpClient httpClient = httpProvider.getClient();
+			CloseableHttpClient httpClient = httpProvider.getClient();
 			HttpUriRequest req = new HttpGet(uri);
 			HttpProvider.generateFirefoxHeaders(req, null);
 
