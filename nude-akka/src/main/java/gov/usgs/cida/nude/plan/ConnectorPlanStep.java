@@ -42,7 +42,10 @@ import scala.concurrent.duration.FiniteDuration;
 /**
  * [UNIT-TESTABLE]?
  * @author dmsibley
+ * 
+ * Not used in EnDDaT at this time - perhaps elsewhere? Remove @Deprecated if a use is found.
  */
+@Deprecated
 public class ConnectorPlanStep implements PlanStep {
 	private static final Logger log = LoggerFactory.getLogger(ConnectorPlanStep.class);
 	private final List<IConnector> connectors;
