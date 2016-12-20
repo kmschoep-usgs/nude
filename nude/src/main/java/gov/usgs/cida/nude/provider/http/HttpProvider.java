@@ -41,10 +41,9 @@ public class HttpProvider implements IProvider {
 	protected HttpCacheStorage cacheStorage;
 	protected CacheConfig cacheConfig;
 	protected PoolingHttpClientConnectionManager clientConnectionManager = null;
-	protected IdleConnectionMonitorThread staleMonitor;
 
 	@Override
-	public void init() throws InterruptedException {
+	public void init() {
 		if (null != clientConnectionManager) {
 			throw new IllegalStateException("Init ran on previously set up instance!");
 		}
@@ -68,10 +67,6 @@ public class HttpProvider implements IProvider {
 			// won't cache authorized responses
 			cacheStorage = new HttpProviderCacheStorage(cacheConfig);
 		}
-
-		staleMonitor = new IdleConnectionMonitorThread(clientConnectionManager, CLIENT_CONNECTION_TIMEOUT);
-		staleMonitor.start();
-		staleMonitor.join(1000);
 	}
 
 	/**
@@ -116,7 +111,6 @@ public class HttpProvider implements IProvider {
 		int code = clientConnectionManager.hashCode();
 		clientConnectionManager.shutdown();
 		clientConnectionManager = null;
-		staleMonitor.shutdown();
 		log.info("Destroyed HTTP client connection manager " + code);
 	}
 
