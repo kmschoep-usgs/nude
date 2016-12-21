@@ -4,9 +4,8 @@ public interface IProvider {
 	
 	/**
 	 * Call this before you start.
-	 * @throws InterruptedException 
 	 */
-	public void init() throws InterruptedException;
+	public void init();
 	
 	/**
 	 * Always call this when you're done!
