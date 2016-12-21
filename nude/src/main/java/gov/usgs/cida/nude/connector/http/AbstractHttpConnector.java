@@ -136,11 +136,12 @@ public abstract class AbstractHttpConnector implements HttpConnector {
 				}
 			} catch (Exception e) {
 				log.error("Could not make call", e);
-			} finally {
 				try {
-					EntityUtils.consume(methodEntity);
-				} catch (Exception e) {
-					log.error("trouble closing the response stream", e);
+					if (null != methodEntity) {
+						EntityUtils.consume(methodEntity);
+					}
+				} catch (Exception e1) {
+					log.error("trouble closing the response stream", e1);
 				}
 			}
 		}
