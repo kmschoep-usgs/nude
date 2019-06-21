@@ -155,7 +155,7 @@ public class ColumnGrouping implements Iterable<Column>, Serializable {
 						int numCols = md.getColumnCount();
 						
 						for (int i = 1; i <= numCols; i++) {
-							String colName = md.getColumnName(i);
+							String colName = md.getColumnName(i).toUpperCase();
 							String tabName = md.getTableName(i);
 							String schName = md.getSchemaName(i);
 							Class<?> valType = Class.forName(md.getColumnClassName(i));
